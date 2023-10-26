@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">Remise 1</string>
+
+    <!--Login Screen-->
+
     <string name="login_button">OK</string>
     <string name="login_error">Error, the email is not valid</string>
     <string name="login_email_hint">Email</string>
+
+    <!--HE2B Logo-->
+
+    <string name="logo_description">Logo of the HE2B-ESI school</string>
+
 </resources>

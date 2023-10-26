@@ -3,7 +3,7 @@ package g58089.mobg5.remise1.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -19,15 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import g58089.mobg5.remise1.R
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    onLoginConfirmed: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var email by rememberSaveable { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             TextField(value = email, onValueChange = { email = it }, label = {
                 Text(text = stringResource(id = R.string.login_email_hint))
             })
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = onLoginConfirmed) {
                 Text(text = stringResource(id = R.string.login_button))
             }
         }
@@ -37,5 +40,5 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen()
+    LoginScreen(onLoginConfirmed = {}, modifier = Modifier.fillMaxHeight())
 }
