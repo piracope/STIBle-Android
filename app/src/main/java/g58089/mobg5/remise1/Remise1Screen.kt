@@ -1,10 +1,8 @@
 package g58089.mobg5.remise1
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -30,23 +28,27 @@ fun Remise1App(
 
 
         NavHost(navController = navController, startDestination = Remise1Screen.Login.name) {
+            composable(route = Remise1Screen.Logo.name) {
+                LogoScreen(modifier = Modifier.fillMaxHeight())
+            }
             composable(route = Remise1Screen.Login.name) {
                 LoginScreen(
                     email = viewModel.userEmail,
                     isEmailWrong = uiState.isEmailWrong,
+                    isLoginSuccessful = uiState.isLoginSuccessful,
                     onEmailChange = {
                         viewModel.updateUserEmail(it)
                     },
                     onLoginConfirmed = {
                         viewModel.checkUserEmail()
-                        Log.d("tetet", "Email : " + viewModel.userEmail + ", bad : " + uiState.isEmailWrong)
+                    },
+                    onNavigateLoginSuccess = {
+                        navController.navigate(Remise1Screen.Logo.name)
                     },
                     modifier = Modifier.fillMaxHeight()
                 )
             }
-            composable(route = Remise1Screen.Logo.name) {
-                LogoScreen(modifier = Modifier.fillMaxHeight())
-            }
+
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -23,10 +24,21 @@ import g58089.mobg5.remise1.R
 fun LoginScreen(
     email: String,
     isEmailWrong: Boolean,
+    isLoginSuccessful: Boolean,
     onEmailChange: (String) -> Unit,
     onLoginConfirmed: () -> Unit,
+    onNavigateLoginSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    //FIXME: this doesn't work very well -> weird double navigation. i need to ask QHB
+    if (isLoginSuccessful) {
+        LaunchedEffect(true) {
+            Log.d("login", "we navigate")
+            onNavigateLoginSuccess()
+        }
+    }
+
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             TextField(
@@ -50,7 +62,7 @@ fun LoginScreen(
             }
         }
 
-        if(isEmailWrong) {
+        if (isEmailWrong) {
             Text(text = stringResource(id = R.string.login_error))
         }
     }
@@ -62,8 +74,10 @@ fun LoginScreenPreview() {
     LoginScreen(
         email = "",
         isEmailWrong = false,
+        isLoginSuccessful = false,
         onLoginConfirmed = {},
         onEmailChange = {},
+        onNavigateLoginSuccess = {},
         modifier = Modifier.fillMaxHeight()
     )
 }
