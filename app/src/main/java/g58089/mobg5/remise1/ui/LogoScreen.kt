@@ -12,6 +12,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import g58089.mobg5.remise1.R
 
+/**
+ * Displays the logo of the HE2B-ESI, vertically centered.
+ */
 @Composable
 fun LogoScreen(modifier: Modifier = Modifier) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
