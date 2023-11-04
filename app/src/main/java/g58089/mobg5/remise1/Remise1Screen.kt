@@ -1,6 +1,5 @@
 package g58089.mobg5.remise1
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -44,9 +43,19 @@ fun Remise1App(
 ) {
     Surface {
         val uiState = viewModel.uiState
+        val route = if (uiState.isLoginSuccessful) NavRoutes.Logo.name else NavRoutes.Login.name
+        /*
+        this `route` thing seems to fix all my issues. When the user successfully logs in,
+        Remise1App is re-composed, which changes startDestination to the Logo route. Thus, once
+        logged in, we're taken to the logo.
+        Main disadvantage : we can't go back, as the back stack is empty. We're just jumping
+        straight to the logo.
+        TODO: ask QHB if that behaviour is ok
+         */
+
 
         // initial route is always Login. Will implement stay logged in functionality if required.
-        NavHost(navController = navController, startDestination = NavRoutes.Login.name) {
+        NavHost(navController = navController, startDestination = route) {
 
             // Logo Screen route, should be displayed after successful login
             composable(route = NavRoutes.Logo.name) {
@@ -55,22 +64,14 @@ fun Remise1App(
 
             // Login Screen route, should be displayed upon opening the app
             composable(route = NavRoutes.Login.name) {
-
-                Log.d(TAG, "recomposition")
-
                 LoginScreen(
                     email = viewModel.userEmail,
                     isEmailWrong = uiState.isEmailWrong,
-                    isLoginSuccessful = uiState.isLoginSuccessful,
                     onEmailChange = {
                         viewModel.updateUserEmail(it)
                     },
                     onLoginAttempt = {
                         viewModel.checkUserEmail()
-                    },
-                    onNavigateLoginSuccess = {
-                        Log.d(TAG, "login successful, we navigate")
-                        navController.navigate(NavRoutes.Logo.name)
                     },
                     modifier = Modifier.fillMaxHeight()
                 )

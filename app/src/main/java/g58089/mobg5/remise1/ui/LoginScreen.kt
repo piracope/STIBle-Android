@@ -11,7 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -30,35 +29,22 @@ import g58089.mobg5.remise1.R
  * using the ViewModel through a lambda function passed as `onEmailChange`.
  *
  * When the user clicks on the validation button, the user's input is handled by the `onLoginAttempt`
- * lambda function. If successful, the user should now be logged in and be sent to the next screen
- * according to the app's navigation logic, which is passed here using the `onNavigateLoginSuccess`
  * lambda function. If the login isn't successful, `isEmailWrong` should be set to true, which
  * will be shown as an error in the email field.
  *
  * @param email the state of the user-provided email to show on the screen
  * @param isEmailWrong true if the last login attempt was unsuccessful
- * @param isLoginSuccessful true if the last login attempt was successful
  * @param onEmailChange function called at each change of the user email input
  * @param onLoginAttempt function called at each press of the confirmation button
- * @param onNavigateLoginSuccess function called once the login is successful
  */
 @Composable
 fun LoginScreen(
     email: String,
     isEmailWrong: Boolean,
-    isLoginSuccessful: Boolean,
     onEmailChange: (String) -> Unit,
     onLoginAttempt: () -> Unit,
-    onNavigateLoginSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    //FIXME: this doesn't work very well -> weird double navigation. i need to ask QHB
-    if (isLoginSuccessful) {
-        LaunchedEffect(email) {
-            onNavigateLoginSuccess()
-        }
-    }
 
     /*
     +------------------------+---------------------+
@@ -105,10 +91,8 @@ fun LoginScreenPreview() {
     LoginScreen(
         email = "",
         isEmailWrong = true,
-        isLoginSuccessful = false,
         onLoginAttempt = {},
         onEmailChange = {},
-        onNavigateLoginSuccess = {},
         modifier = Modifier.fillMaxHeight()
     )
 }

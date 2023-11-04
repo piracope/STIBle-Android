@@ -4,7 +4,7 @@
     <!--Login Screen-->
 
     <string name="login_button">OK</string>
-    <string name="login_error">Error, the email is not valid</string>
+    <string name="login_error">Format d\'adresse email invalide.</string>
     <string name="login_email_hint">Email</string>
 
     <!--HE2B Logo-->
