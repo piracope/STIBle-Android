@@ -41,11 +41,16 @@ class Remise1ViewModel : ViewModel() {
      *
      * This method should be called only once the user validates their input.
      */
-    fun checkUserEmail() {
+    fun checkUserEmail(): Boolean {
         // thanks stackoverflow
         val isEmailWrong =
             userEmail.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()
 
-        uiState = uiState.copy(isEmailWrong = isEmailWrong, isLoginSuccessful = !isEmailWrong)
+        uiState = uiState.copy(
+            userEmail = userEmail,
+            isEmailWrong = isEmailWrong,
+            isLoginSuccessful = !isEmailWrong
+        )
+        return !isEmailWrong
     }
 }
