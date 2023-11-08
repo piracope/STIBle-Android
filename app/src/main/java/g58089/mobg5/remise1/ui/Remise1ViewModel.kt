@@ -41,7 +41,7 @@ class Remise1ViewModel : ViewModel() {
      *
      * This method should be called only once the user validates their input.
      */
-    fun checkUserEmail(): Boolean {
+    fun checkUserEmail() {
         // thanks stackoverflow
         val isEmailWrong =
             userEmail.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()
@@ -51,6 +51,5 @@ class Remise1ViewModel : ViewModel() {
             isEmailWrong = isEmailWrong,
             isLoginSuccessful = !isEmailWrong
         )
-        return !isEmailWrong
     }
 }

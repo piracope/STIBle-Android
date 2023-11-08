@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -41,10 +45,18 @@ import g58089.mobg5.remise1.R
 fun LoginScreen(
     email: String,
     isEmailWrong: Boolean,
+    isLoginSuccessful: Boolean,
     onEmailChange: (String) -> Unit,
     onLoginAttempt: () -> Unit,
+    onNavigateLoginSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
+    LaunchedEffect(key1 = isLoginSuccessful) {
+        if (isLoginSuccessful) {
+            onNavigateLoginSuccess()
+        }
+    }
 
     /*
     +------------------------+---------------------+
@@ -60,6 +72,9 @@ fun LoginScreen(
                 singleLine = true,
                 label = {
                     Text(text = stringResource(id = R.string.login_email_hint))
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.MailOutline, contentDescription = null)
                 },
                 onValueChange = onEmailChange,
                 isError = isEmailWrong,
@@ -91,8 +106,10 @@ fun LoginScreenPreview() {
     LoginScreen(
         email = "",
         isEmailWrong = true,
+        isLoginSuccessful = false,
         onLoginAttempt = {},
         onEmailChange = {},
+        onNavigateLoginSuccess = {},
         modifier = Modifier.fillMaxHeight()
     )
 }

@@ -54,12 +54,16 @@ fun Remise1App(
                 LoginScreen(
                     email = viewModel.userEmail,
                     isEmailWrong = uiState.isEmailWrong,
+                    isLoginSuccessful = uiState.isLoginSuccessful,
                     onEmailChange = {
                         viewModel.updateUserEmail(it)
                     },
                     onLoginAttempt = {
-                        if (viewModel.checkUserEmail()) {
-                            navController.navigate(NavRoutes.Logo.name)
+                        viewModel.checkUserEmail()
+                    },
+                    onNavigateLoginSuccess = {
+                        navController.navigate(NavRoutes.Logo.name) {
+                            popUpTo(0) // we navigate and remove everything before us
                         }
                     },
                     modifier = Modifier.fillMaxHeight()
