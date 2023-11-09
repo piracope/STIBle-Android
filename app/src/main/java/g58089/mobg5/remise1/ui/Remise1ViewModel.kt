@@ -1,9 +1,9 @@
 package g58089.mobg5.remise1.ui
 
-import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
 
 /**
@@ -44,7 +44,7 @@ class Remise1ViewModel : ViewModel() {
     fun checkUserEmail() {
         // thanks stackoverflow
         val isEmailWrong =
-            userEmail.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()
+            userEmail.isBlank() || !PatternsCompat.EMAIL_ADDRESS.matcher(userEmail).matches()
 
         uiState = uiState.copy(
             userEmail = userEmail,

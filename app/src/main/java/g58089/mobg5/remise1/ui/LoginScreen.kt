@@ -52,6 +52,14 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
 ) {
 
+    /*
+    This could cause a bug : a user could log in with a correct email, go back to the login
+    screen then retry to login with a correct email. isLoginSuccessful would go from true to... true,
+    preventing this LaunchedEffect from launching.
+
+    I alleviated this issue by removing the back stack upon navigating to the LogoScreen, but this
+    feels more like a band-aid solution.
+     */
     LaunchedEffect(key1 = isLoginSuccessful) {
         if (isLoginSuccessful) {
             onNavigateLoginSuccess()
