@@ -1,4 +1,4 @@
-package g58089.mobg5.remise1
+package g58089.mobg5.stible
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry

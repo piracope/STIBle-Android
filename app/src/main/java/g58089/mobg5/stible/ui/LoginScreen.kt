@@ -1,4 +1,4 @@
-package g58089.mobg5.remise1.ui
+package g58089.mobg5.stible.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import g58089.mobg5.remise1.R
+import g58089.mobg5.stible.R
 
 /**
  * Displays the Login Screen.

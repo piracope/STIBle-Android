@@ -1,4 +1,4 @@
-package g58089.mobg5.remise1
+package g58089.mobg5.stible
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

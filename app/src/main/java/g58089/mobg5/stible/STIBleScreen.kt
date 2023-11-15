@@ -1,4 +1,4 @@
-package g58089.mobg5.remise1
+package g58089.mobg5.stible
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
@@ -9,9 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import g58089.mobg5.remise1.ui.LoginScreen
-import g58089.mobg5.remise1.ui.LogoScreen
-import g58089.mobg5.remise1.ui.Remise1ViewModel
+import g58089.mobg5.stible.ui.LoginScreen
+import g58089.mobg5.stible.ui.LogoScreen
+import g58089.mobg5.stible.ui.STIBleViewModel
 
 /**
  * The different Navigation routes leading to different Screens.
@@ -34,8 +34,8 @@ enum class NavRoutes {
  * Controls the navigation behaviour.
  */
 @Composable
-fun Remise1App(
-    viewModel: Remise1ViewModel = viewModel(),
+fun STIBleApp(
+    viewModel: STIBleViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     Surface {

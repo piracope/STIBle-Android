@@ -1,4 +1,4 @@
-package g58089.mobg5.remise1.ui.theme
+package g58089.mobg5.stible.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

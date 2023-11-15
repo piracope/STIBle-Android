@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "g58089.mobg5.remise1"
+    namespace = "g58089.mobg5.stible"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "g58089.mobg5.remise1"
+        applicationId = "g58089.mobg5.stible"
         minSdk = 24
         targetSdk = 33
         versionCode = 1

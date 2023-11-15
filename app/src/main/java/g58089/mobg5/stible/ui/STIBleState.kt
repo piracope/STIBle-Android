@@ -1,9 +1,9 @@
-package g58089.mobg5.remise1.ui
+package g58089.mobg5.stible.ui
 
 /**
  * The State held by the ViewModel and monitored by the View.
  */
-data class Remise1State(
+data class STIBleState(
     /**
      * The user's email address.
      */

@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Remise1"
+rootProject.name = "STIBle"
 include(":app")
  

@@ -1,4 +1,4 @@
-package g58089.mobg5.remise1.ui
+package g58089.mobg5.stible.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModel
 /**
  * The ViewModel handling all business logic in the application.
  */
-class Remise1ViewModel : ViewModel() {
+class STIBleViewModel : ViewModel() {
     /**
      * The current state of data to be used by the UI.
      */
-    var uiState by mutableStateOf(Remise1State())
+    var uiState by mutableStateOf(STIBleState())
         private set
 
     /**
