@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">STIBle</string>
+    <string name="app_author">Ayoub Moufidi</string>
+    <string name="app_author_matricule">ID: 58089</string>
+    <string name="app_author_group">E13</string>
 
     <!--Login Screen-->
 
