@@ -7,4 +7,5 @@ sealed interface LoginState {
     data class Success(val authUser: AuthUser) : LoginState
     data class Error(val error: ErrorType) : LoginState
     object Default : LoginState
+    object Loading : LoginState
 }

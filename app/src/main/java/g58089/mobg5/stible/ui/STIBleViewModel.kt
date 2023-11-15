@@ -58,13 +58,15 @@ class STIBleViewModel : ViewModel() {
             return
         }
 
+        loginState = LoginState.Loading
+
         viewModelScope.launch {
             loginState = try {
                 val creds = AuthCredentials(userEmail, "mobg23")
                 val loginResult = STIBleApi.retrofitService.auth(creds)
 
                 // this is a useless if statement
-                if(loginResult.accessToken.isNotBlank()) {
+                if (loginResult.accessToken.isNotBlank()) {
                     LoginState.Success(loginResult)
                 } else {
                     LoginState.Default

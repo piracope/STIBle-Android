@@ -106,7 +106,7 @@ fun LoginScreen(
                     }
                 }
             )
-            Button(onClick = onLoginAttempt) {
+            Button(onClick = onLoginAttempt, enabled = loginState !is LoginState.Loading) {
                 Text(text = stringResource(id = R.string.login_button))
             }
         }
