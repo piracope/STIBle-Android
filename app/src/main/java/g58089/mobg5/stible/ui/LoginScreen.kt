@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -19,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import g58089.mobg5.stible.R
+import g58089.mobg5.stible.model.ErrorGuilty
 import g58089.mobg5.stible.model.ErrorType
 
 /**
@@ -44,8 +47,10 @@ import g58089.mobg5.stible.model.ErrorType
 @Composable
 fun LoginScreen(
     email: String,
+    password: String,
     loginState: LoginState,
     onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
     onLoginAttempt: () -> Unit,
     onNavigateLoginSuccess: () -> Unit,
     modifier: Modifier = Modifier,
@@ -65,6 +70,11 @@ fun LoginScreen(
         }
     }
 
+    val errorEmail = loginState is LoginState.Error
+            && loginState.error.guiltyField in listOf(ErrorGuilty.BOTH, ErrorGuilty.EMAIL)
+    val errorPassword =  loginState is LoginState.Error
+    && loginState.error.guiltyField in listOf(ErrorGuilty.BOTH, ErrorGuilty.PASSWORD)
+
     /*
     +------------------------+---------------------+
     | Email Field            | Confirmation button |
@@ -74,6 +84,10 @@ fun LoginScreen(
      */
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+
+            // TODO: refactor those error messages
+
+            // email text field
             TextField(
                 value = email,
                 singleLine = true,
@@ -84,27 +98,47 @@ fun LoginScreen(
                     Icon(imageVector = Icons.Default.MailOutline, contentDescription = null)
                 },
                 onValueChange = onEmailChange,
-                isError = loginState is LoginState.Error,
+                isError = errorEmail,
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done,
+                    imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Email
                 ),
+                supportingText = {
+                    if (loginState is LoginState.Error && loginState.error == ErrorType.BAD_EMAIL_FORMAT) {
+                        Text(
+                            text = stringResource(id = R.string.login_bad_email_format)
+                        )
+                    }
+                }
+            )
+
+            // password text field
+            TextField(
+                value = password,
+                singleLine = true,
+                label = {
+                    Text(text = stringResource(id = R.string.login_password_hint))
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Lock, contentDescription = null)
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                isError = errorPassword,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Password
+                ),
+                onValueChange = onPasswordChange,
                 keyboardActions = KeyboardActions(
                     onDone = { onLoginAttempt() }
                 ),
                 supportingText = {
-                    if (loginState is LoginState.Error) {
-                        val errorText = when (loginState.error) {
-                            ErrorType.BAD_EMAIL_FORMAT -> R.string.login_bad_email_format
-                            ErrorType.NO_INTERNET -> R.string.login_no_internet
-                            ErrorType.BAD_CREDENTIALS -> R.string.login_bad_credentials
-                        }
-
+                    if (loginState is LoginState.Error && loginState.error == ErrorType.NO_PASSWORD) {
                         Text(
-                            text = stringResource(id = errorText)
+                            text = stringResource(id = R.string.login_no_password)
                         )
                     }
-                }
+                },
             )
             Button(onClick = onLoginAttempt, enabled = loginState !is LoginState.Loading) {
                 Text(text = stringResource(id = R.string.login_button))
@@ -118,9 +152,11 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     LoginScreen(
         email = "",
+        password = "",
         loginState = LoginState.Default,
         onLoginAttempt = {},
         onEmailChange = {},
+        onPasswordChange = {},
         onNavigateLoginSuccess = {},
         modifier = Modifier.fillMaxHeight()
     )

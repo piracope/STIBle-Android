@@ -32,6 +32,14 @@ class STIBleViewModel : ViewModel() {
         private set
 
     /**
+     * The password provided by the user.
+     *
+     * This should be kept updated with each user input.
+     */
+    var userPassword by mutableStateOf("")
+        private set
+
+    /**
      * Updates the ViewModel's stored user email with a user-provided input.
      *
      * This method should be called to keep track of any change in the email input.
@@ -43,6 +51,17 @@ class STIBleViewModel : ViewModel() {
     }
 
     /**
+     * Updates the ViewModel's stored user password with a user-provided input.
+     *
+     * This method should be called to keep track of any change in the password input.
+     *
+     * @param input the user's password
+     */
+    fun updateUserPassword(input: String) {
+        userPassword = input
+    }
+
+    /**
      * Checks if the user's email is actually an email address, and logs them in if it is. Declares
      * that the email is wrong if wrongly formatted.
      *
@@ -50,11 +69,13 @@ class STIBleViewModel : ViewModel() {
      */
     fun checkUserEmail() {
         // thanks stackoverflow
-        val isEmailWrong =
-            userEmail.isBlank() || !PatternsCompat.EMAIL_ADDRESS.matcher(userEmail).matches()
-
-        if (isEmailWrong) {
+        if (userEmail.isBlank() || !PatternsCompat.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             loginState = LoginState.Error(ErrorType.BAD_EMAIL_FORMAT)
+            return
+        }
+
+        if (userPassword.isBlank()) {
+            loginState = LoginState.Error(ErrorType.NO_PASSWORD)
             return
         }
 
@@ -62,7 +83,7 @@ class STIBleViewModel : ViewModel() {
 
         viewModelScope.launch {
             loginState = try {
-                val creds = AuthCredentials(userEmail, "mobg23")
+                val creds = AuthCredentials(userEmail, userPassword)
                 val loginResult = STIBleApi.retrofitService.auth(creds)
 
                 // this is a useless if statement

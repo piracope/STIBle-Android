@@ -104,9 +104,13 @@ fun STIBleScreenContent(
             composable(route = NavRoutes.Login.name) {
                 LoginScreen(
                     email = viewModel.userEmail,
+                    password = viewModel.userPassword,
                     loginState = loginState,
                     onEmailChange = {
                         viewModel.updateUserEmail(it)
+                    },
+                    onPasswordChange = {
+                        viewModel.updateUserPassword(it)
                     },
                     onLoginAttempt = {
                         viewModel.checkUserEmail()
