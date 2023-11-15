@@ -16,7 +16,8 @@ import g58089.mobg5.stible.R
 fun AboutScreen(modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         Text(
             text = stringResource(id = R.string.app_author),
