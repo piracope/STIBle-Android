@@ -39,7 +39,7 @@ fun STIBleApp(
     navController: NavHostController = rememberNavController()
 ) {
     Surface {
-        val uiState = viewModel.uiState
+        val loginState = viewModel.loginState
 
         // initial route is always Login. Will implement stay logged in functionality if required.
         NavHost(navController = navController, startDestination = NavRoutes.Login.name) {
@@ -53,8 +53,7 @@ fun STIBleApp(
             composable(route = NavRoutes.Login.name) {
                 LoginScreen(
                     email = viewModel.userEmail,
-                    isEmailWrong = uiState.isEmailWrong,
-                    isLoginSuccessful = uiState.isLoginSuccessful,
+                    loginState = loginState,
                     onEmailChange = {
                         viewModel.updateUserEmail(it)
                     },

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import g58089.mobg5.stible.R
+import g58089.mobg5.stible.model.ErrorType
 
 /**
  * Displays the Login Screen.
@@ -37,15 +38,13 @@ import g58089.mobg5.stible.R
  * will be shown as an error in the email field.
  *
  * @param email the state of the user-provided email to show on the screen
- * @param isEmailWrong true if the last login attempt was unsuccessful
  * @param onEmailChange function called at each change of the user email input
  * @param onLoginAttempt function called at each press of the confirmation button
  */
 @Composable
 fun LoginScreen(
     email: String,
-    isEmailWrong: Boolean,
-    isLoginSuccessful: Boolean,
+    loginState: LoginState,
     onEmailChange: (String) -> Unit,
     onLoginAttempt: () -> Unit,
     onNavigateLoginSuccess: () -> Unit,
@@ -60,8 +59,8 @@ fun LoginScreen(
     I alleviated this issue by removing the back stack upon navigating to the LogoScreen, but this
     feels more like a band-aid solution.
      */
-    LaunchedEffect(key1 = isLoginSuccessful) {
-        if (isLoginSuccessful) {
+    LaunchedEffect(key1 = loginState) {
+        if (loginState is LoginState.Success) {
             onNavigateLoginSuccess()
         }
     }
@@ -85,7 +84,7 @@ fun LoginScreen(
                     Icon(imageVector = Icons.Default.MailOutline, contentDescription = null)
                 },
                 onValueChange = onEmailChange,
-                isError = isEmailWrong,
+                isError = loginState is LoginState.Error,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Email
@@ -94,9 +93,15 @@ fun LoginScreen(
                     onDone = { onLoginAttempt() }
                 ),
                 supportingText = {
-                    if (isEmailWrong) {
+                    if (loginState is LoginState.Error) {
+                        val errorText = when (loginState.error) {
+                            ErrorType.BAD_EMAIL_FORMAT -> R.string.login_bad_email_format
+                            ErrorType.NO_INTERNET -> R.string.login_no_internet
+                            ErrorType.BAD_CREDENTIALS -> R.string.login_bad_credentials
+                        }
+
                         Text(
-                            text = stringResource(id = R.string.login_error)
+                            text = stringResource(id = errorText)
                         )
                     }
                 }
@@ -113,8 +118,7 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     LoginScreen(
         email = "",
-        isEmailWrong = true,
-        isLoginSuccessful = false,
+        loginState = LoginState.Default,
         onLoginAttempt = {},
         onEmailChange = {},
         onNavigateLoginSuccess = {},

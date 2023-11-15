@@ -5,6 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import g58089.mobg5.stible.model.AuthCredentials
+import g58089.mobg5.stible.model.ErrorType
+import g58089.mobg5.stible.network.STIBleApi
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 /**
  * The ViewModel handling all business logic in the application.
@@ -13,7 +20,7 @@ class STIBleViewModel : ViewModel() {
     /**
      * The current state of data to be used by the UI.
      */
-    var uiState by mutableStateOf(STIBleState())
+    var loginState: LoginState by mutableStateOf(LoginState.Default)
         private set
 
     /**
@@ -46,10 +53,27 @@ class STIBleViewModel : ViewModel() {
         val isEmailWrong =
             userEmail.isBlank() || !PatternsCompat.EMAIL_ADDRESS.matcher(userEmail).matches()
 
-        uiState = uiState.copy(
-            userEmail = userEmail,
-            isEmailWrong = isEmailWrong,
-            isLoginSuccessful = !isEmailWrong
-        )
+        if (isEmailWrong) {
+            loginState = LoginState.Error(ErrorType.BAD_EMAIL_FORMAT)
+            return
+        }
+
+        viewModelScope.launch {
+            loginState = try {
+                val creds = AuthCredentials(userEmail, "mobg23")
+                val loginResult = STIBleApi.retrofitService.auth(creds)
+
+                // this is a useless if statement
+                if(loginResult.accessToken.isNotBlank()) {
+                    LoginState.Success(loginResult)
+                } else {
+                    LoginState.Default
+                }
+            } catch (e: IOException) {
+                LoginState.Error(ErrorType.NO_INTERNET)
+            } catch (e: HttpException) {
+                LoginState.Error(ErrorType.BAD_CREDENTIALS)
+            }
+        }
     }
 }

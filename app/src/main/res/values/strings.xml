@@ -4,8 +4,11 @@
     <!--Login Screen-->
 
     <string name="login_button">OK</string>
-    <string name="login_error">Format d\'adresse email invalide.</string>
     <string name="login_email_hint">Email</string>
+
+    <string name="login_bad_email_format">Format d\'adresse email invalide.</string>
+    <string name="login_bad_credentials">E-mail ou mot de passe invalide.</string>
+    <string name="login_no_internet">Veuillez vérifier votre connexion Internet.</string>
 
     <!--HE2B Logo-->
 
