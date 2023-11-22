@@ -1,26 +1,16 @@
 <resources>
+    <!--TODO: internationalisation-->
     <string name="app_name">STIBle</string>
     <string name="app_author">Ayoub Moufidi</string>
-    <string name="app_author_matricule">ID: 58089</string>
-    <string name="app_author_group">E13</string>
 
-    <!--Login Screen-->
-
-    <string name="login_button">Connexion</string>
-    <string name="login_email_hint">Email</string>
-    <string name="login_password_hint">Mot de passe</string>
-
-    <string name="login_bad_email_format">Format d\'adresse email invalide.</string>
-    <string name="login_bad_credentials">E-mail ou mot de passe invalide.</string>
-    <string name="login_no_password">Veuillez entrer un mot de passe.</string>
-    <string name="login_no_internet">Veuillez vérifier votre connexion Internet.</string>
-
-    <!--HE2B Logo-->
-
-    <string name="logo_description">Logo de la HE2B-ESI</string>
+    <string name="app_name_first_part">STI</string>
+    <string name="app_name_second_part">B</string>
+    <string name="app_name_third_part">le</string>
 
     <!--Navigation Bar-->
     <string name="home_content_desc">Accueil</string>
-    <string name="about_content_desc">À propos</string>
+    <string name="stats_content_desc">Statistiques</string>
+    <string name="settings_content_desc">Paramètres</string>
+    <string name="help_content_desc">Aide</string>
 
 </resources>

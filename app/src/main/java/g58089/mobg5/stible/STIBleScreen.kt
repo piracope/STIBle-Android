@@ -1,10 +1,11 @@
 package g58089.mobg5.stible
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,10 +19,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import g58089.mobg5.stible.ui.AboutScreen
-import g58089.mobg5.stible.ui.LoginScreen
-import g58089.mobg5.stible.ui.LoginState
-import g58089.mobg5.stible.ui.LogoScreen
 import g58089.mobg5.stible.ui.STIBleViewModel
 
 /**
@@ -29,19 +26,33 @@ import g58089.mobg5.stible.ui.STIBleViewModel
  */
 enum class NavRoutes {
     /**
-     * The Login Screen Navigation route.
+     * The Main Screen Navigation route.
      */
-    Login,
+    Main,
 
     /**
-     * The Logo Screen Navigation route.
+     * The Help Screen Navigation route.
      */
-    Logo,
+    Help,
 
     /**
-     * The About Screen Navigation route.
+     * The Stats Screen Navigation route.
      */
-    About
+    Stats,
+
+
+    /**
+     * The Settings Screen Navigation route
+     */
+    Settings,
+
+
+    /**
+     * The Maps bottom app sheet.
+     *
+     * NOTE: idk if it works with navigate
+     */
+    Maps,
 }
 
 /**
@@ -56,39 +67,65 @@ fun STIBleApp(
 ) {
     Scaffold(
         bottomBar = {
-            if (viewModel.loginState is LoginState.Success) {
-                val currentRoute = navController.currentBackStackEntry?.destination?.route
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
 
-                NavigationBar {
-                    NavigationBarItem(
-                        selected = currentRoute == NavRoutes.Logo.name,
-                        onClick = {
-                            navController.navigate(NavRoutes.Logo.name)
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Home,
-                                contentDescription = stringResource(
-                                    id = R.string.home_content_desc
-                                )
+            NavigationBar {
+                NavigationBarItem(
+                    selected = currentRoute == NavRoutes.Main.name,
+                    onClick = {
+                        navController.navigate(NavRoutes.Main.name)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = stringResource(
+                                id = R.string.home_content_desc
                             )
-                        }
-                    )
-                    NavigationBarItem(
-                        selected = currentRoute == NavRoutes.About.name,
-                        onClick = {
-                            navController.navigate(NavRoutes.About.name)
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = stringResource(
-                                    id = R.string.about_content_desc
-                                )
+                        )
+                    }
+                )
+                NavigationBarItem(
+                    selected = currentRoute == NavRoutes.Stats.name,
+                    onClick = {
+                        navController.navigate(NavRoutes.Stats.name)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.BarChart,
+                            contentDescription = stringResource(
+                                id = R.string.stats_content_desc
                             )
-                        }
-                    )
-                }
+                        )
+                    }
+                )
+                NavigationBarItem(
+                    selected = currentRoute == NavRoutes.Settings.name,
+                    onClick = {
+                        navController.navigate(NavRoutes.Settings.name)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(
+                                id = R.string.settings_content_desc
+                            )
+                        )
+                    }
+                )
+                NavigationBarItem(
+                    selected = currentRoute == NavRoutes.Help.name,
+                    onClick = {
+                        navController.navigate(NavRoutes.Help.name)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Help,
+                            contentDescription = stringResource(
+                                id = R.string.help_content_desc
+                            )
+                        )
+                    }
+                )
             }
         }
     ) { innerPadding ->
@@ -103,41 +140,24 @@ fun STIBleScreenContent(
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
-        val loginState = viewModel.loginState
 
         // initial route is always Login. Will implement stay logged in functionality if required.
-        NavHost(navController = navController, startDestination = NavRoutes.Login.name) {
+        NavHost(navController = navController, startDestination = NavRoutes.Main.name) {
 
-            // Logo Screen route, should be displayed after successful login
-            composable(route = NavRoutes.Logo.name) {
-                LogoScreen(modifier = Modifier.fillMaxSize())
+            composable(route = NavRoutes.Main.name) {
+                // TODO: Main Screen
             }
 
-            // Login Screen route, should be displayed upon opening the app
-            composable(route = NavRoutes.Login.name) {
-                LoginScreen(
-                    email = viewModel.userEmail,
-                    password = viewModel.userPassword,
-                    loginState = loginState,
-                    onEmailChange = {
-                        viewModel.updateUserEmail(it)
-                    },
-                    onPasswordChange = {
-                        viewModel.updateUserPassword(it)
-                    },
-                    onLoginAttempt = {
-                        viewModel.checkUserEmail()
-                    },
-                    onNavigateLoginSuccess = {
-                        navController.navigate(NavRoutes.Logo.name) {
-                            popUpTo(0) // we navigate and remove everything before us
-                        }
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
+            composable(route = NavRoutes.Stats.name) {
+                // TODO: Stats Screen
             }
-            composable(route = NavRoutes.About.name) {
-                AboutScreen(Modifier.fillMaxSize())
+
+            composable(route = NavRoutes.Settings.name) {
+                // TODO: Settings Screen
+            }
+
+            composable(route = NavRoutes.Help.name) {
+                // TODO: Help Screen
             }
         }
     }
