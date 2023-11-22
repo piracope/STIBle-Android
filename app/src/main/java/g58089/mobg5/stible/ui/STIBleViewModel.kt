@@ -94,7 +94,7 @@ class STIBleViewModel : ViewModel() {
                 }
             } catch (e: IOException) {
                 LoginState.Error(ErrorType.NO_INTERNET)
-            } catch (e: HttpException) {
+            } catch (e: HttpException) { // http code that isn't 2xx
                 LoginState.Error(ErrorType.BAD_CREDENTIALS)
             }
         }

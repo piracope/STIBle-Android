@@ -6,7 +6,7 @@
 
     <!--Login Screen-->
 
-    <string name="login_button">OK</string>
+    <string name="login_button">Connexion</string>
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Mot de passe</string>
 
@@ -18,5 +18,9 @@
     <!--HE2B Logo-->
 
     <string name="logo_description">Logo de la HE2B-ESI</string>
+
+    <!--Navigation Bar-->
+    <string name="home_content_desc">Accueil</string>
+    <string name="about_content_desc">À propos</string>
 
 </resources>

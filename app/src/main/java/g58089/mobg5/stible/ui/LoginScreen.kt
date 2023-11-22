@@ -2,9 +2,7 @@ package g58089.mobg5.stible.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -16,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -31,18 +30,23 @@ import g58089.mobg5.stible.model.ErrorType
  *
  * The Login Screen shows two elements of importance to the user :
  *  - the email field
+ *  - the password field
  *  - the validation button
  *
  * The state of the user field is NOT persisted through this Composable, it must be stored
- * using the ViewModel through a lambda function passed as `onEmailChange`.
+ * using the ViewModel through a lambda function passed as `onEmailChange` and `onPasswordChange`.
  *
  * When the user clicks on the validation button, the user's input is handled by the `onLoginAttempt`
- * lambda function. If the login isn't successful, `isEmailWrong` should be set to true, which
- * will be shown as an error in the email field.
+ * lambda function. Upon login, the `loginState` should be updated accordingly and passed to this
+ * composable.
  *
  * @param email the state of the user-provided email to show on the screen
+ * @param password the state of the user-provided password to show on the screen
+ * @param loginState the current state of the login process
  * @param onEmailChange function called at each change of the user email input
+ * @param onPasswordChange function called at each change of the user password input
  * @param onLoginAttempt function called at each press of the confirmation button
+ * @param onNavigateLoginSuccess function called when login is verified to navigate to the next screen
  */
 @Composable
 fun LoginScreen(
@@ -55,94 +59,108 @@ fun LoginScreen(
     onNavigateLoginSuccess: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    /*
-    This could cause a bug : a user could log in with a correct email, go back to the login
-    screen then retry to login with a correct email. isLoginSuccessful would go from true to... true,
-    preventing this LaunchedEffect from launching.
-
-    I alleviated this issue by removing the back stack upon navigating to the LogoScreen, but this
-    feels more like a band-aid solution.
-     */
     LaunchedEffect(key1 = loginState) {
         if (loginState is LoginState.Success) {
             onNavigateLoginSuccess()
         }
     }
 
-    val errorEmail = loginState is LoginState.Error
-            && loginState.error.guiltyField in listOf(ErrorGuilty.BOTH, ErrorGuilty.EMAIL)
-    val errorPassword =  loginState is LoginState.Error
-    && loginState.error.guiltyField in listOf(ErrorGuilty.BOTH, ErrorGuilty.PASSWORD)
+    // find out which fields should we set as having an error
 
-    /*
-    +------------------------+---------------------+
-    | Email Field            | Confirmation button |
-    +------------------------+---------------------+
-    | Eventual error message                       |
-    +------------------------+---------------------+
-     */
-    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+    var errorEmail = false
+    var errorPassword = false
+    var generalError = false
 
-            // TODO: refactor those error messages
+    if (loginState is LoginState.Error) {
+        when (loginState.error.guiltyField) {
+            ErrorGuilty.EMAIL -> errorEmail = true
+            ErrorGuilty.PASSWORD -> errorPassword = true
+            else -> {
+                errorEmail = true
+                errorPassword = true
+                generalError = true
+            }
+        }
+    }
 
-            // email text field
-            TextField(
-                value = email,
-                singleLine = true,
-                label = {
-                    Text(text = stringResource(id = R.string.login_email_hint))
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.MailOutline, contentDescription = null)
-                },
-                onValueChange = onEmailChange,
-                isError = errorEmail,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Email
-                ),
-                supportingText = {
-                    if (loginState is LoginState.Error && loginState.error == ErrorType.BAD_EMAIL_FORMAT) {
-                        Text(
-                            text = stringResource(id = R.string.login_bad_email_format)
-                        )
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        // email text field
+        TextField(
+            value = email,
+            singleLine = true,
+            label = {
+                Text(text = stringResource(id = R.string.login_email_hint))
+            },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.MailOutline, contentDescription = null)
+            },
+            onValueChange = onEmailChange,
+            isError = errorEmail,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
+            supportingText = {
+                if (loginState is LoginState.Error) {
+                    if (loginState.error == ErrorType.BAD_EMAIL_FORMAT) {
+                        Text(text = stringResource(id = R.string.login_bad_email_format))
+                    }
+                    // NOTE: i'm nesting the if instead of having a longer condition because
+                    // other email field error types could appear later
+                }
+            }
+        )
+
+        // password text field
+        TextField(
+            value = password,
+            singleLine = true,
+            label = {
+                Text(text = stringResource(id = R.string.login_password_hint))
+            },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Lock, contentDescription = null)
+            },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = errorPassword,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Password
+            ),
+            onValueChange = onPasswordChange,
+            keyboardActions = KeyboardActions(
+                onDone = { onLoginAttempt() }
+            ),
+            supportingText = {
+                if (loginState is LoginState.Error) {
+                    if (loginState.error == ErrorType.NO_PASSWORD) {
+                        Text(text = stringResource(id = R.string.login_no_password))
                     }
                 }
-            )
+            },
+        )
+        if (generalError && loginState is LoginState.Error) {
+            // the second condition is useless, but i have to do it to get access
+            // to the loginState's error attribute
 
-            // password text field
-            TextField(
-                value = password,
-                singleLine = true,
-                label = {
-                    Text(text = stringResource(id = R.string.login_password_hint))
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Lock, contentDescription = null)
-                },
-                visualTransformation = PasswordVisualTransformation(),
-                isError = errorPassword,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Password
-                ),
-                onValueChange = onPasswordChange,
-                keyboardActions = KeyboardActions(
-                    onDone = { onLoginAttempt() }
-                ),
-                supportingText = {
-                    if (loginState is LoginState.Error && loginState.error == ErrorType.NO_PASSWORD) {
-                        Text(
-                            text = stringResource(id = R.string.login_no_password)
-                        )
-                    }
-                },
-            )
-            Button(onClick = onLoginAttempt, enabled = loginState !is LoginState.Loading) {
-                Text(text = stringResource(id = R.string.login_button))
+            if (loginState.error == ErrorType.BAD_CREDENTIALS) {
+                Text(text = stringResource(id = R.string.login_bad_credentials))
+            } else if (loginState.error == ErrorType.NO_INTERNET) {
+                Text(text = stringResource(id = R.string.login_no_internet))
             }
+        }
+
+        // Connection Button, disabled when a login has not finished yet
+        Button(
+            onClick = onLoginAttempt,
+            enabled = loginState !is LoginState.Loading,
+        ) {
+            Text(text = stringResource(id = R.string.login_button))
         }
     }
 }

@@ -12,6 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import g58089.mobg5.stible.R
 
+/**
+ * Displays my name and matricule and group.
+ */
 @Composable
 fun AboutScreen(modifier: Modifier = Modifier) {
     Column(
