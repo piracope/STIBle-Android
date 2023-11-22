@@ -3,9 +3,9 @@ package g58089.mobg5.stible.model
 /**
  * Defines general error cases.
  */
-enum class ErrorType(val guiltyField: ErrorGuilty) {
-    BAD_EMAIL_FORMAT(ErrorGuilty.EMAIL),
-    NO_PASSWORD(ErrorGuilty.PASSWORD),
-    BAD_CREDENTIALS(ErrorGuilty.BOTH),
-    NO_INTERNET(ErrorGuilty.NONE)
+enum class ErrorType {
+    BAD_EMAIL_FORMAT,
+    NO_PASSWORD,
+    BAD_CREDENTIALS,
+    NO_INTERNET
 }

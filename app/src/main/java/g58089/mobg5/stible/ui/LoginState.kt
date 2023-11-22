@@ -1,7 +1,7 @@
 package g58089.mobg5.stible.ui
 
-import g58089.mobg5.stible.model.AuthUser
 import g58089.mobg5.stible.model.ErrorType
+import g58089.mobg5.stible.network.AuthUser
 
 /**
  * Defines all possible states of the login process.

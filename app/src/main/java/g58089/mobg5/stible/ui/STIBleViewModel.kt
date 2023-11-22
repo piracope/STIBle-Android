@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import g58089.mobg5.stible.model.AuthCredentials
 import g58089.mobg5.stible.model.ErrorType
+import g58089.mobg5.stible.network.AuthCredentials
 import g58089.mobg5.stible.network.STIBleApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException

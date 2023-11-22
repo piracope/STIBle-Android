@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import g58089.mobg5.stible.R
-import g58089.mobg5.stible.model.ErrorGuilty
 import g58089.mobg5.stible.model.ErrorType
 
 /**
@@ -72,10 +71,11 @@ fun LoginScreen(
     var generalError = false
 
     if (loginState is LoginState.Error) {
-        when (loginState.error.guiltyField) {
-            ErrorGuilty.EMAIL -> errorEmail = true
-            ErrorGuilty.PASSWORD -> errorPassword = true
-            else -> {
+        when (loginState.error) {
+            ErrorType.BAD_EMAIL_FORMAT -> errorEmail = true
+            ErrorType.NO_PASSWORD -> errorPassword = true
+            ErrorType.NO_INTERNET -> generalError = true
+            ErrorType.BAD_CREDENTIALS -> {
                 errorEmail = true
                 errorPassword = true
                 generalError = true
@@ -150,7 +150,7 @@ fun LoginScreen(
 
             if (loginState.error == ErrorType.BAD_CREDENTIALS) {
                 Text(text = stringResource(id = R.string.login_bad_credentials))
-            } else if (loginState.error == ErrorType.NO_INTERNET) {
+            } else { // Android Studio cried when i explicitly stated the error type
                 Text(text = stringResource(id = R.string.login_no_internet))
             }
         }

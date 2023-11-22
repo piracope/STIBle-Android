@@ -2,8 +2,6 @@ package g58089.mobg5.stible.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import g58089.mobg5.stible.BuildConfig
-import g58089.mobg5.stible.model.AuthCredentials
-import g58089.mobg5.stible.model.AuthUser
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
