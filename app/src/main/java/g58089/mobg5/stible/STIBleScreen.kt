@@ -65,7 +65,6 @@ fun STIBleApp(
                         onClick = {
                             navController.navigate(NavRoutes.Logo.name)
                         },
-                        //FIXME: content description null ?
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Home,

@@ -144,6 +144,15 @@ fun LoginScreen(
                 }
             },
         )
+
+        // Connection Button, disabled when a login has not finished yet
+        Button(
+            onClick = onLoginAttempt,
+            enabled = loginState !is LoginState.Loading,
+        ) {
+            Text(text = stringResource(id = R.string.login_button))
+        }
+
         if (generalError && loginState is LoginState.Error) {
             // the second condition is useless, but i have to do it to get access
             // to the loginState's error attribute
@@ -153,14 +162,6 @@ fun LoginScreen(
             } else { // Android Studio cried when i explicitly stated the error type
                 Text(text = stringResource(id = R.string.login_no_internet))
             }
-        }
-
-        // Connection Button, disabled when a login has not finished yet
-        Button(
-            onClick = onLoginAttempt,
-            enabled = loginState !is LoginState.Loading,
-        ) {
-            Text(text = stringResource(id = R.string.login_button))
         }
     }
 }
