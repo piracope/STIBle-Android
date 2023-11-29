@@ -1,5 +1,6 @@
 package g58089.mobg5.stible
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
@@ -19,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import g58089.mobg5.stible.ui.HelpScreen
 import g58089.mobg5.stible.ui.STIBleViewModel
 
 /**
@@ -157,7 +159,7 @@ fun STIBleScreenContent(
             }
 
             composable(route = NavRoutes.Help.name) {
-                // TODO: Help Screen
+                HelpScreen(modifier = Modifier.fillMaxSize())
             }
         }
     }
