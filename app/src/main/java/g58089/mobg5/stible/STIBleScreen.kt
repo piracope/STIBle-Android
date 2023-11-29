@@ -20,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import g58089.mobg5.stible.ui.GameScreen
 import g58089.mobg5.stible.ui.HelpScreen
 import g58089.mobg5.stible.ui.MainScreenViewModel
 
@@ -147,7 +148,7 @@ fun STIBleScreenContent(
         NavHost(navController = navController, startDestination = NavRoutes.Main.name) {
 
             composable(route = NavRoutes.Main.name) {
-                // TODO: Main Screen
+                GameScreen(gameRules = viewModel.gameRules)
             }
 
             composable(route = NavRoutes.Stats.name) {
