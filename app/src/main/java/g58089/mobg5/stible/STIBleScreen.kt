@@ -21,7 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import g58089.mobg5.stible.ui.HelpScreen
-import g58089.mobg5.stible.ui.STIBleViewModel
+import g58089.mobg5.stible.ui.MainScreenViewModel
 
 /**
  * The different Navigation routes leading to different Screens.
@@ -64,7 +64,7 @@ enum class NavRoutes {
  */
 @Composable
 fun STIBleApp(
-    viewModel: STIBleViewModel = viewModel(),
+    viewModel: MainScreenViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     Scaffold(
@@ -137,7 +137,7 @@ fun STIBleApp(
 
 @Composable
 fun STIBleScreenContent(
-    viewModel: STIBleViewModel,
+    viewModel: MainScreenViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
