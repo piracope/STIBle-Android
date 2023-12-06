@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import g58089.mobg5.stible.model.GameRules
+import g58089.mobg5.stible.model.Repository
+import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.util.ErrorType
 import g58089.mobg5.stible.model.util.Language
 import g58089.mobg5.stible.network.RequestState
-import g58089.mobg5.stible.network.STIBleApi
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -56,7 +56,7 @@ class MainScreenViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // get initial data
-                gameRules = STIBleApi.retrofitService.start(userLang.code)
+                gameRules = Repository.getGameRules(userLang)
             } catch (e: IOException) {
                 requestState = RequestState.Error(ErrorType.NO_INTERNET)
             } catch (e: HttpException) {

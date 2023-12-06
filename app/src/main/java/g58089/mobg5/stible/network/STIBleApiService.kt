@@ -1,7 +1,7 @@
 package g58089.mobg5.stible.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import g58089.mobg5.stible.model.GameRules
+import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.util.Language
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

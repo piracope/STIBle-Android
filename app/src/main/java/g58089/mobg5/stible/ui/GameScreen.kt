@@ -25,8 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import g58089.mobg5.stible.R
-import g58089.mobg5.stible.model.GameRules
-import g58089.mobg5.stible.model.Route
+import g58089.mobg5.stible.model.dto.GameRules
+import g58089.mobg5.stible.model.dto.Route
 
 
 /**
