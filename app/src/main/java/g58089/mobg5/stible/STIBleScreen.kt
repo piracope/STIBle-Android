@@ -154,7 +154,7 @@ fun STIBleScreenContent(
                     gameRules = viewModel.gameRules,
                     userGuess = viewModel.userGuess,
                     onUserGuessChange = { viewModel.guessChange(it) },
-                    onGuess = {}, // TODO
+                    onGuess = { viewModel.guess() },
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(

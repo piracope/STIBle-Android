@@ -2,9 +2,12 @@ package g58089.mobg5.stible.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import g58089.mobg5.stible.model.dto.GameRules
+import g58089.mobg5.stible.model.dto.Guess
+import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.util.Language
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.Body
@@ -47,6 +50,9 @@ interface STIBleApiService {
      */
     @POST("start")
     suspend fun start(@Body lang: String = Language.FRENCH.code): GameRules
+
+    @POST("guess")
+    suspend fun guess(@Body guess: Guess) : Response<GuessResponse>
 }
 
 /**

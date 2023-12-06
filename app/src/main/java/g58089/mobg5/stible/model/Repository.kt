@@ -1,8 +1,11 @@
 package g58089.mobg5.stible.model
 
 import g58089.mobg5.stible.model.dto.GameRules
+import g58089.mobg5.stible.model.dto.Guess
+import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.util.Language
 import g58089.mobg5.stible.network.STIBleApi
+import retrofit2.Response
 
 /**
  * Access point for HTTP requests and database access.
@@ -21,5 +24,16 @@ object Repository {
      */
     suspend fun getGameRules(lang: Language): GameRules {
         return stibleApi.start(lang.code)
+    }
+
+    suspend fun guess(stopName: String, puzzleNumber: Int, tryNumber: Int, lang: Language): Response<GuessResponse> {
+        val guess = Guess(
+            stopName = stopName,
+            tryNumber = tryNumber,
+            puzzleNumber = puzzleNumber,
+            lang = lang.code
+        )
+
+        return stibleApi.guess(guess)
     }
 }

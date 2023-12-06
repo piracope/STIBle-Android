@@ -7,5 +7,6 @@ enum class ErrorType {
     NO_INTERNET,
     NEW_LEVEL_AVAILABLE,
     BAD_LANGUAGE,
+    BAD_STOP,
     UNKNOWN
 }
