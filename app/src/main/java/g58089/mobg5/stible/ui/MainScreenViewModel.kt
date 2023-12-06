@@ -73,4 +73,9 @@ class MainScreenViewModel : ViewModel() {
         }
     }
 
+    fun guessChange(newGuess: String) {
+        // TODO: check if game over (probably)
+        userGuess = newGuess
+    }
+
 }

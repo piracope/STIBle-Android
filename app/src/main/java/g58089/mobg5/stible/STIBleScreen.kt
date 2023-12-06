@@ -2,6 +2,7 @@ package g58089.mobg5.stible
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Help
@@ -14,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -148,7 +150,17 @@ fun STIBleScreenContent(
         NavHost(navController = navController, startDestination = NavRoutes.Main.name) {
 
             composable(route = NavRoutes.Main.name) {
-                GameScreen(gameRules = viewModel.gameRules)
+                GameScreen(
+                    gameRules = viewModel.gameRules,
+                    userGuess = viewModel.userGuess,
+                    onUserGuessChange = { viewModel.guessChange(it) },
+                    onGuess = {}, // TODO
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(
+                            dimensionResource(R.dimen.main_padding)
+                        )
+                )
             }
 
             composable(route = NavRoutes.Stats.name) {

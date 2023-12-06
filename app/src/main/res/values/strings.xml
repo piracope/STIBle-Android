@@ -13,6 +13,10 @@
     <string name="settings_content_desc">Paramètres</string>
     <string name="help_content_desc">Aide</string>
 
+    <!--Game Screen-->
+    <string name="input_placeholder">Arrêt de métro, bus, tram…</string>
+    <string name="guess">Deviner</string>
+
     <!--Help Screen-->
     <string-array name="help_messages">
         <!--TODO: display STIBle nicely and replace 6 with a parameter-->
