@@ -68,6 +68,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.5")
     // Icons
     implementation("androidx.compose.material:material-icons-extended")
+    // TODO: this thing is big, use Proguard or whatever to minify it
+
     // Network handling
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // Serialization
