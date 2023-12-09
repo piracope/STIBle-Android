@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -58,13 +59,11 @@ fun GameScreen(
         }
         GuessRows(gameRules.maxGuessCount, Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
         ) {
-            StopSearchBar(userGuess, onUserGuessChange, gameRules.stops)
-            OutlinedButton(onClick = onGuess) {
+            StopSearchBar(userGuess, onUserGuessChange, gameRules.stops, Modifier.fillMaxWidth())
+            OutlinedButton(onClick = onGuess, Modifier.fillMaxWidth()) {
                 Text(text = stringResource(id = R.string.guess))
             }
         }
