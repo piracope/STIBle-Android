@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.model.dto.GameRules
+import g58089.mobg5.stible.model.dto.Guess
 import g58089.mobg5.stible.model.dto.Route
 import g58089.mobg5.stible.network.RequestState
 
@@ -50,12 +51,13 @@ import g58089.mobg5.stible.network.RequestState
 fun GameScreen(
     gameRules: GameRules,
     userGuess: String,
+    canGuess: Boolean,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
     requestState: RequestState,
     modifier: Modifier = Modifier
 ) {
-    val guessEnabled = requestState !is RequestState.Loading
+    val guessEnabled = canGuess && requestState !is RequestState.Loading
     Column(modifier = modifier) {
         // Displaying the routes
         Row {
@@ -253,6 +255,7 @@ fun GameScreenPreview() {
         userGuess = "",
         onUserGuessChange = {},
         onGuess = {},
+        canGuess = true,
         requestState = RequestState.Default
     )
 }
