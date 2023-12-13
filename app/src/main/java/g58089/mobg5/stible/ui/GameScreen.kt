@@ -43,6 +43,7 @@ import androidx.core.graphics.toColorInt
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.Route
+import g58089.mobg5.stible.network.RequestState
 
 
 @Composable
@@ -51,8 +52,10 @@ fun GameScreen(
     userGuess: String,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
+    requestState: RequestState,
     modifier: Modifier = Modifier
 ) {
+    val guessEnabled = requestState !is RequestState.Loading
     Column(modifier = modifier) {
         // Displaying the routes
         Row {
@@ -68,8 +71,14 @@ fun GameScreen(
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            StopSearchBar(userGuess, onUserGuessChange, gameRules.stops, Modifier.fillMaxWidth())
-            OutlinedButton(onClick = onGuess, Modifier.fillMaxWidth()) {
+            StopSearchBar(
+                userGuess,
+                onUserGuessChange,
+                gameRules.stops,
+                guessEnabled,
+                Modifier.fillMaxWidth()
+            )
+            OutlinedButton(onClick = onGuess, Modifier.fillMaxWidth(), enabled = guessEnabled) {
                 Text(text = stringResource(id = R.string.guess))
             }
         }
@@ -139,17 +148,21 @@ fun StopSearchBar(
     userGuess: String,
     onUserGuessChange: (String) -> Unit,
     allStops: List<String>,
+    guessEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
+    expanded = expanded && guessEnabled
 
     // SearchableComboBox like in JavaFX
-    // FIXME: lots of stops so it struggles upon expanding
     ExposedDropdownMenuBox(
         modifier = modifier,
         expanded = expanded,
-        onExpandedChange = { expanded = it }
-    ) {
+        onExpandedChange = {
+            expanded = it
+        },
+
+        ) {
         TextField(
             modifier = modifier.menuAnchor(), //idk, needed for Material3
             value = userGuess,
@@ -159,7 +172,9 @@ fun StopSearchBar(
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expanded
                 )
-            }
+            },
+            singleLine = true,
+            enabled = guessEnabled
         )
         // filter options based on text field value
         val filteredStops =
@@ -174,7 +189,11 @@ fun StopSearchBar(
 
                 // NOTE: bug in Jetpack Compose : i MUST put fixed size for
                 // LazyColumn inside ExposedDropdownMenu
-                Box(modifier = Modifier.width(100.dp).height(300.dp)){
+                Box(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(300.dp)
+                ) {
                     LazyColumn {
                         items(filteredStops) {
                             DropdownMenuItem(
@@ -233,5 +252,7 @@ fun GameScreenPreview() {
         modifier = Modifier.fillMaxSize(),
         userGuess = "",
         onUserGuessChange = {},
-        onGuess = {})
+        onGuess = {},
+        requestState = RequestState.Default
+    )
 }

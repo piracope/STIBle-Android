@@ -39,7 +39,7 @@ data class GuessResponse(
      * passing a value and then interpreting that value in the view.
      */
     @SerialName("direction")
-    val directionEmoji : String,
+    val directionEmoji: String,
 
     /**
      * The name of the mystery stop.

@@ -54,7 +54,7 @@ interface STIBleApiService {
     suspend fun start(@Body lang: String = Language.FRENCH.code): GameRules
 
     @POST("guess")
-    suspend fun guess(@Body guess: Guess) : Response<GuessResponse>
+    suspend fun guess(@Body guess: Guess): Response<GuessResponse>
 }
 
 /**

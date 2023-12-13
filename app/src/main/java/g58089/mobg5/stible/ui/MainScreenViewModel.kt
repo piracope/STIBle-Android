@@ -1,6 +1,5 @@
 package g58089.mobg5.stible.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -72,6 +71,7 @@ class MainScreenViewModel : ViewModel() {
             try {
                 // get initial data
                 gameRules = Repository.getGameRules(userLang)
+                requestState = RequestState.Success
             } catch (e: IOException) {
                 requestState = RequestState.Error(ErrorType.NO_INTERNET)
             } catch (e: HttpException) {
@@ -94,40 +94,50 @@ class MainScreenViewModel : ViewModel() {
     fun guess() {
         requestState = RequestState.Loading
 
+        if (userGuess.isBlank()) {
+            requestState = RequestState.Error(ErrorType.BAD_STOP)
+            return
+        }
+
         viewModelScope.launch {
             try {
                 val response =
                     Repository.guess(userGuess, gameRules.puzzleNumber, guessCount, userLang)
-
                 if (response.code() == 205) {
                     // I need to catch 205, because it signifies that the client has outdated info
                     requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)
-                } else if (response.isSuccessful) {
+                    return@launch
+                }
+
+                if (response.isSuccessful) {
                     // i have no idea what this does but Android Studio wrote it so i guess it's good
                     response.body()?.let {
                         madeGuesses.add(it)
                         guessCount++ // only increment if we actually succeed at guessing
                         userGuess = ""
                     }
+                    requestState = RequestState.Success
+                    return@launch
                 }
+
+                // Can't use HttpException because i have a Response object
+                requestState = if (response.code() == 400) {
+                    /* the stop probably didn't exist.
+                   well the fun stuff is that a 400 is returned by the server if
+                   an exception occurs while it's handling it.
+                   Which is usually when the request body is malformed, so it *is*
+                   a user error, but still some function could fail and it wouldn't
+                   be the user's fault. Also past me used 400 for both "this stop doesn't exist"
+                   and "idl something happened" so now i'm... well i'll just put bad stop.
+                 */
+                    RequestState.Error(ErrorType.BAD_STOP)
+                } else {
+                    RequestState.Error(ErrorType.UNKNOWN)
+                }
+
             } catch (e: IOException) {
                 requestState = RequestState.Error(ErrorType.NO_INTERNET)
-            } catch (e: HttpException) {
-                requestState =
-                    if (e.code() == 400)
-                    /* the stop probably didn't exist.
-                       well the fun stuff is that a 400 is returned by the server if
-                       an exception occurs while it's handling it.
-                       Which is usually when the request body is malformed, so it *is*
-                       a user error, but still some function could fail and it wouldn't
-                       be the user's fault. Also past me used 400 for both "this stop doesn't exist"
-                       and "idl something happened" so now i'm... well i'll just put bad stop.
-                     */
-                        RequestState.Error(ErrorType.BAD_STOP)
-                    else
-                        RequestState.Error(ErrorType.UNKNOWN)
             }
-            Log.d("ViewModel", "Last guess : ${madeGuesses[madeGuesses.size - 1]}")
         }
     }
 

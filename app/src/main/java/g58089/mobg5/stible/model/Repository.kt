@@ -26,7 +26,12 @@ object Repository {
         return stibleApi.start(lang.code)
     }
 
-    suspend fun guess(stopName: String, puzzleNumber: Int, tryNumber: Int, lang: Language): Response<GuessResponse> {
+    suspend fun guess(
+        stopName: String,
+        puzzleNumber: Int,
+        tryNumber: Int,
+        lang: Language
+    ): Response<GuessResponse> {
         val guess = Guess(
             stopName = stopName,
             tryNumber = tryNumber,

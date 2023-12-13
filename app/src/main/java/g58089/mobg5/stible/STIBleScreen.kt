@@ -145,7 +145,6 @@ fun STIBleScreenContent(
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
-
         // initial route is always Login. Will implement stay logged in functionality if required.
         NavHost(navController = navController, startDestination = NavRoutes.Main.name) {
 
@@ -155,6 +154,7 @@ fun STIBleScreenContent(
                     userGuess = viewModel.userGuess,
                     onUserGuessChange = { viewModel.guessChange(it) },
                     onGuess = { viewModel.guess() },
+                    requestState = viewModel.requestState,
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(
