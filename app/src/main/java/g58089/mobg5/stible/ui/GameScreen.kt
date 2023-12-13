@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -34,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import g58089.mobg5.stible.R
@@ -60,7 +64,9 @@ fun GameScreen(
         GuessRows(gameRules.maxGuessCount, Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
         Column(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             StopSearchBar(userGuess, onUserGuessChange, gameRules.stops, Modifier.fillMaxWidth())
             OutlinedButton(onClick = onGuess, Modifier.fillMaxWidth()) {
@@ -165,17 +171,25 @@ fun StopSearchBar(
                     expanded = false
                 }
             ) {
-                filteredStops.forEach { selectedStop ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onUserGuessChange(selectedStop)
-                            expanded = false
-                        },
-                        text = {
-                            Text(text = selectedStop)
+
+                // NOTE: bug in Jetpack Compose : i MUST put fixed size for
+                // LazyColumn inside ExposedDropdownMenu
+                Box(modifier = Modifier.width(100.dp).height(300.dp)){
+                    LazyColumn {
+                        items(filteredStops) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    onUserGuessChange(it)
+                                    expanded = false
+                                },
+                                text = {
+                                    Text(text = it)
+                                }
+                            )
                         }
-                    )
+                    }
                 }
+
             }
         }
 

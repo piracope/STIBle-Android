@@ -23,6 +23,8 @@ private const val BASE_URL = "https://stible.elitios.net"
  */
 private val json = Json {
     ignoreUnknownKeys = true
+    isLenient = true
+    //NOTE: isLenient => SOME route colors are passed as Int.... for some reason
 }
 
 /**
