@@ -155,7 +155,8 @@ fun STIBleScreenContent(
                     onUserGuessChange = { viewModel.guessChange(it) },
                     onGuess = { viewModel.guess() },
                     requestState = viewModel.requestState,
-                    canGuess = viewModel.canGuess,
+                    canStillPlay = viewModel.canGuess,
+                    guessHistory = viewModel.madeGuesses,
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(

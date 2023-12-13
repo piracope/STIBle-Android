@@ -1,5 +1,6 @@
 package g58089.mobg5.stible.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,9 +17,21 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.East
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.North
+import androidx.compose.material.icons.filled.NorthEast
+import androidx.compose.material.icons.filled.NorthWest
+import androidx.compose.material.icons.filled.South
+import androidx.compose.material.icons.filled.SouthEast
+import androidx.compose.material.icons.filled.SouthWest
+import androidx.compose.material.icons.filled.West
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -32,32 +45,37 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.model.dto.GameRules
-import g58089.mobg5.stible.model.dto.Guess
+import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.dto.Route
 import g58089.mobg5.stible.network.RequestState
-
+import g58089.mobg5.stible.ui.theme.Green
+import g58089.mobg5.stible.ui.theme.Yellow
+import java.util.Locale
 
 @Composable
 fun GameScreen(
     gameRules: GameRules,
     userGuess: String,
-    canGuess: Boolean,
+    canStillPlay: Boolean,
+    guessHistory: List<GuessResponse>,
+    requestState: RequestState,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
-    requestState: RequestState,
     modifier: Modifier = Modifier
 ) {
-    val guessEnabled = canGuess && requestState !is RequestState.Loading
+    val guessEnabled = canStillPlay && requestState !is RequestState.Loading
     Column(modifier = modifier) {
         // Displaying the routes
         Row {
@@ -66,7 +84,11 @@ fun GameScreen(
                 RouteSquare(currentRoute, Modifier.padding(dimensionResource(R.dimen.main_padding)))
             }
         }
-        GuessRows(gameRules.maxGuessCount, Modifier.fillMaxWidth())
+        GuessRows(
+            maxGuessCount = gameRules.maxGuessCount,
+            guessHistory = guessHistory,
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
         Column(
             modifier = Modifier
@@ -90,10 +112,18 @@ fun GameScreen(
 
 
 @Composable
-fun GuessRows(maxGuessCount: Int, modifier: Modifier = Modifier) {
+fun GuessRows(
+    maxGuessCount: Int,
+    modifier: Modifier = Modifier,
+    guessHistory: List<GuessResponse>
+) {
     // for each guess possible
+
     Column(modifier = modifier) {
         repeat(maxGuessCount) {
+
+            val guess = guessHistory.getOrNull(it)
+
             // we're gonna have a row
             Row(
                 modifier = modifier
@@ -110,14 +140,41 @@ fun GuessRows(maxGuessCount: Int, modifier: Modifier = Modifier) {
                         .background(MaterialTheme.colorScheme.outline)
                         .height(dimensionResource(R.dimen.guess_row_height))
                         .fillMaxWidth(0.4f)
-                )
+                ) {
+                    guess?.stopName?.let { it1 ->
+                        Text(
+                            text = it1,
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
                 // 5 squares for the results
                 Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))) {
-                    repeat(5) {
+                    /*
+                    What is the percentage ? The biggest distance between two stops is 23 km.
+                    If a guess is 2.3km from the mystery stop, it is 90% close.
+                    That's it : Green square : 20%, Yellow square : 10%
+                    So we divide the percentage by 20 to get the number of green squares
+                    and the number of yellow is percentage % 20 / 10
+                     */
+                    val nbOfGreen: Int = guess?.percentage?.times(100)?.div(20)?.toInt() ?: 0
+                    val nbOfYellow: Int =
+                        guess?.percentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
+                    repeat(5) { sqNb ->
+                        val color: Color =
+                            if (sqNb < nbOfGreen)
+                                Green
+                            else if (sqNb < nbOfGreen + nbOfYellow)
+                            // if there are 2 green 1 yellow, yellow starts at 3
+                                Yellow
+                            else
+                                MaterialTheme.colorScheme.surfaceVariant
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .background(color)
                                 .size(dimensionResource(R.dimen.guess_row_height))
                         )
                     }
@@ -130,19 +187,68 @@ fun GuessRows(maxGuessCount: Int, modifier: Modifier = Modifier) {
                         .background(MaterialTheme.colorScheme.outline)
                         .height(dimensionResource(R.dimen.guess_row_height))
                         .weight(1f)
-                )
+                ) {
+                    guess?.distance?.let { it1 ->
+                        Text(
+                            text = String.format(Locale.ENGLISH, "%.1fkm", it1),
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
 
+
+                val colorDirection = getDirectionBackgroundColor(guess)
                 // and the direction
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-                        .background(MaterialTheme.colorScheme.outline)
+                        .background(colorDirection)
                         .size(dimensionResource(R.dimen.guess_row_height))
-                )
+                ) {
+                    guess?.let { g ->
+                        val vector = emojiToIcon(g.directionEmoji)
+                        Icon(imageVector = vector, contentDescription = vector.name)
+                        Log.d("MainScreen", "vector name: ${vector.name}")
+                    }
+                }
             }
         }
     }
 
+
+}
+
+@Composable
+private fun getDirectionBackgroundColor(guess: GuessResponse?): Color {
+    if (guess == null) {
+        return MaterialTheme.colorScheme.outline
+    }
+
+    if (guess.directionEmoji == "✅") { // doesn't display on my machine but it's
+        return Green
+    }
+
+    return MaterialTheme.colorScheme.inversePrimary
+}
+
+/**
+ * Converts a direction emoji to the corresponding Material Design icon.
+ */
+private fun emojiToIcon(emoji: String): ImageVector {
+    return when (emoji) {
+        "➡️" -> Icons.Default.East
+        "↗️" -> Icons.Default.NorthEast
+        "⬆️" -> Icons.Default.North
+        "↖️" -> Icons.Default.NorthWest
+        "⬅️" -> Icons.Default.West
+        "↙️" -> Icons.Default.SouthWest
+        "⬇️" -> Icons.Default.South
+        "↘️" -> Icons.Default.SouthEast
+        "✅" -> Icons.Default.Check
+        else -> Icons.Default.Error // should never happen
+    }
 }
 
 @Composable
@@ -181,6 +287,8 @@ fun StopSearchBar(
         // filter options based on text field value
         val filteredStops =
             allStops.filter { it.contains(userGuess, ignoreCase = true) }
+        // FIXME: accents don't pass, so you have to actually write them
+        // Like in the online game so....
         if (filteredStops.isNotEmpty()) {
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -193,7 +301,7 @@ fun StopSearchBar(
                 // LazyColumn inside ExposedDropdownMenu
                 Box(
                     modifier = Modifier
-                        .width(100.dp)
+                        .width(500.dp)
                         .height(300.dp)
                 ) {
                     LazyColumn {
@@ -210,7 +318,6 @@ fun StopSearchBar(
                         }
                     }
                 }
-
             }
         }
 
@@ -255,7 +362,8 @@ fun GameScreenPreview() {
         userGuess = "",
         onUserGuessChange = {},
         onGuess = {},
-        canGuess = true,
+        canStillPlay = true,
+        guessHistory = emptyList(),
         requestState = RequestState.Default
     )
 }
