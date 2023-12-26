@@ -25,6 +25,11 @@ enum class ErrorType {
     BAD_STOP,
 
     /**
+     * The game is already over. Why bother guessing ?
+     */
+    GAME_OVER,
+
+    /**
      * Catch-all lol
      */
     UNKNOWN

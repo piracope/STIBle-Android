@@ -55,7 +55,7 @@ enum class NavRoutes {
     /**
      * The Maps bottom app sheet.
      *
-     * NOTE: idk if it works with navigate
+     * NOTE: idk if this should be a navigation route. idk how it works yet lol
      */
     Maps,
 }
@@ -144,17 +144,22 @@ fun STIBleScreenContent(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+
+    // TODO: have a splash screen that is open while initial data isn't fetched.
+    // or have a spinning thing, you know those ones
+
     Surface(modifier = modifier) {
-        // initial route is always Login. Will implement stay logged in functionality if required.
         NavHost(navController = navController, startDestination = NavRoutes.Main.name) {
 
             composable(route = NavRoutes.Main.name) {
                 GameScreen(
+                    // FIXME: since the screen is so dependent on the viewmodel, why not pass it
                     gameRules = viewModel.gameRules,
                     userGuess = viewModel.userGuess,
                     onUserGuessChange = { viewModel.guessChange(it) },
                     onGuess = { viewModel.guess() },
                     requestState = viewModel.requestState,
+                    gameState = viewModel.gameState,
                     canStillPlay = viewModel.canGuess,
                     guessHistory = viewModel.madeGuesses,
                     modifier = Modifier
@@ -174,7 +179,11 @@ fun STIBleScreenContent(
             }
 
             composable(route = NavRoutes.Help.name) {
-                HelpScreen(modifier = Modifier.fillMaxSize())
+                HelpScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(id = R.dimen.main_padding))
+                )
             }
         }
     }

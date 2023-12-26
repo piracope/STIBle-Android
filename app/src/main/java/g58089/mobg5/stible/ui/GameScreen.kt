@@ -58,6 +58,7 @@ import g58089.mobg5.stible.R
 import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.dto.Route
+import g58089.mobg5.stible.model.util.GameState
 import g58089.mobg5.stible.network.RequestState
 import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
@@ -69,12 +70,12 @@ fun GameScreen(
     userGuess: String,
     canStillPlay: Boolean,
     guessHistory: List<GuessResponse>,
-    requestState: RequestState,
+    gameState: GameState,
+    requestState: RequestState, // i keep it for errors, TODO: delete this comment when it's done
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val guessEnabled = canStillPlay && requestState !is RequestState.Loading
     Column(modifier = modifier) {
         // Displaying the routes
         Row {
@@ -86,6 +87,7 @@ fun GameScreen(
         GuessRows(
             maxGuessCount = gameRules.maxGuessCount,
             guessHistory = guessHistory,
+            gameState = gameState,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
@@ -93,11 +95,18 @@ fun GameScreen(
             userGuess,
             onUserGuessChange,
             gameRules.stops,
-            guessEnabled,
+            canStillPlay,
             Modifier.fillMaxWidth()
         )
-        Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = guessEnabled) {
+        Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = canStillPlay) {
             Text(text = stringResource(id = R.string.guess))
+        }
+
+        if (gameState == GameState.LOST) {
+            Text(text = "Raté l'arrêt mystère était ${guessHistory.last().mysteryStop?.stopName}")
+            // FIXME: obviously this is bad, make this better
+            // put the mystery stop in the viewmodel so the view doesn't have to do all this
+            // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
         }
 
     }
@@ -107,8 +116,9 @@ fun GameScreen(
 @Composable
 fun GuessRows(
     maxGuessCount: Int,
-    modifier: Modifier = Modifier,
-    guessHistory: List<GuessResponse>
+    gameState: GameState,
+    guessHistory: List<GuessResponse>,
+    modifier: Modifier = Modifier
 ) {
     // for each guess possible
     Column(modifier = modifier) {
@@ -214,6 +224,13 @@ fun GuessRows(
 
 }
 
+/**
+ * Small little helper for the direction color.
+ *
+ * If no guess was made, put the usual gray.
+ * If a non winning guess is made, put the blue with the related color
+ * If a winning guess is made, green !!
+ */
 @Composable
 private fun getDirectionBackgroundColor(guess: GuessResponse?): Color {
     if (guess == null) {
@@ -351,12 +368,13 @@ private fun getColorFromRRGGBB(colorStr: String): Int {
 fun GameScreenPreview() {
     GameScreen(
         gameRules = GameRules(),
-        modifier = Modifier.fillMaxSize(),
         userGuess = "",
-        onUserGuessChange = {},
-        onGuess = {},
         canStillPlay = true,
         guessHistory = emptyList(),
-        requestState = RequestState.Default
+        gameState = GameState.PLAYING,
+        requestState = RequestState.Default,
+        onUserGuessChange = {},
+        onGuess = {},
+        modifier = Modifier.fillMaxSize()
     )
 }

@@ -11,6 +11,7 @@ import g58089.mobg5.stible.model.Repository
 import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.util.ErrorType
+import g58089.mobg5.stible.model.util.GameState
 import g58089.mobg5.stible.model.util.Language
 import g58089.mobg5.stible.network.RequestState
 import kotlinx.coroutines.launch
@@ -55,15 +56,33 @@ class MainScreenViewModel : ViewModel() {
     /**
      * The number of times the user guessed TODAY.
      */
-    var guessCount by mutableIntStateOf(0)
+    private var guessCount by mutableIntStateOf(0)
+
+    /**
+     * The current state of play.
+     */
+    var gameState by mutableStateOf(GameState.BLOCKED)
         private set
 
-    val canGuess // TODO: use this
-        get() = guessCount < gameRules.maxGuessCount
 
+    /**
+     * A short hand for gameState == PLAYING.
+     *
+     * Easier for the view.
+     * TODO: do i keep this
+     */
+    val canGuess
+        get() = gameState == GameState.PLAYING
+
+    /**
+     * The guess history of this play session.
+     */
     var madeGuesses = mutableStateListOf<GuessResponse>()
         private set
 
+    /**
+     * Calls the backend for initial game data.
+     */
     init {
         requestState = RequestState.Loading
 
@@ -72,6 +91,7 @@ class MainScreenViewModel : ViewModel() {
                 // get initial data
                 gameRules = Repository.getGameRules(userLang)
                 requestState = RequestState.Success
+                gameState = GameState.PLAYING
             } catch (e: IOException) {
                 requestState = RequestState.Error(ErrorType.NO_INTERNET)
             } catch (e: HttpException) {
@@ -86,19 +106,30 @@ class MainScreenViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Updates the currently input guess in the view model with what the user wrote.
+     */
     fun guessChange(newGuess: String) {
         // TODO: check if game over (probably)
         userGuess = newGuess
     }
 
+    /**
+     * Makes a guess
+     */
     fun guess() {
-        requestState = RequestState.Loading
+        if (!canGuess) {
+            requestState = RequestState.Error(ErrorType.GAME_OVER)
+            return
+        }
 
         if (userGuess.isBlank()) {
             requestState = RequestState.Error(ErrorType.BAD_STOP)
             return
         }
 
+        requestState = RequestState.Loading
+        gameState = GameState.BLOCKED // block user input
         viewModelScope.launch {
             try {
                 val response =
@@ -106,6 +137,7 @@ class MainScreenViewModel : ViewModel() {
                 if (response.code() == 205) {
                     // I need to catch 205, because it signifies that the client has outdated info
                     requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)
+                    // let user stay blocked
                     return@launch
                 }
 
@@ -114,7 +146,17 @@ class MainScreenViewModel : ViewModel() {
                     response.body()?.let {
                         madeGuesses.add(it)
                         guessCount++ // only increment if we actually succeed at guessing
-                        userGuess = ""
+
+                        // handle game over
+                        gameState = if (it.directionEmoji == "✅") { // i hate this so much
+                            GameState.WON
+                        } else if (guessCount >= gameRules.maxGuessCount) {
+                            GameState.LOST
+                        } else {
+                            GameState.PLAYING
+                        }
+
+                        userGuess = "" // reset input
                     }
                     requestState = RequestState.Success
                     return@launch
@@ -140,5 +182,4 @@ class MainScreenViewModel : ViewModel() {
             }
         }
     }
-
 }
