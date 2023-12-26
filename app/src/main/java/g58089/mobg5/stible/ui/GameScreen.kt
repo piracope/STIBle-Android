@@ -1,5 +1,6 @@
 package g58089.mobg5.stible.ui
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,6 +66,7 @@ import g58089.mobg5.stible.network.RequestState
 import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
+import kotlin.math.max
 
 const val TAG = "GameScreen"
 
@@ -106,13 +109,33 @@ fun GameScreen(
                 Text(text = stringResource(id = R.string.guess))
             }
         } else {
+
+            val shareText = buildShareMessage(
+                lvlNumber = gameRules.puzzleNumber,
+                maxGuessCount = gameRules.maxGuessCount,
+                guessHistory = guessHistory,
+                gameState = gameState
+            )
+
+            val shareHeader = "${stringResource(id = R.string.app_name)} #${gameRules.puzzleNumber}"
+            val context = LocalContext.current
+
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    context.startActivity(Intent.createChooser(intent, shareHeader))
+                },
                 Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Green)
             ) {
                 Text(text = stringResource(id = R.string.share))
             }
+
+            // FIXME: the android tutorial hoists the share mechanic out of this composable and
+            //  handles it in the STIBleScreen. Should I do that ?
         }
 
 
@@ -379,6 +402,47 @@ private fun RouteSquare(route: Route, modifier: Modifier = Modifier) {
  */
 private fun getColorFromRRGGBB(colorStr: String): Int {
     return "#$colorStr".toColorInt()
+}
+
+
+private fun buildSquaresForShare(guess: GuessResponse): String {
+    val percentage = guess.percentage.times(100).toInt()
+    val green = percentage.div(20)
+    val yellow = percentage.rem(20).div(10)
+
+    return "${"🟩".repeat(green)}${"🟨".repeat(yellow)}${"⬛".repeat(5 - green - yellow)}"
+
+}
+
+@Composable
+private fun buildShareMessage(
+    lvlNumber: Int,
+    maxGuessCount: Int,
+    guessHistory: List<GuessResponse>,
+    gameState: GameState
+): String {
+    val nbTries = if (gameState == GameState.LOST) "X" else guessHistory.size
+
+    val squares = StringBuilder()
+    var bestPercentage = 0.0
+
+
+    guessHistory.forEach {
+        squares.append(buildSquaresForShare(it)).append('\n')
+        bestPercentage = max(bestPercentage, it.percentage)
+    }
+
+    return """
+${stringResource(id = R.string.app_name)} #${lvlNumber} $nbTries/$maxGuessCount (${
+        bestPercentage.times(
+            100
+        ).toInt()
+    }%)
+
+$squares
+
+${stringResource(id = R.string.app_name)} App - https://stible.elitios.net/
+    """
 }
 
 @Preview
