@@ -130,6 +130,10 @@ class MainScreenViewModel : ViewModel() {
         }
 
         requestState = RequestState.Loading
+
+        // to prevent going from LOST -> BLOCKED -> PLAYING
+        val oldGameState = gameState
+
         gameState = GameState.BLOCKED // block user input
         viewModelScope.launch {
             try {
@@ -154,7 +158,7 @@ class MainScreenViewModel : ViewModel() {
                         } else if (guessCount >= gameRules.maxGuessCount) {
                             GameState.LOST
                         } else {
-                            GameState.PLAYING
+                            oldGameState
                         }
 
                         if (gameState != GameState.PLAYING) {
@@ -182,10 +186,12 @@ class MainScreenViewModel : ViewModel() {
                 } else {
                     RequestState.Error(ErrorType.UNKNOWN)
                 }
-
             } catch (e: IOException) {
                 requestState = RequestState.Error(ErrorType.NO_INTERNET)
             }
+
+            // non fatal errors
+            gameState = oldGameState
         }
     }
 }

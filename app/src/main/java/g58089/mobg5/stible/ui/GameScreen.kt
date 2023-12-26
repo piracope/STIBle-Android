@@ -405,6 +405,11 @@ private fun getColorFromRRGGBB(colorStr: String): Int {
 }
 
 
+/**
+ * Converts the guess history to a sequence of square emojis.
+ *
+ * Basically takes the squares shown on the screen and converts them to text.
+ */
 private fun buildSquaresForShare(guess: GuessResponse): String {
     val percentage = guess.percentage.times(100).toInt()
     val green = percentage.div(20)
@@ -414,6 +419,9 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
 
 }
 
+/**
+ * Generates the "post-mortem" for this play session.
+ */
 @Composable
 private fun buildShareMessage(
     lvlNumber: Int,
@@ -421,6 +429,8 @@ private fun buildShareMessage(
     guessHistory: List<GuessResponse>,
     gameState: GameState
 ): String {
+    // i've thought of not letting the user share if the game isn't finished, but who cares honestly.
+
     val nbTries = if (gameState == GameState.LOST) "X" else guessHistory.size
 
     val squares = StringBuilder()

@@ -29,4 +29,12 @@
         <item>Un nouveau STIBle sera disponible chaque jour !</item>
     </string-array>
 
+    <!--Error messages-->
+    <string name="error_game_over">La partie est déjà terminée.</string>
+    <string name="error_no_internet">Connectez-vous à Internet.</string>
+    <string name="error_new_level_available">Un nouvel arrêt mystère est disponible. Relancez l\'application.</string>
+    <string name="error_bad_language">Langue inconnue. Relancez l\'application.</string>
+    <string name="error_bad_stop">Cet arrêt n\'existe pas.</string>
+    <string name="error_unknown">Une erreur est survenue.</string>
+
 </resources>

@@ -1,5 +1,6 @@
 package g58089.mobg5.stible
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -15,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +24,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import g58089.mobg5.stible.model.util.ErrorType
+import g58089.mobg5.stible.network.RequestState
 import g58089.mobg5.stible.ui.GameScreen
 import g58089.mobg5.stible.ui.HelpScreen
 import g58089.mobg5.stible.ui.MainScreenViewModel
@@ -187,5 +191,20 @@ fun STIBleScreenContent(
                 )
             }
         }
+    }
+
+    val requestState = viewModel.requestState
+
+    if (requestState is RequestState.Error) {
+        val errorMsgId = when (requestState.error) {
+            ErrorType.GAME_OVER -> R.string.error_game_over
+            ErrorType.NO_INTERNET -> R.string.error_no_internet
+            ErrorType.NEW_LEVEL_AVAILABLE -> R.string.error_new_level_available
+            ErrorType.BAD_LANGUAGE -> R.string.error_bad_language
+            ErrorType.BAD_STOP -> R.string.error_bad_stop
+            ErrorType.UNKNOWN -> R.string.error_unknown
+        }
+        Toast.makeText(LocalContext.current, stringResource(id = errorMsgId), Toast.LENGTH_SHORT)
+            .show()
     }
 }
