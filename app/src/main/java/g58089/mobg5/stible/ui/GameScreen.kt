@@ -28,6 +28,7 @@ import androidx.compose.material.icons.rounded.SouthEast
 import androidx.compose.material.icons.rounded.SouthWest
 import androidx.compose.material.icons.rounded.West
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -100,16 +101,27 @@ fun GameScreen(
             canStillPlay,
             Modifier.fillMaxWidth()
         )
-        Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = canStillPlay) {
-            Text(text = stringResource(id = R.string.guess))
+        if (gameState != GameState.WON && gameState != GameState.LOST) {
+            Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = canStillPlay) {
+                Text(text = stringResource(id = R.string.guess))
+            }
+        } else {
+            Button(
+                onClick = { /*TODO*/ },
+                Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Green)
+            ) {
+                Text(text = stringResource(id = R.string.share))
+            }
         }
+
 
         if (gameState == GameState.LOST) {
             // null checking. Should not fail, but you never knooowww
 
             if (mysteryStop != null) {
                 Text(
-                    text = stringResource(id = R.string.lost, mysteryStop),
+                    text = stringResource(id = R.string.stop_name_lost, mysteryStop),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -117,6 +129,8 @@ fun GameScreen(
                 Log.e(TAG, "Game is lost, but no mystery stop was found.")
             }
         }
+
+        // TODO: in the original game, there is a "Bien joué !" when you won.
     }
 }
 
