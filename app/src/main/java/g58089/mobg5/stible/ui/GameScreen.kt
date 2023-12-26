@@ -13,29 +13,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.East
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.North
-import androidx.compose.material.icons.filled.NorthEast
-import androidx.compose.material.icons.filled.NorthWest
-import androidx.compose.material.icons.filled.South
-import androidx.compose.material.icons.filled.SouthEast
-import androidx.compose.material.icons.filled.SouthWest
-import androidx.compose.material.icons.filled.West
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.East
+import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.North
+import androidx.compose.material.icons.rounded.NorthEast
+import androidx.compose.material.icons.rounded.NorthWest
+import androidx.compose.material.icons.rounded.South
+import androidx.compose.material.icons.rounded.SouthEast
+import androidx.compose.material.icons.rounded.SouthWest
+import androidx.compose.material.icons.rounded.West
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,21 +89,15 @@ fun GameScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            StopSearchBar(
-                userGuess,
-                onUserGuessChange,
-                gameRules.stops,
-                guessEnabled,
-                Modifier.fillMaxWidth()
-            )
-            OutlinedButton(onClick = onGuess, Modifier.fillMaxWidth(), enabled = guessEnabled) {
-                Text(text = stringResource(id = R.string.guess))
-            }
+        StopSearchBar(
+            userGuess,
+            onUserGuessChange,
+            gameRules.stops,
+            guessEnabled,
+            Modifier.fillMaxWidth()
+        )
+        Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = guessEnabled) {
+            Text(text = stringResource(id = R.string.guess))
         }
 
     }
@@ -118,10 +111,8 @@ fun GuessRows(
     guessHistory: List<GuessResponse>
 ) {
     // for each guess possible
-
     Column(modifier = modifier) {
         repeat(maxGuessCount) {
-
             val guess = guessHistory.getOrNull(it)
 
             // we're gonna have a row
@@ -178,6 +169,8 @@ fun GuessRows(
                                 .size(dimensionResource(R.dimen.guess_row_height))
                         )
                     }
+
+                    // FIXME: maybe move this to another composable, this function is quite long
                 }
 
                 // the distance
@@ -198,6 +191,7 @@ fun GuessRows(
                     }
                 }
 
+                // TODO: put a tooltip for small screens that can't display the whole thing
 
                 val colorDirection = getDirectionBackgroundColor(guess)
                 // and the direction
@@ -238,16 +232,16 @@ private fun getDirectionBackgroundColor(guess: GuessResponse?): Color {
  */
 private fun emojiToIcon(emoji: String): ImageVector {
     return when (emoji) {
-        "➡️" -> Icons.Default.East
-        "↗️" -> Icons.Default.NorthEast
-        "⬆️" -> Icons.Default.North
-        "↖️" -> Icons.Default.NorthWest
-        "⬅️" -> Icons.Default.West
-        "↙️" -> Icons.Default.SouthWest
-        "⬇️" -> Icons.Default.South
-        "↘️" -> Icons.Default.SouthEast
-        "✅" -> Icons.Default.Check
-        else -> Icons.Default.Error // should never happen
+        "➡️" -> Icons.Rounded.East
+        "↗️" -> Icons.Rounded.NorthEast
+        "⬆️" -> Icons.Rounded.North
+        "↖️" -> Icons.Rounded.NorthWest
+        "⬅️" -> Icons.Rounded.West
+        "↙️" -> Icons.Rounded.SouthWest
+        "⬇️" -> Icons.Rounded.South
+        "↘️" -> Icons.Rounded.SouthEast
+        "✅" -> Icons.Rounded.Check
+        else -> Icons.Rounded.Error // should never happen
     }
 }
 
@@ -271,7 +265,7 @@ fun StopSearchBar(
         },
 
         ) {
-        TextField(
+        OutlinedTextField(
             modifier = modifier.menuAnchor(), //idk, needed for Material3
             value = userGuess,
             onValueChange = onUserGuessChange,
@@ -288,7 +282,7 @@ fun StopSearchBar(
         val filteredStops =
             allStops.filter { it.contains(userGuess, ignoreCase = true) }
         // FIXME: accents don't pass, so you have to actually write them
-        // Like in the online game so....
+        // which is the behaviour in the online game so....
         if (filteredStops.isNotEmpty()) {
             ExposedDropdownMenu(
                 expanded = expanded,
@@ -320,7 +314,6 @@ fun StopSearchBar(
                 }
             }
         }
-
     }
 }
 
