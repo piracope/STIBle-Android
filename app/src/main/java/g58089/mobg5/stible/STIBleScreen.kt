@@ -162,6 +162,7 @@ fun STIBleScreenContent(
                     gameState = viewModel.gameState,
                     canStillPlay = viewModel.canGuess,
                     guessHistory = viewModel.madeGuesses,
+                    mysteryStop = viewModel.mysteryStop,
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(

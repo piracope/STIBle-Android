@@ -64,6 +64,8 @@ import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
 
+const val TAG = "GameScreen"
+
 @Composable
 fun GameScreen(
     gameRules: GameRules,
@@ -72,6 +74,7 @@ fun GameScreen(
     guessHistory: List<GuessResponse>,
     gameState: GameState,
     requestState: RequestState, // i keep it for errors, TODO: delete this comment when it's done
+    mysteryStop: String?,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
     modifier: Modifier = Modifier
@@ -87,7 +90,6 @@ fun GameScreen(
         GuessRows(
             maxGuessCount = gameRules.maxGuessCount,
             guessHistory = guessHistory,
-            gameState = gameState,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
@@ -103,12 +105,18 @@ fun GameScreen(
         }
 
         if (gameState == GameState.LOST) {
-            Text(text = "Raté l'arrêt mystère était ${guessHistory.last().mysteryStop?.stopName}")
-            // FIXME: obviously this is bad, make this better
-            // put the mystery stop in the viewmodel so the view doesn't have to do all this
-            // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
-        }
+            // null checking. Should not fail, but you never knooowww
 
+            if (mysteryStop != null) {
+                Text(
+                    text = stringResource(id = R.string.lost, mysteryStop),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                Log.e(TAG, "Game is lost, but no mystery stop was found.")
+            }
+        }
     }
 }
 
@@ -116,7 +124,6 @@ fun GameScreen(
 @Composable
 fun GuessRows(
     maxGuessCount: Int,
-    gameState: GameState,
     guessHistory: List<GuessResponse>,
     modifier: Modifier = Modifier
 ) {
@@ -214,14 +221,11 @@ fun GuessRows(
                     guess?.let { g ->
                         val vector = emojiToIcon(g.directionEmoji)
                         Icon(imageVector = vector, contentDescription = vector.name)
-                        Log.d("MainScreen", "vector name: ${vector.name}")
                     }
                 }
             }
         }
     }
-
-
 }
 
 /**
@@ -373,6 +377,7 @@ fun GameScreenPreview() {
         guessHistory = emptyList(),
         gameState = GameState.PLAYING,
         requestState = RequestState.Default,
+        mysteryStop = null,
         onUserGuessChange = {},
         onGuess = {},
         modifier = Modifier.fillMaxSize()

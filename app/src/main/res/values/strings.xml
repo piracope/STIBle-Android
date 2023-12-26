@@ -16,6 +16,7 @@
     <!--Game Screen-->
     <string name="input_placeholder">Arrêt de métro, bus, tram…</string>
     <string name="guess">Deviner</string>
+    <string name="lost">Raté ! L\'arrêt était %1$s</string>
 
     <!--Help Screen-->
     <string-array name="help_messages">

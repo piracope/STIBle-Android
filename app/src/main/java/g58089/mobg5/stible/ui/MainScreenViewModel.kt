@@ -64,6 +64,7 @@ class MainScreenViewModel : ViewModel() {
     var gameState by mutableStateOf(GameState.BLOCKED)
         private set
 
+    var mysteryStop: String? by mutableStateOf(null)
 
     /**
      * A short hand for gameState == PLAYING.
@@ -154,6 +155,11 @@ class MainScreenViewModel : ViewModel() {
                             GameState.LOST
                         } else {
                             GameState.PLAYING
+                        }
+
+                        if (gameState != GameState.PLAYING) {
+                            mysteryStop = it.mysteryStop?.stopName
+                            // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
                         }
 
                         userGuess = "" // reset input
