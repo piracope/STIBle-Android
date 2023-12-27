@@ -1,15 +1,22 @@
 package g58089.mobg5.stible.model.dto
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 /**
  * The response of the server to a user's guess.
  *
  * Provides valuable information about the mystery stop.
  */
-@Serializable
+@Entity(tableName = "current_session")
 data class GuessResponse(
+
+    @PrimaryKey(autoGenerate = true)
+    @Transient
+    val id: Int = 0,
+
     /**
      * The name of the stop guessed.
      */

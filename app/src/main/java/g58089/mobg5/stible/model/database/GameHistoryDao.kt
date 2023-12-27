@@ -1,0 +1,33 @@
+package g58089.mobg5.stible.model.database
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * DAO for the games history.
+ *
+ * The games history is the record of all completed games.
+ * It can be used by a Statistics screen to show metrics about the user's performance.
+ */
+@Dao
+interface GameHistoryDao {
+    /**
+     * Inserts a new game recap to the games history.
+     */
+    @Insert
+    suspend fun insert(guess: GameRecap)
+
+    /**
+     * Clears the games history.
+     */
+    @Query("DELETE FROM history")
+    suspend fun clearHistory()
+
+    /**
+     * Get all game recaps.
+     */
+    @Query("SELECT * FROM history")
+    suspend fun getAllItems(): Flow<List<GameRecap>>
+}
