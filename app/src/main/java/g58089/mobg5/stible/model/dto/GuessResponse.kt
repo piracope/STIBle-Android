@@ -1,5 +1,7 @@
 package g58089.mobg5.stible.model.dto
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
@@ -21,12 +23,14 @@ data class GuessResponse(
      * The name of the stop guessed.
      */
     @SerialName("stop_name")
+    @ColumnInfo("stop_name")
     val stopName: String,
 
     /**
      * The distance between the guessed stop and the mystery stop, in km.
      */
     @SerialName("distance")
+    @ColumnInfo("distance")
     val distance: Double,
 
     /**
@@ -35,6 +39,7 @@ data class GuessResponse(
      * "what even is a percentage of success in this context" I won't elaborate.
      */
     @SerialName("percentage")
+    @ColumnInfo("percentage")
     val percentage: Double,
 
     /**
@@ -46,6 +51,7 @@ data class GuessResponse(
      * passing a value and then interpreting that value in the view.
      */
     @SerialName("direction")
+    @ColumnInfo("direction")
     val directionEmoji: String,
 
     /**
@@ -57,5 +63,6 @@ data class GuessResponse(
      * Also it's a Stop for some reason.
      */
     @SerialName("secret")
-    val mysteryStop: Stop? = null
+    @Embedded("mystery")
+    val mysteryStop: Stop? = null // FIXME: room doesn't know what to do with this
 )
