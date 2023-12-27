@@ -53,6 +53,16 @@ interface STIBleApiService {
     @POST("start")
     suspend fun start(@Body lang: String = Language.FRENCH.code): GameRules
 
+    /**
+     * Sends a guess for today's mystery stop.
+     *
+     * Can return :
+     * - 200 with a GuessResponse
+     * - 205 : this guess is outdated (guess made at 00:01 when the server has already chosen a new
+     *          puzzle
+     * - 400 : the guess' stop doesn't exist
+     * - 400 : a server exception occurred (yes an error 400 is stupid)
+     */
     @POST("guess")
     suspend fun guess(@Body guess: Guess): Response<GuessResponse>
 }

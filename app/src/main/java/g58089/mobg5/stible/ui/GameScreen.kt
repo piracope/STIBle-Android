@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.East
@@ -62,7 +64,6 @@ import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.dto.Route
 import g58089.mobg5.stible.model.util.GameState
-import g58089.mobg5.stible.network.RequestState
 import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
@@ -77,13 +78,12 @@ fun GameScreen(
     canStillPlay: Boolean,
     guessHistory: List<GuessResponse>,
     gameState: GameState,
-    requestState: RequestState, // i keep it for errors, TODO: delete this comment when it's done
     mysteryStop: String?,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         // Displaying the routes
         Row {
             repeat(gameRules.puzzleRoutes.size) {
@@ -464,7 +464,6 @@ fun GameScreenPreview() {
         canStillPlay = true,
         guessHistory = emptyList(),
         gameState = GameState.PLAYING,
-        requestState = RequestState.Default,
         mysteryStop = null,
         onUserGuessChange = {},
         onGuess = {},

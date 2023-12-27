@@ -1,6 +1,7 @@
 package g58089.mobg5.stible
 
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -14,8 +15,11 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -23,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import g58089.mobg5.stible.model.util.ErrorType
 import g58089.mobg5.stible.network.RequestState
@@ -31,37 +36,13 @@ import g58089.mobg5.stible.ui.HelpScreen
 import g58089.mobg5.stible.ui.MainScreenViewModel
 
 /**
- * The different Navigation routes leading to different Screens.
+ * The different Screens and their navigation route.
  */
-enum class NavRoutes {
-    /**
-     * The Main Screen Navigation route.
-     */
-    Main,
-
-    /**
-     * The Help Screen Navigation route.
-     */
-    Help,
-
-    /**
-     * The Stats Screen Navigation route.
-     */
-    Stats,
-
-
-    /**
-     * The Settings Screen Navigation route
-     */
-    Settings,
-
-
-    /**
-     * The Maps bottom app sheet.
-     *
-     * NOTE: idk if this should be a navigation route. idk how it works yet lol
-     */
-    Maps,
+sealed class Screen(val route: String, @StringRes val nameResId: Int, val icon: ImageVector) {
+    object Main : Screen("main", R.string.home, Icons.Default.Home)
+    object Help : Screen("help", R.string.help, Icons.Default.Help)
+    object Stats : Screen("stats", R.string.stats, Icons.Default.BarChart)
+    object Settings : Screen("settings", R.string.settings, Icons.Default.Settings)
 }
 
 /**
@@ -76,65 +57,28 @@ fun STIBleApp(
 ) {
     Scaffold(
         bottomBar = {
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            val bottomNavigableScreens =
+                listOf(Screen.Main, Screen.Stats, Screen.Settings, Screen.Help)
+            val currentNav by navController.currentBackStackEntryAsState()
+            val currentRoute = currentNav?.destination
 
             NavigationBar {
-                NavigationBarItem(
-                    selected = currentRoute == NavRoutes.Main.name,
-                    onClick = {
-                        navController.navigate(NavRoutes.Main.name)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Home,
-                            contentDescription = stringResource(
-                                id = R.string.home_content_desc
+
+                bottomNavigableScreens.forEach { screen ->
+                    NavigationBarItem(
+                        selected = currentRoute?.route == screen.route,
+                        onClick = { navController.navigate(screen.route) },
+                        icon = {
+                            Icon(
+                                imageVector = screen.icon,
+                                contentDescription = stringResource(
+                                    id = screen.nameResId
+                                )
                             )
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = currentRoute == NavRoutes.Stats.name,
-                    onClick = {
-                        navController.navigate(NavRoutes.Stats.name)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.BarChart,
-                            contentDescription = stringResource(
-                                id = R.string.stats_content_desc
-                            )
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = currentRoute == NavRoutes.Settings.name,
-                    onClick = {
-                        navController.navigate(NavRoutes.Settings.name)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(
-                                id = R.string.settings_content_desc
-                            )
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = currentRoute == NavRoutes.Help.name,
-                    onClick = {
-                        navController.navigate(NavRoutes.Help.name)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Help,
-                            contentDescription = stringResource(
-                                id = R.string.help_content_desc
-                            )
-                        )
-                    }
-                )
+                        },
+                        label = { Text(text = stringResource(id = screen.nameResId)) }
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -153,16 +97,15 @@ fun STIBleScreenContent(
     // or have a spinning thing, you know those ones
 
     Surface(modifier = modifier) {
-        NavHost(navController = navController, startDestination = NavRoutes.Main.name) {
+        NavHost(navController = navController, startDestination = Screen.Main.route) {
 
-            composable(route = NavRoutes.Main.name) {
+            composable(route = Screen.Main.route) {
                 GameScreen(
                     // FIXME: since the screen is so dependent on the viewmodel, why not pass it
                     gameRules = viewModel.gameRules,
                     userGuess = viewModel.userGuess,
                     onUserGuessChange = { viewModel.guessChange(it) },
                     onGuess = { viewModel.guess() },
-                    requestState = viewModel.requestState,
                     gameState = viewModel.gameState,
                     canStillPlay = viewModel.canGuess,
                     guessHistory = viewModel.madeGuesses,
@@ -175,15 +118,15 @@ fun STIBleScreenContent(
                 )
             }
 
-            composable(route = NavRoutes.Stats.name) {
+            composable(route = Screen.Stats.route) {
                 // TODO: Stats Screen
             }
 
-            composable(route = NavRoutes.Settings.name) {
+            composable(route = Screen.Settings.route) {
                 // TODO: Settings Screen
             }
 
-            composable(route = NavRoutes.Help.name) {
+            composable(route = Screen.Help.route) {
                 HelpScreen(
                     modifier = Modifier
                         .fillMaxSize()

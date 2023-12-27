@@ -8,10 +8,10 @@
     <string name="app_name_third_part">le</string>
 
     <!--Navigation Bar-->
-    <string name="home_content_desc">Accueil</string>
-    <string name="stats_content_desc">Statistiques</string>
-    <string name="settings_content_desc">Paramètres</string>
-    <string name="help_content_desc">Aide</string>
+    <string name="home">Accueil</string>
+    <string name="stats">Stats</string>
+    <string name="settings">Paramètres</string>
+    <string name="help">Aide</string>
 
     <!--Game Screen-->
     <string name="input_placeholder">Arrêt de métro, bus, tram…</string>

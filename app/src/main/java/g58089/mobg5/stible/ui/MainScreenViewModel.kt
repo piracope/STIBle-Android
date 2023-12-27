@@ -64,6 +64,9 @@ class MainScreenViewModel : ViewModel() {
     var gameState by mutableStateOf(GameState.BLOCKED)
         private set
 
+    /**
+     * The stop the user tries to guess, revealed at the final guess (won or lost).
+     */
     var mysteryStop: String? by mutableStateOf(null)
 
     /**
@@ -119,11 +122,13 @@ class MainScreenViewModel : ViewModel() {
      * Makes a guess
      */
     fun guess() {
+        // pruning guesses made at an impossible time
         if (!canGuess) {
             requestState = RequestState.Error(ErrorType.GAME_OVER)
             return
         }
 
+        // pruning empty guesses
         if (userGuess.isBlank()) {
             requestState = RequestState.Error(ErrorType.BAD_STOP)
             return
