@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 /**
  * DAO for the games history.
  *
- * The games history is the record of all completed games.
+ * The games history is the record of all [GameRecap]s.
  * It can be used by a Statistics screen to show metrics about the user's performance.
  */
 @Dao
 interface GameHistoryDao {
     /**
-     * Inserts a new game recap to the games history.
+     * Inserts a new [GameRecap] to the games history.
      */
     @Insert
     suspend fun insert(guess: GameRecap)
@@ -26,8 +26,8 @@ interface GameHistoryDao {
     suspend fun clearHistory()
 
     /**
-     * Get all game recaps.
+     * Get all [GameRecap]s.
      */
     @Query("SELECT * FROM history")
-    suspend fun getAllItems(): Flow<List<GameRecap>>
+    fun getAllItems(): Flow<List<GameRecap>>
 }
