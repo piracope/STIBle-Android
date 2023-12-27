@@ -8,9 +8,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Transient
 
 /**
- * The response of the server to a user's guess.
+ * The response of the server to a user's [Guess].
  *
- * Provides valuable information about the mystery stop.
+ * Provides valuable information about the mystery [Stop].
  */
 @Entity(tableName = "current_session")
 data class GuessResponse(
@@ -20,21 +20,21 @@ data class GuessResponse(
     val id: Int = 0,
 
     /**
-     * The name of the stop guessed.
+     * The name of the [Stop] guessed.
      */
     @SerialName("stop_name")
     @ColumnInfo("stop_name")
     val stopName: String,
 
     /**
-     * The distance between the guessed stop and the mystery stop, in km.
+     * The distance between the guessed [Stop] and the mystery stop, in km.
      */
     @SerialName("distance")
     @ColumnInfo("distance")
     val distance: Double,
 
     /**
-     * The "percentage" of success of this guess.
+     * The "percentage" of success of this [Guess].
      *
      * "what even is a percentage of success in this context" I won't elaborate.
      */
@@ -43,9 +43,9 @@ data class GuessResponse(
     val percentage: Double,
 
     /**
-     * An Emoji showing the direction of the mystery stop from the guessed stop.
+     * An Emoji showing the direction of the mystery [Stop] from the guessed stop.
      *
-     * Or '✅' if the guess succeeded
+     * Or '✅' if the guessed stop is the mystery stop.
      *
      * ...I curse my past self for sending this as an emoji instead of just
      * passing a value and then interpreting that value in the view.
@@ -55,12 +55,12 @@ data class GuessResponse(
     val directionEmoji: String,
 
     /**
-     * The name of the mystery stop.
+     * The mystery [Stop].
      *
-     * This will only be filled if this is in response
-     * to a succeeding guess or if it was the user's last remaining try.
-     *
-     * Also it's a Stop for some reason.
+     * This field will only be non-null if the server deems that our game session is over.
+     * This occurs if :
+     *  - the guessed stop is the mystery stop -> the user won
+     *  - the user ran out of possible tries -> the user lost
      */
     @SerialName("secret")
     @Embedded("mystery")

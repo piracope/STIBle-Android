@@ -111,7 +111,7 @@ fun GameScreen(
         } else {
 
             val shareText = buildShareMessage(
-                lvlNumber = gameRules.puzzleNumber,
+                puzzleNumber = gameRules.puzzleNumber,
                 maxGuessCount = gameRules.maxGuessCount,
                 guessHistory = guessHistory,
                 gameState = gameState
@@ -158,6 +158,15 @@ fun GameScreen(
 }
 
 
+/**
+ * Displays the provided list of [GuessResponse] to the player.
+ *
+ * Format :
+ * Guessed stop name | Percentage indicators (squares) | Distance | Direction
+ *
+ * @param maxGuessCount the amount of times the player can make a guess
+ * @param guessHistory the previous [GuessResponse] to display
+ */
 @Composable
 fun GuessRows(
     maxGuessCount: Int,
@@ -266,11 +275,13 @@ fun GuessRows(
 }
 
 /**
- * Small little helper for the direction color.
+ * Small little helper for the direction background color.
  *
- * If no guess was made, put the usual gray.
- * If a non winning guess is made, put the blue with the related color
- * If a winning guess is made, green !!
+ * - No [GuessResponse] was passed : usual gray
+ * - Non-winning guess : blue
+ * - Winning guess : green
+ *
+ * @param guess the [GuessResponse] of this guess row, null if the row is empty
  */
 @Composable
 private fun getDirectionBackgroundColor(guess: GuessResponse?): Color {
@@ -303,6 +314,14 @@ private fun emojiToIcon(emoji: String): ImageVector {
     }
 }
 
+/**
+ * Searchable field for stops.
+ *
+ * @param userGuess the stored input to display upon recomposition
+ * @param onUserGuessChange the function to call when the user inputs something
+ * @param allStops the list of possible stops available to the player
+ * @param guessEnabled false if the player shouldn't be able to search a stop
+ */
 @Composable
 fun StopSearchBar(
     userGuess: String,
@@ -376,7 +395,9 @@ fun StopSearchBar(
 }
 
 /**
- * Displays a route as a rounded square, like on the STIB website.
+ * Displays a [Route] as a rounded square, like on the STIB website.
+ *
+ * @param route the [Route] to display
  */
 @Composable
 private fun RouteSquare(route: Route, modifier: Modifier = Modifier) {
@@ -406,7 +427,7 @@ private fun getColorFromRRGGBB(colorStr: String): Int {
 
 
 /**
- * Converts the guess history to a sequence of square emojis.
+ * Converts a [GuessResponse] to a sequence of square emojis.
  *
  * Basically takes the squares shown on the screen and converts them to text.
  */
@@ -420,11 +441,26 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
 }
 
 /**
- * Generates the "post-mortem" for this play session.
+ * Generates the shareable "post-mortem" for this play session.
+ *
+ * A standard post-mortem looks like the following :
+ *
+ * STIBle #123 3/6 (100%)
+ *
+ * 🟩⬛⬛🟨⬛
+ * 🟩🟩🟩🟩⬛
+ * 🟩🟩🟩🟩🟩
+ *
+ * STIBle App - https://stible.elitios.net/
+ *
+ * @param puzzleNumber today's puzzle number
+ * @param maxGuessCount the amount of times the user can guess in a day
+ * @param guessHistory all [GuessResponse] received during the session
+ * @param gameState whether the user has lost or not //TODO: this should be a boolean
  */
 @Composable
 private fun buildShareMessage(
-    lvlNumber: Int,
+    puzzleNumber: Int,
     maxGuessCount: Int,
     guessHistory: List<GuessResponse>,
     gameState: GameState
@@ -443,7 +479,7 @@ private fun buildShareMessage(
     }
 
     return """
-${stringResource(id = R.string.app_name)} #${lvlNumber} $nbTries/$maxGuessCount (${
+${stringResource(id = R.string.app_name)} #${puzzleNumber} $nbTries/$maxGuessCount (${
         bestPercentage.times(
             100
         ).toInt()

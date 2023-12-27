@@ -29,8 +29,8 @@ import g58089.mobg5.stible.R
 import g58089.mobg5.stible.model.util.ErrorType
 import g58089.mobg5.stible.network.RequestState
 import g58089.mobg5.stible.ui.GameScreen
+import g58089.mobg5.stible.ui.GameScreenViewModel
 import g58089.mobg5.stible.ui.HelpScreen
-import g58089.mobg5.stible.ui.MainScreenViewModel
 
 /**
  * The different navigation destinations.
@@ -96,7 +96,7 @@ fun STIBleNavigationBar(
  */
 @Composable
 fun STIBleNavHost(
-    viewModel: MainScreenViewModel,
+    viewModel: GameScreenViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {

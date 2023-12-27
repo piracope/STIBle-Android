@@ -1,15 +1,13 @@
 package g58089.mobg5.stible.model.dto
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 /**
  * A Guess made by the user.
  */
-@Serializable
 data class Guess(
     /**
-     * The Stop the user is giving as a guess.
+     * The name of the [Stop] the user thinks is the mystery stop.
      */
     @SerialName("input")
     val stopName: String,
@@ -21,7 +19,7 @@ data class Guess(
     val tryNumber: Int,
 
     /**
-     * Which mystery stop this guess relates to.
+     * Which mystery [Stop] this guess relates to.
      *
      * If this puzzleNumber is outdated, the guess
      * will be invalidated

@@ -10,19 +10,19 @@ enum class GameState {
     PLAYING,
 
     /**
-     * The user ran out of possible guesses.
+     * The user ran out of possible tries.
      *
      * The secret should be revealed.
      */
     LOST,
 
     /**
-     * The user found the secret stop in time.
+     * The user found the secret stop.
      */
     WON,
 
     /**
-     * The user is blocked form input.
+     * The user is blocked from input.
      *
      * This can be because a guess is pending, we couldn't fetch initial data, ...
      */

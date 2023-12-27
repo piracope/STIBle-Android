@@ -3,7 +3,7 @@ package g58089.mobg5.stible.model.database
 import g58089.mobg5.stible.model.GameHistoryRepository
 
 /**
- * Retrieves and stores game recaps in a local database.
+ * Retrieves and stores [GameRecap]s in a local database.
  *
  * NOTE: I'm following the Google codelab, but that may become useful if for whatever reason
  * I want to store the recaps in a cloud database or something.

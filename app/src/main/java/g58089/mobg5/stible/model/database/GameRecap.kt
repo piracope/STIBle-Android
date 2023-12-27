@@ -32,7 +32,7 @@ data class GameRecap(
     val bestPercentage: Double,
 
     /**
-     * The name of the mystery stop the user tried to guess.
+     * The name of the mystery [Stop] the user tried to guess.
      */
     @Embedded("mystery")
     val mysteryStop: Stop

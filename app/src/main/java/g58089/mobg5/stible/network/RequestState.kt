@@ -2,27 +2,31 @@ package g58089.mobg5.stible.network
 
 import g58089.mobg5.stible.model.util.ErrorType
 
+/**
+ * Describes the state of a given HTTP request.
+ */
 sealed interface RequestState {
 
     /**
      * The request succeeded.
-     *
-     * I don't know how I will use it.
      */
-    object Success : RequestState
+    // FIXME: will this be used ? should i just use Default ?
+    data object Success : RequestState
 
     /**
      * An error occurred.
+     *
+     * @param error the [ErrorType] that describes the error
      */
     data class Error(val error: ErrorType) : RequestState
 
     /**
      * A request is currently ongoing.
      */
-    object Loading : RequestState
+    data object Loading : RequestState
 
     /**
      * Nothing is happening.
      */
-    object Default : RequestState
+    data object Default : RequestState
 }

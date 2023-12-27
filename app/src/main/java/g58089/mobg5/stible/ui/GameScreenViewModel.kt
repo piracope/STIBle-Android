@@ -19,14 +19,14 @@ import retrofit2.HttpException
 import java.io.IOException
 
 /**
- * The ViewModel handling all business logic in the main screen.
+ * The [ViewModel] handling all business logic in the [GameScreen].
  *
  * So the base gameplay.
  */
-class MainScreenViewModel : ViewModel() {
+class GameScreenViewModel : ViewModel() {
 
     /**
-     * The guess provided by the user.
+     * The guessed stop name provided by the user.
      *
      * This should be kept updated with each user input.
      */
@@ -48,7 +48,7 @@ class MainScreenViewModel : ViewModel() {
         private set
 
     /**
-     * The user's chosen language.
+     * The user's chosen [Language].
      */
     var userLang by mutableStateOf(Language.FRENCH)
         private set
@@ -70,7 +70,7 @@ class MainScreenViewModel : ViewModel() {
     var mysteryStop: String? by mutableStateOf(null)
 
     /**
-     * A short hand for gameState == PLAYING.
+     * A short hand for [gameState] == PLAYING.
      *
      * Easier for the view.
      * TODO: do i keep this
@@ -79,7 +79,7 @@ class MainScreenViewModel : ViewModel() {
         get() = gameState == GameState.PLAYING
 
     /**
-     * The guess history of this play session.
+     * All [GuessResponse] received during the current game session.
      */
     var madeGuesses = mutableStateListOf<GuessResponse>()
         private set
@@ -119,7 +119,7 @@ class MainScreenViewModel : ViewModel() {
     }
 
     /**
-     * Makes a guess
+     * Makes a guess and saves the returned [GuessResponse], if any.
      */
     fun guess() {
         // pruning guesses made at an impossible time

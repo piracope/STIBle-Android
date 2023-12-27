@@ -37,16 +37,15 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 /**
- * Manages all request directed to the remote server.
+ * Manages all requests directed to the remote server.
  */
 interface STIBleApiService {
 
     /**
      * Sends a game start request.
      *
-     * Upon success, returns all necessary data to run the game,
-     * including all possible stop names in the language passed
-     * as parameter
+     * Upon success, returns this day's [GameRules], the initial data necessary to run the game.
+     * This data includes all possible stop names in the language passed as a parameter.
      *
      * @param lang the user's language, must be "fr" (default) or "nl"
      */
@@ -54,10 +53,10 @@ interface STIBleApiService {
     suspend fun start(@Body lang: String = Language.FRENCH.code): GameRules
 
     /**
-     * Sends a guess for today's mystery stop.
+     * Sends a [Guess] for today's mystery stop.
      *
      * Can return :
-     * - 200 with a GuessResponse
+     * - 200 with a [GuessResponse]
      * - 205 : this guess is outdated (guess made at 00:01 when the server has already chosen a new
      *          puzzle
      * - 400 : the guess' stop doesn't exist

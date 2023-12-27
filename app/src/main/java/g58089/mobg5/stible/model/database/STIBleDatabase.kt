@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
 import g58089.mobg5.stible.model.dto.GuessResponse
 
 // TODO: figure out if we keep the schema
+/**
+ * Room Database providing DAOs for the games history and the current game session.
+ */
 @Database(entities = [GameRecap::class, GuessResponse::class], version = 1, exportSchema = false)
 abstract class STIBleDatabase : RoomDatabase() {
     abstract fun currentSessionDao(): CurrentSessionDao
@@ -23,6 +26,9 @@ abstract class STIBleDatabase : RoomDatabase() {
         @Volatile
         private var Instance: STIBleDatabase? = null
 
+        /**
+         * Returns a unique instance to the [STIBleDatabase]
+         */
         fun getDatabase(context: Context): STIBleDatabase {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, STIBleDatabase::class.java, DATABASE_NAME)

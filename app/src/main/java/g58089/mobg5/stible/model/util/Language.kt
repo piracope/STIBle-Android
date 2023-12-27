@@ -14,3 +14,5 @@ enum class Language(val code: String) {
      */
     DUTCH("nl")
 }
+
+// TODO: shouldn't I just use Locale or whatever ?

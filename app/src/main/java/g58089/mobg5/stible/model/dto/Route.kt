@@ -1,7 +1,6 @@
 package g58089.mobg5.stible.model.dto
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
 /**
  * A route is a particular path used by the STIB Network.
@@ -12,7 +11,6 @@ import kotlinx.serialization.Serializable
  *
  * You could say a Route is non-oriented, where a Line is.
  */
-@Serializable
 data class Route(
     /**
      * The Route's number.
@@ -23,7 +21,7 @@ data class Route(
     val routeNumber: Int,
 
     /**
-     * The Route logo background color.
+     * The background color of this Route's logo.
      *
      * Contains the hexadecimal part, without the 0x.
      * For example, a white routeColor would have "FFFFFF" as value.
@@ -32,7 +30,7 @@ data class Route(
     val routeColor: String,
 
     /**
-     * The Route number color.
+     * The color of this Route's number.
      *
      * Contains the hexadecimal part, without the 0x.
      * For example, a white routeNumberColor would have "FFFFFF" as value.

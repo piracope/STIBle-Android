@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import g58089.mobg5.stible.R
 
 /**
- * Shows the help messages in a pager with page indicator.
+ * Shows the help messages in a [HorizontalPager] with page indicator.
  */
 @Composable
 fun HelpScreen(modifier: Modifier = Modifier) {

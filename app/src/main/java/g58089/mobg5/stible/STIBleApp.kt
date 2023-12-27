@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import g58089.mobg5.stible.ui.MainScreenViewModel
+import g58089.mobg5.stible.ui.GameScreenViewModel
 import g58089.mobg5.stible.ui.navigation.STIBleNavHost
 import g58089.mobg5.stible.ui.navigation.STIBleNavigationBar
 import g58089.mobg5.stible.ui.navigation.Screen
@@ -21,7 +21,7 @@ import g58089.mobg5.stible.ui.navigation.Screen
 @Composable
 fun STIBleApp(
     modifier: Modifier = Modifier,
-    viewModel: MainScreenViewModel = viewModel(),
+    viewModel: GameScreenViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     Scaffold(
