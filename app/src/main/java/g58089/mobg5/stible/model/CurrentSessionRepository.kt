@@ -1,24 +1,24 @@
 package g58089.mobg5.stible.model
 
-import g58089.mobg5.stible.model.database.GameRecap
+import g58089.mobg5.stible.model.dto.GuessResponse
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository that provides insert and retrieval of [GameRecap] for statistics.
+ * Repository that provides insert and retrieval of [GuessResponse] for today's session.
  */
 interface CurrentSessionRepository {
     /**
-     * Retrieves all game recaps from the provided data source.
+     * Retrieves all [GuessResponse]s of today from the provided data source.
      */
-    fun getAllRecapsStream(): Flow<List<GameRecap>>
+    fun getAllGuessResponses(): Flow<List<GuessResponse>>
 
     /**
-     * Inserts a new game recap in the data source
+     * Inserts a new [GuessResponse] in the data source
      */
-    suspend fun insertRecap(recap: GameRecap)
+    suspend fun insertGuessResponse(guessResponse: GuessResponse)
 
     /**
-     * Deletes all game recaps from the data source.
+     * Clears the current session to make way for a new one.
      */
-    suspend fun clearGameHistory()
+    suspend fun clearForNewSession()
 }

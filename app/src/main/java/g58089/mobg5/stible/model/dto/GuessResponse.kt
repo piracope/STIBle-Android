@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 /**
@@ -13,6 +14,7 @@ import kotlinx.serialization.Transient
  * Provides valuable information about the mystery [Stop].
  */
 @Entity(tableName = "current_session")
+@Serializable
 data class GuessResponse(
 
     @PrimaryKey(autoGenerate = true)
@@ -36,11 +38,12 @@ data class GuessResponse(
     /**
      * The "percentage" of success of this [Guess].
      *
-     * "what even is a percentage of success in this context" I won't elaborate.
+     * The biggest distance between two stops is 23 km.
+     * If a guess is 2.3km from the mystery stop, it is 90% close.
      */
     @SerialName("percentage")
     @ColumnInfo("percentage")
-    val percentage: Double,
+    val proximityPecentage: Double,
 
     /**
      * An Emoji showing the direction of the mystery [Stop] from the guessed stop.

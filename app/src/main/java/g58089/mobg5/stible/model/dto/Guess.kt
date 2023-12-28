@@ -1,10 +1,12 @@
 package g58089.mobg5.stible.model.dto
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * A Guess made by the user.
  */
+@Serializable
 data class Guess(
     /**
      * The name of the [Stop] the user thinks is the mystery stop.

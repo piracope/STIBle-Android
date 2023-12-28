@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.network
+package g58089.mobg5.stible.model.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import g58089.mobg5.stible.model.dto.GameRules

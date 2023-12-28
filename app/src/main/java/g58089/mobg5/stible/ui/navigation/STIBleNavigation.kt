@@ -1,10 +1,8 @@
 package g58089.mobg5.stible.ui.navigation
 
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Help
@@ -18,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -26,11 +23,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import g58089.mobg5.stible.R
-import g58089.mobg5.stible.model.util.ErrorType
-import g58089.mobg5.stible.network.RequestState
-import g58089.mobg5.stible.ui.GameScreen
-import g58089.mobg5.stible.ui.GameScreenViewModel
-import g58089.mobg5.stible.ui.HelpScreen
+import g58089.mobg5.stible.ui.screens.GameScreen
+import g58089.mobg5.stible.ui.screens.HelpScreen
 
 /**
  * The different navigation destinations.
@@ -96,7 +90,6 @@ fun STIBleNavigationBar(
  */
 @Composable
 fun STIBleNavHost(
-    viewModel: GameScreenViewModel,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -108,22 +101,7 @@ fun STIBleNavHost(
         modifier = modifier
     ) {
         composable(route = Screen.Main.route) {
-            GameScreen(
-                // FIXME: since the screen is so dependent on the viewmodel, why not pass it
-                gameRules = viewModel.gameRules,
-                userGuess = viewModel.userGuess,
-                onUserGuessChange = { viewModel.guessChange(it) },
-                onGuess = { viewModel.guess() },
-                gameState = viewModel.gameState,
-                canStillPlay = viewModel.canGuess,
-                guessHistory = viewModel.madeGuesses,
-                mysteryStop = viewModel.mysteryStop,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(
-                        dimensionResource(R.dimen.main_padding)
-                    )
-            )
+            GameScreen()
         }
 
         composable(route = Screen.Stats.route) {
@@ -141,22 +119,5 @@ fun STIBleNavHost(
                     .padding(dimensionResource(id = R.dimen.main_padding))
             )
         }
-    }
-
-    // TODO: MainViewModel should belong to MainScreen
-
-    val requestState = viewModel.requestState
-
-    if (requestState is RequestState.Error) {
-        val errorMsgId = when (requestState.error) {
-            ErrorType.GAME_OVER -> R.string.error_game_over
-            ErrorType.NO_INTERNET -> R.string.error_no_internet
-            ErrorType.NEW_LEVEL_AVAILABLE -> R.string.error_new_level_available
-            ErrorType.BAD_LANGUAGE -> R.string.error_bad_language
-            ErrorType.BAD_STOP -> R.string.error_bad_stop
-            ErrorType.UNKNOWN -> R.string.error_unknown
-        }
-        Toast.makeText(LocalContext.current, stringResource(id = errorMsgId), Toast.LENGTH_SHORT)
-            .show()
     }
 }

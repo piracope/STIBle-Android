@@ -1,7 +1,8 @@
-package g58089.mobg5.stible.ui
+package g58089.mobg5.stible.ui.screens
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,11 +60,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.viewmodel.compose.viewModel
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.GuessResponse
 import g58089.mobg5.stible.model.dto.Route
+import g58089.mobg5.stible.model.network.RequestState
+import g58089.mobg5.stible.model.util.ErrorType
 import g58089.mobg5.stible.model.util.GameState
+import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
@@ -73,6 +78,42 @@ const val TAG = "GameScreen"
 
 @Composable
 fun GameScreen(
+    modifier: Modifier = Modifier,
+    viewModel: GameScreenViewModel = viewModel(factory = STIBleViewModelProvider.Factory)
+) {
+    GameScreenBody(
+        gameRules = viewModel.gameRules,
+        userGuess = viewModel.userGuess,
+        canStillPlay = viewModel.canGuess,
+        guessHistory = viewModel.madeGuesses,
+        gameState = viewModel.gameState,
+        mysteryStop = viewModel.mysteryStop,
+        onUserGuessChange = viewModel::guessChange,
+        onGuess = viewModel::guess,
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(dimensionResource(id = R.dimen.main_padding))
+    )
+
+
+    val requestState = viewModel.requestState
+
+    if (requestState is RequestState.Error) {
+        val errorMsgId = when (requestState.error) {
+            ErrorType.GAME_OVER -> R.string.error_game_over
+            ErrorType.NO_INTERNET -> R.string.error_no_internet
+            ErrorType.NEW_LEVEL_AVAILABLE -> R.string.error_new_level_available
+            ErrorType.BAD_LANGUAGE -> R.string.error_bad_language
+            ErrorType.BAD_STOP -> R.string.error_bad_stop
+            ErrorType.UNKNOWN -> R.string.error_unknown
+        }
+        Toast.makeText(LocalContext.current, stringResource(id = errorMsgId), Toast.LENGTH_SHORT)
+            .show()
+    }
+}
+
+@Composable
+fun GameScreenBody(
     gameRules: GameRules,
     userGuess: String,
     canStillPlay: Boolean,
@@ -81,28 +122,26 @@ fun GameScreen(
     mysteryStop: String?,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+    Column(modifier = modifier) {
         // Displaying the routes
         Row {
             repeat(gameRules.puzzleRoutes.size) {
-                val currentRoute = gameRules.puzzleRoutes[it]
-                RouteSquare(currentRoute, Modifier.padding(dimensionResource(R.dimen.main_padding)))
+                RouteSquare(
+                    gameRules.puzzleRoutes[it],
+                    Modifier.padding(dimensionResource(R.dimen.main_padding))
+                )
             }
         }
-        GuessRows(
-            maxGuessCount = gameRules.maxGuessCount,
-            guessHistory = guessHistory,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Column {
+            repeat(gameRules.maxGuessCount) {
+                GuessRow(guessResponse = guessHistory.getOrNull(it))
+            }
+        }
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
         StopSearchBar(
-            userGuess,
-            onUserGuessChange,
-            gameRules.stops,
-            canStillPlay,
-            Modifier.fillMaxWidth()
+            userGuess, onUserGuessChange, gameRules.stops, canStillPlay, Modifier.fillMaxWidth()
         )
         if (gameState != GameState.WON && gameState != GameState.LOST) {
             Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = canStillPlay) {
@@ -159,117 +198,113 @@ fun GameScreen(
 
 
 /**
- * Displays the provided list of [GuessResponse] to the player.
+ * Displays a [GuessResponse] to the player.
  *
  * Format :
  * Guessed stop name | Percentage indicators (squares) | Distance | Direction
  *
- * @param maxGuessCount the amount of times the player can make a guess
- * @param guessHistory the previous [GuessResponse] to display
+ * @param guessResponse the [GuessResponse] to display, or `null` for a blank row
  */
 @Composable
-fun GuessRows(
-    maxGuessCount: Int,
-    guessHistory: List<GuessResponse>,
-    modifier: Modifier = Modifier
-) {
-    // for each guess possible
-    Column(modifier = modifier) {
-        repeat(maxGuessCount) {
-            val guess = guessHistory.getOrNull(it)
+fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.padding(vertical = dimensionResource(R.dimen.guess_row_padding)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))
+    ) {
+        GuessRowTextCell(
+            guessResponse?.stopName,
+            Modifier.fillMaxWidth(0.4f)
+        )
+        GuessRowPercentageSquares(
+            guessResponse?.proximityPecentage,
+            Modifier.size(dimensionResource(R.dimen.guess_row_height))
+        )
 
-            // we're gonna have a row
-            Row(
+        val distanceText =
+            guessResponse?.distance?.let { String.format(Locale.ENGLISH, "%.1fkm", it) }
+        GuessRowTextCell(
+            text = distanceText,
+            Modifier.weight(1f)
+        )
+
+        // TODO: put a tooltip for small screens that can't display the whole thing
+
+        val colorDirection = getDirectionBackgroundColor(guessResponse)
+        val vector = guessResponse?.directionEmoji?.let { emojiToIcon(it) }
+        GuessRowIcon(
+            icon = vector,
+            bgColor = colorDirection,
+            modifier = Modifier.size(dimensionResource(R.dimen.guess_row_height))
+        )
+    }
+}
+
+/**
+ * Displays a text in a cell of a [GuessRow].
+ *
+ * Should be used in a [GuessRow]
+ */
+@Composable
+private fun GuessRowTextCell(text: String?, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
+            .background(MaterialTheme.colorScheme.outline)
+            .height(dimensionResource(R.dimen.guess_row_height))
+
+    ) {
+        text?.let {
+            Text(
+                text = it,
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+/**
+ * Displays the proximity percentage as a list of 5 squares.
+ *
+ * Green square : 20% of proximity
+ * Yellow square : 10% of proximity
+ * Black square : 0% of proximity
+ */
+@Composable
+private fun GuessRowPercentageSquares(proximityPercentage: Double?, modifier: Modifier = Modifier) {
+    Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))) {
+        /*
+        Green square : 20% of proximity
+        Yellow square : 10% of proximity
+         */
+        val nbOfGreen: Int = proximityPercentage?.times(100)?.div(20)?.toInt() ?: 0
+        val nbOfYellow: Int =
+            proximityPercentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
+        repeat(5) { sqNb ->
+            val color: Color = if (sqNb < nbOfGreen) Green
+            else if (sqNb < nbOfGreen + nbOfYellow)
+            // if there are 2 green 1 yellow, yellow starts at 3
+                Yellow
+            else MaterialTheme.colorScheme.surfaceVariant
+            Box(
                 modifier = modifier
-                    .padding(vertical = dimensionResource(R.dimen.guess_row_padding)),
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))
-            ) {
-                // of "fields"
-                // FIXME: not very DRY
+                    .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
+                    .background(color)
+            )
+        }
+    }
+}
 
-                // the GuessField
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-                        .background(MaterialTheme.colorScheme.outline)
-                        .height(dimensionResource(R.dimen.guess_row_height))
-                        .fillMaxWidth(0.4f)
-                ) {
-                    guess?.stopName?.let { it1 ->
-                        Text(
-                            text = it1,
-                            textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-                // 5 squares for the results
-                Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))) {
-                    /*
-                    What is the percentage ? The biggest distance between two stops is 23 km.
-                    If a guess is 2.3km from the mystery stop, it is 90% close.
-                    That's it : Green square : 20%, Yellow square : 10%
-                    So we divide the percentage by 20 to get the number of green squares
-                    and the number of yellow is percentage % 20 / 10
-                     */
-                    val nbOfGreen: Int = guess?.percentage?.times(100)?.div(20)?.toInt() ?: 0
-                    val nbOfYellow: Int =
-                        guess?.percentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
-                    repeat(5) { sqNb ->
-                        val color: Color =
-                            if (sqNb < nbOfGreen)
-                                Green
-                            else if (sqNb < nbOfGreen + nbOfYellow)
-                            // if there are 2 green 1 yellow, yellow starts at 3
-                                Yellow
-                            else
-                                MaterialTheme.colorScheme.surfaceVariant
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-                                .background(color)
-                                .size(dimensionResource(R.dimen.guess_row_height))
-                        )
-                    }
-
-                    // FIXME: maybe move this to another composable, this function is quite long
-                }
-
-                // the distance
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-                        .background(MaterialTheme.colorScheme.outline)
-                        .height(dimensionResource(R.dimen.guess_row_height))
-                        .weight(1f)
-                ) {
-                    guess?.distance?.let { it1 ->
-                        Text(
-                            text = String.format(Locale.ENGLISH, "%.1fkm", it1),
-                            textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-
-                // TODO: put a tooltip for small screens that can't display the whole thing
-
-                val colorDirection = getDirectionBackgroundColor(guess)
-                // and the direction
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-                        .background(colorDirection)
-                        .size(dimensionResource(R.dimen.guess_row_height))
-                ) {
-                    guess?.let { g ->
-                        val vector = emojiToIcon(g.directionEmoji)
-                        Icon(imageVector = vector, contentDescription = vector.name)
-                    }
-                }
-            }
+@Composable
+private fun GuessRowIcon(icon: ImageVector?, bgColor: Color, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
+            .background(bgColor)
+    ) {
+        icon?.let {
+            Icon(imageVector = it, contentDescription = it.name)
         }
     }
 }
@@ -356,17 +391,13 @@ fun StopSearchBar(
             enabled = guessEnabled
         )
         // filter options based on text field value
-        val filteredStops =
-            allStops.filter { it.contains(userGuess, ignoreCase = true) }
+        val filteredStops = allStops.filter { it.contains(userGuess, ignoreCase = true) }
         // FIXME: accents don't pass, so you have to actually write them
         // which is the behaviour in the online game so....
         if (filteredStops.isNotEmpty()) {
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
+            ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
+                expanded = false
+            }) {
 
                 // NOTE: bug in Jetpack Compose : i MUST put fixed size for
                 // LazyColumn inside ExposedDropdownMenu
@@ -377,15 +408,12 @@ fun StopSearchBar(
                 ) {
                     LazyColumn {
                         items(filteredStops) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    onUserGuessChange(it)
-                                    expanded = false
-                                },
-                                text = {
-                                    Text(text = it)
-                                }
-                            )
+                            DropdownMenuItem(onClick = {
+                                onUserGuessChange(it)
+                                expanded = false
+                            }, text = {
+                                Text(text = it)
+                            })
                         }
                     }
                 }
@@ -432,7 +460,7 @@ private fun getColorFromRRGGBB(colorStr: String): Int {
  * Basically takes the squares shown on the screen and converts them to text.
  */
 private fun buildSquaresForShare(guess: GuessResponse): String {
-    val percentage = guess.percentage.times(100).toInt()
+    val percentage = guess.proximityPecentage.times(100).toInt()
     val green = percentage.div(20)
     val yellow = percentage.rem(20).div(10)
 
@@ -460,10 +488,7 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
  */
 @Composable
 private fun buildShareMessage(
-    puzzleNumber: Int,
-    maxGuessCount: Int,
-    guessHistory: List<GuessResponse>,
-    gameState: GameState
+    puzzleNumber: Int, maxGuessCount: Int, guessHistory: List<GuessResponse>, gameState: GameState
 ): String {
     // i've thought of not letting the user share if the game isn't finished, but who cares honestly.
 
@@ -475,7 +500,7 @@ private fun buildShareMessage(
 
     guessHistory.forEach {
         squares.append(buildSquaresForShare(it)).append('\n')
-        bestPercentage = max(bestPercentage, it.percentage)
+        bestPercentage = max(bestPercentage, it.proximityPecentage)
     }
 
     return """
@@ -493,8 +518,8 @@ ${stringResource(id = R.string.app_name)} App - https://stible.elitios.net/
 
 @Preview
 @Composable
-fun GameScreenPreview() {
-    GameScreen(
+fun GameScreenBodyPreview() {
+    GameScreenBody(
         gameRules = GameRules(),
         userGuess = "",
         canStillPlay = true,

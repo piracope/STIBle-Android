@@ -1,6 +1,7 @@
 package g58089.mobg5.stible.model.dto
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * A route is a particular path used by the STIB Network.
@@ -11,6 +12,7 @@ import kotlinx.serialization.SerialName
  *
  * You could say a Route is non-oriented, where a Line is.
  */
+@Serializable
 data class Route(
     /**
      * The Route's number.

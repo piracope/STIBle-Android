@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.ui
+package g58089.mobg5.stible.ui.screens
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -7,13 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import g58089.mobg5.stible.model.Repository
+import g58089.mobg5.stible.model.GameInteraction
 import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.GuessResponse
+import g58089.mobg5.stible.model.network.RequestState
 import g58089.mobg5.stible.model.util.ErrorType
 import g58089.mobg5.stible.model.util.GameState
 import g58089.mobg5.stible.model.util.Language
-import g58089.mobg5.stible.network.RequestState
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -23,7 +23,7 @@ import java.io.IOException
  *
  * So the base gameplay.
  */
-class GameScreenViewModel : ViewModel() {
+class GameScreenViewModel(private val gameInteraction: GameInteraction) : ViewModel() {
 
     /**
      * The guessed stop name provided by the user.
@@ -93,7 +93,7 @@ class GameScreenViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // get initial data
-                gameRules = Repository.getGameRules(userLang)
+                gameRules = gameInteraction.getGameRules(userLang)
                 requestState = RequestState.Success
                 gameState = GameState.PLAYING
             } catch (e: IOException) {
@@ -143,7 +143,7 @@ class GameScreenViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response =
-                    Repository.guess(userGuess, gameRules.puzzleNumber, guessCount, userLang)
+                    gameInteraction.guess(userGuess, gameRules.puzzleNumber, guessCount, userLang)
                 if (response.code() == 205) {
                     // I need to catch 205, because it signifies that the client has outdated info
                     requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)

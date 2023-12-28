@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.ui
+package g58089.mobg5.stible.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

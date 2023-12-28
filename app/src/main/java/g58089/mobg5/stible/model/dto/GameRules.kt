@@ -1,10 +1,12 @@
 package g58089.mobg5.stible.model.dto
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * All data essential to the working of the game.
  */
+@Serializable
 data class GameRules(
 
     /**

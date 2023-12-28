@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.network
+package g58089.mobg5.stible.model.network
 
 import g58089.mobg5.stible.model.util.ErrorType
 

@@ -1,8 +1,8 @@
 package g58089.mobg5.stible
 
 import android.app.Application
-import g58089.mobg5.stible.model.database.AppContainer
-import g58089.mobg5.stible.model.database.AppDataContainer
+import g58089.mobg5.stible.model.AppContainer
+import g58089.mobg5.stible.model.AppDataContainer
 
 
 /**
