@@ -3,6 +3,7 @@ package g58089.mobg5.stible.model.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import g58089.mobg5.stible.model.dto.GameRecap
 import kotlinx.coroutines.flow.Flow
 
 /**

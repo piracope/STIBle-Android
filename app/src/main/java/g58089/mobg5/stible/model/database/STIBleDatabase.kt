@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import g58089.mobg5.stible.model.dto.GameRecap
 import g58089.mobg5.stible.model.dto.GuessResponse
 
 // TODO: figure out if we keep the schema

@@ -1,6 +1,6 @@
 package g58089.mobg5.stible.model
 
-import g58089.mobg5.stible.model.database.GameRecap
+import g58089.mobg5.stible.model.dto.GameRecap
 import kotlinx.coroutines.flow.Flow
 
 /**

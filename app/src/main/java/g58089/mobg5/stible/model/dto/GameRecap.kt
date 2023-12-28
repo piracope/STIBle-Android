@@ -1,10 +1,9 @@
-package g58089.mobg5.stible.model.database
+package g58089.mobg5.stible.model.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import g58089.mobg5.stible.model.dto.Stop
 
 
 /**
