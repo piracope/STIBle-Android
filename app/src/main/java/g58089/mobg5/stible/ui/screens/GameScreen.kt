@@ -464,7 +464,7 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
     val green = percentage.div(20)
     val yellow = percentage.rem(20).div(10)
 
-    return "${"🟩".repeat(green)}${"🟨".repeat(yellow)}${"⬛".repeat(5 - green - yellow)}"
+    return "${"🟩".repeat(green)}${"🟨".repeat(yellow)}${"⬛".repeat(5 - green - yellow)} ${guess.directionEmoji}"
 
 }
 
