@@ -17,6 +17,7 @@
     <string name="input_placeholder">Arrêt de métro, bus, tram…</string>
     <string name="guess">Deviner</string>
     <string name="stop_name_lost">Raté ! L\'arrêt était %1$s</string>
+    <string name="won">Bien joué !</string>
     <string name="share">Partager</string>
 
     <!--Help Screen-->

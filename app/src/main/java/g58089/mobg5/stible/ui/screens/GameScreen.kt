@@ -125,7 +125,9 @@ fun GameScreenBody(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        // Displaying the routes
+
+        /* ROUTES */
+
         Row {
             repeat(gameRules.puzzleRoutes.size) {
                 RouteSquare(
@@ -134,15 +136,25 @@ fun GameScreenBody(
                 )
             }
         }
+
+        /* GUESS ROWS */
+
         Column {
             repeat(gameRules.maxGuessCount) {
                 GuessRow(guessResponse = guessHistory.getOrNull(it))
             }
         }
+
         Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
+
+        /* GUESS INPUT */
+
         StopSearchBar(
             userGuess, onUserGuessChange, gameRules.stops, canStillPlay, Modifier.fillMaxWidth()
         )
+
+        /* BIG INTERACTION BUTTON */
+
         if (gameState != GameState.WON && gameState != GameState.LOST) {
             Button(onClick = onGuess, Modifier.fillMaxWidth(), enabled = canStillPlay) {
                 Text(text = stringResource(id = R.string.guess))
@@ -172,27 +184,22 @@ fun GameScreenBody(
             ) {
                 Text(text = stringResource(id = R.string.share))
             }
-
-            // FIXME: the android tutorial hoists the share mechanic out of this composable and
-            //  handles it in the STIBleScreen. Should I do that ?
         }
 
+        /* POST GAME MESSAGE */
 
-        if (gameState == GameState.LOST) {
-            // null checking. Should not fail, but you never knooowww
+        if (mysteryStop != null) {
+            val gameOverMsg =
+                if (gameState == GameState.LOST) R.string.stop_name_lost else R.string.won
 
-            if (mysteryStop != null) {
-                Text(
-                    text = stringResource(id = R.string.stop_name_lost, mysteryStop),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            } else {
-                Log.e(TAG, "Game is lost, but no mystery stop was found.")
-            }
+            Text(
+                text = stringResource(id = gameOverMsg, mysteryStop),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        } else if (gameState in arrayOf(GameState.LOST, GameState.WON)) {
+            Log.e(TAG, "Game is over, but no mystery stop was provided by the backend.")
         }
-
-        // TODO: in the original game, there is a "Bien joué !" when you won.
     }
 }
 
@@ -274,18 +281,13 @@ private fun GuessRowTextCell(text: String?, modifier: Modifier = Modifier) {
 @Composable
 private fun GuessRowPercentageSquares(proximityPercentage: Double?, modifier: Modifier = Modifier) {
     Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))) {
-        /*
-        Green square : 20% of proximity
-        Yellow square : 10% of proximity
-         */
         val nbOfGreen: Int = proximityPercentage?.times(100)?.div(20)?.toInt() ?: 0
         val nbOfYellow: Int =
             proximityPercentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
         repeat(5) { sqNb ->
             val color: Color = if (sqNb < nbOfGreen) Green
-            else if (sqNb < nbOfGreen + nbOfYellow)
+            else if (sqNb < nbOfGreen + nbOfYellow) Yellow
             // if there are 2 green 1 yellow, yellow starts at 3
-                Yellow
             else MaterialTheme.colorScheme.surfaceVariant
             Box(
                 modifier = modifier
