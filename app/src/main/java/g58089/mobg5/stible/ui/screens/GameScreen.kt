@@ -73,6 +73,7 @@ import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.theme.Green
+import g58089.mobg5.stible.ui.theme.Red
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
 
@@ -85,36 +86,56 @@ fun GameScreen(
 ) {
     val requestState = viewModel.requestState
 
-    if (!viewModel.isGameReady) {
-        if (requestState is RequestState.Loading) {
-            LoadingScreen(Modifier.fillMaxSize())
-        } else if (requestState is RequestState.Error) {
-            ErrorMessageScreen(
-                errorType = requestState.error,
-                onReload = viewModel::initializeGame,
-                Modifier.fillMaxSize()
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row {
+            // TODO: change font
+            Text(
+                text = stringResource(id = R.string.app_name_first_part),
+                color = MaterialTheme.colorScheme.inversePrimary,
+                style = MaterialTheme.typography.displayLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = stringResource(id = R.string.app_name_second_part),
+                color = Red,
+                style = MaterialTheme.typography.displayLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = stringResource(id = R.string.app_name_third_part),
+                style = MaterialTheme.typography.displayLarge,
+                fontWeight = FontWeight.Bold
             )
         }
-        return
+
+        if (!viewModel.isGameReady) {
+            if (requestState is RequestState.Loading) {
+                LoadingScreen(Modifier.fillMaxSize())
+            } else if (requestState is RequestState.Error) {
+                ErrorMessageScreen(
+                    errorType = requestState.error,
+                    onReload = viewModel::initializeGame,
+                    Modifier.fillMaxSize()
+                )
+            }
+            return
+        }
+
+        GameScreenBody(
+            gameRules = viewModel.gameRules,
+            userGuess = viewModel.userGuess,
+            canStillPlay = viewModel.canGuess,
+            guessHistory = viewModel.madeGuesses,
+            gameState = viewModel.gameState,
+            mysteryStop = viewModel.mysteryStop,
+            bestPercentage = viewModel.highestProximity,
+            onUserGuessChange = viewModel::changeGuess,
+            onGuess = viewModel::guess,
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(dimensionResource(id = R.dimen.main_padding))
+        )
     }
-
-    GameScreenBody(
-        gameRules = viewModel.gameRules,
-        userGuess = viewModel.userGuess,
-        canStillPlay = viewModel.canGuess,
-        guessHistory = viewModel.madeGuesses,
-        gameState = viewModel.gameState,
-        mysteryStop = viewModel.mysteryStop,
-        bestPercentage = viewModel.highestProximity,
-        onUserGuessChange = viewModel::changeGuess,
-        onGuess = viewModel::guess,
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(dimensionResource(id = R.dimen.main_padding))
-    )
-
-
-
 
     if (requestState is RequestState.Error) {
         Toast.makeText(
