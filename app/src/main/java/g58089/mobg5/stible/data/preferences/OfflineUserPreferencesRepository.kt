@@ -33,9 +33,7 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
                 throw exception
             }
         }.map { preferences ->
-            val lastSeenPuzzleNumber = preferences[PreferencesKeys.LAST_SEEN_PUZZLE_NUMBER] ?: -1
-            val isMapModeEnabled = preferences[PreferencesKeys.IS_MAP_MODE_ENABLED] ?: false
-            UserPreferences(lastSeenPuzzleNumber, isMapModeEnabled)
+            mapUserPreferences(preferences)
         }
 
     override suspend fun setLastSeenPuzzleNumber(puzzleNumber: Int) {
@@ -49,5 +47,12 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
             preferences[PreferencesKeys.IS_MAP_MODE_ENABLED] = isMapModeEnabled
         }
     }
+
+    private fun mapUserPreferences(preferences: Preferences): UserPreferences {
+        val lastSeenPuzzleNumber = preferences[PreferencesKeys.LAST_SEEN_PUZZLE_NUMBER] ?: -1
+        val isMapModeEnabled = preferences[PreferencesKeys.IS_MAP_MODE_ENABLED] ?: false
+        return UserPreferences(lastSeenPuzzleNumber, isMapModeEnabled)
+    }
+
 
 }

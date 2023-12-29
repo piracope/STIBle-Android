@@ -1,7 +1,6 @@
 package g58089.mobg5.stible.ui.screens
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,17 +9,24 @@ import androidx.lifecycle.viewModelScope
 import g58089.mobg5.stible.data.CurrentSessionRepository
 import g58089.mobg5.stible.data.GameHistoryRepository
 import g58089.mobg5.stible.data.GameInteraction
+import g58089.mobg5.stible.data.UserPreferencesRepository
 import g58089.mobg5.stible.data.dto.GameRecap
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.data.network.RequestState
+import g58089.mobg5.stible.data.preferences.UserPreferences
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.data.util.Language
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+
+private const val TAG = "GameScreenViewModel"
+// FIXME: general issue of functions having side-effects
 
 /**
  * The [ViewModel] handling all business logic in the [GameScreen].
@@ -30,7 +36,8 @@ import java.io.IOException
 class GameScreenViewModel(
     private val gameInteraction: GameInteraction,
     private val currentSessionRepo: CurrentSessionRepository,
-    private val gameHistoryRepo: GameHistoryRepository
+    private val gameHistoryRepo: GameHistoryRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
 
     /**
@@ -64,7 +71,8 @@ class GameScreenViewModel(
     /**
      * The number of times the user guessed TODAY.
      */
-    private var guessCount by mutableIntStateOf(0)
+    private val guessCount
+        get() = madeGuesses.size
 
     /**
      * The current state of play.
@@ -108,22 +116,64 @@ class GameScreenViewModel(
      * The biggest proximity percentage achieved during this session.
      */
     val highestProximity: Double
-        get() = madeGuesses.maxOf { it.proximityPecentage }
+        get() = madeGuesses.maxOfOrNull { it.proximityPecentage } ?: 0.0
 
+    /**
+     * The [UserPreferences] containing various key-value pairs.
+     */
+    private var userPreferences by mutableStateOf(UserPreferences())
+
+    // FIXME: apparently init is bad
     init {
+        setupFlowCollectors()
+
         viewModelScope.launch {
             fetchGameRules()
-            if (requestState is RequestState.Success) {
-                isGameReady = true
+            if (requestState !is RequestState.Success) {
+                // if we can't even get the game rules -> it's over
+                return@launch
             }
-            currentSessionRepo.clearForNewSession() // TODO: conditional
 
-            if (isGameReady) {
+            // check if today is a new day
+            if (userPreferences.lastSeenPuzzleNumber < gameRules.puzzleNumber) {
+                currentSessionRepo.clearForNewSession()
+                userPreferencesRepository.setLastSeenPuzzleNumber(gameRules.puzzleNumber)
+            }
+
+            // old session was already recovered from our flow collectors
+
+            if (madeGuesses.isNotEmpty()) {
+                gameState = handleStateAfterGuess(madeGuesses.last(), GameState.PLAYING)
+                if (gameState != GameState.PLAYING) {
+                    mysteryStop = madeGuesses.last().mysteryStop?.stopName
+                } // FIXME: NOT DRY !!
+            } else {
                 gameState = GameState.PLAYING
             }
+
+            // when everything is done, tell the view that it can stop displaying a spinny
+            // thing or whatever the view decided to show (SEPARATION OF CONCERNS !!!!!!!!!)
+            isGameReady = true
         }
     }
 
+    /**
+     * Sets up the Flows to automatically put their new data inside my own little silly fields.
+     *
+     * // TODO: ask QHB about this because i do NOT understand this
+     */
+    private fun setupFlowCollectors() {
+        viewModelScope.launch {
+            combine(
+                userPreferencesRepository.userData,
+                currentSessionRepo.getAllGuessResponses()
+            ) { pref, session ->
+                userPreferences = pref
+                madeGuesses.clear()
+                madeGuesses.addAll(session)
+            }.collect()
+        }
+    }
 
     /**
      * Grabs the latest [GameRules] from the back-end.
@@ -183,7 +233,6 @@ class GameScreenViewModel(
             response?.let {
                 // display to the database
                 madeGuesses.add(it)
-                guessCount++ // only increment if we actually succeed at guessing
 
                 // figure out whether the game ended and unblock input if needed
                 gameState = handleStateAfterGuess(it, oldGameState)
@@ -195,7 +244,6 @@ class GameScreenViewModel(
                 if (gameState != GameState.PLAYING) {
                     handleGameOver(it.mysteryStop)
                 }
-
             }
         }
     }

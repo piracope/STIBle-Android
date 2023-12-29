@@ -7,10 +7,10 @@ data class UserPreferences(
     /**
      * The puzzle number of the last game session.
      */
-    val lastSeenPuzzleNumber: Int,
+    val lastSeenPuzzleNumber: Int = -1,
 
     /**
      * Whether the user may access a map showing them where their guesses are.
      */
-    val isMapModeEnabled: Boolean
+    val isMapModeEnabled: Boolean = false
 )

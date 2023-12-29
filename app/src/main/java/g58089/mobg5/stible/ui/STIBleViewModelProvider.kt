@@ -16,7 +16,8 @@ object STIBleViewModelProvider {
             GameScreenViewModel(
                 stibleApplication().container.gameInteraction,
                 stibleApplication().container.currentSessionRepository,
-                stibleApplication().container.gameHistoryRepository
+                stibleApplication().container.gameHistoryRepository,
+                stibleApplication().container.userPreferencesRepository
             )
         }
     }

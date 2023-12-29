@@ -73,7 +73,7 @@ import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
 
-const val TAG = "GameScreen"
+private const val TAG = "GameScreen"
 
 @Composable
 fun GameScreen(
@@ -201,6 +201,7 @@ fun GameScreenBody(
             )
         } else if (gameState in arrayOf(GameState.LOST, GameState.WON)) {
             Log.e(TAG, "Game is over, but no mystery stop was provided by the backend.")
+            // FIXME: we end up here for no reason
         }
     }
 }
