@@ -1,10 +1,10 @@
-package g58089.mobg5.stible.model.network
+package g58089.mobg5.stible.data.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import g58089.mobg5.stible.model.dto.GameRules
-import g58089.mobg5.stible.model.dto.Guess
-import g58089.mobg5.stible.model.dto.GuessResponse
-import g58089.mobg5.stible.model.util.Language
+import g58089.mobg5.stible.data.dto.GameRules
+import g58089.mobg5.stible.data.dto.Guess
+import g58089.mobg5.stible.data.dto.GuessResponse
+import g58089.mobg5.stible.data.util.Language
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Response

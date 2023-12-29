@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.model.dto
+package g58089.mobg5.stible.data.dto
 
 import androidx.room.ColumnInfo
 import kotlinx.serialization.SerialName

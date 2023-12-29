@@ -1,6 +1,6 @@
-package g58089.mobg5.stible.model
+package g58089.mobg5.stible.data
 
-import g58089.mobg5.stible.model.dto.GuessResponse
+import g58089.mobg5.stible.data.dto.GuessResponse
 import kotlinx.coroutines.flow.Flow
 
 /**

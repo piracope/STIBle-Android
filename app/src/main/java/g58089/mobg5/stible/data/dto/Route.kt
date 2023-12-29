@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.model.dto
+package g58089.mobg5.stible.data.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

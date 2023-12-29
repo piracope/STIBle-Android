@@ -1,7 +1,7 @@
-package g58089.mobg5.stible.model.database
+package g58089.mobg5.stible.data.database
 
-import g58089.mobg5.stible.model.GameHistoryRepository
-import g58089.mobg5.stible.model.dto.GameRecap
+import g58089.mobg5.stible.data.GameHistoryRepository
+import g58089.mobg5.stible.data.dto.GameRecap
 
 /**
  * Retrieves and stores [GameRecap]s in a local database.

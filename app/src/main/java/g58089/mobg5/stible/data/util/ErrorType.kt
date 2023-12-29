@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.model.util
+package g58089.mobg5.stible.data.util
 
 /**
  * Defines general error cases.

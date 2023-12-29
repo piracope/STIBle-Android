@@ -1,6 +1,6 @@
-package g58089.mobg5.stible.model.network
+package g58089.mobg5.stible.data.network
 
-import g58089.mobg5.stible.model.util.ErrorType
+import g58089.mobg5.stible.data.util.ErrorType
 
 /**
  * Describes the state of a given HTTP request.

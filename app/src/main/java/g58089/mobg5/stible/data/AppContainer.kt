@@ -1,11 +1,11 @@
-package g58089.mobg5.stible.model
+package g58089.mobg5.stible.data
 
 import android.content.Context
-import g58089.mobg5.stible.model.database.OfflineCurrentSessionRepository
-import g58089.mobg5.stible.model.database.OfflineGameHistoryRepository
-import g58089.mobg5.stible.model.database.STIBleDatabase
-import g58089.mobg5.stible.model.network.OnlineGameInteraction
-import g58089.mobg5.stible.model.network.STIBleApi
+import g58089.mobg5.stible.data.database.OfflineCurrentSessionRepository
+import g58089.mobg5.stible.data.database.OfflineGameHistoryRepository
+import g58089.mobg5.stible.data.database.STIBleDatabase
+import g58089.mobg5.stible.data.network.OnlineGameInteraction
+import g58089.mobg5.stible.data.network.STIBleApi
 
 
 /**
