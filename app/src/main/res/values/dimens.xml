@@ -6,4 +6,5 @@
     <dimen name="guess_row_padding">2dp</dimen>
     <dimen name="main_padding">8dp</dimen>
     <dimen name="route_number_size">16sp</dimen>
+    <dimen name="error_icon">128dp</dimen>
 </resources>

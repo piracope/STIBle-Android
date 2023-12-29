@@ -1,5 +1,6 @@
 package g58089.mobg5.stible.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -126,10 +127,18 @@ class GameScreenViewModel(
     // FIXME: apparently init is bad
     init {
         setupFlowCollectors()
+        initializeGame()
+    }
 
+    /**
+     * Initializes the GameScreen
+     */
+    fun initializeGame() {
         viewModelScope.launch {
+            isGameReady = false
             fetchGameRules()
             if (requestState !is RequestState.Success) {
+                Log.d(TAG, "request state : $requestState")
                 // if we can't even get the game rules -> it's over
                 return@launch
             }

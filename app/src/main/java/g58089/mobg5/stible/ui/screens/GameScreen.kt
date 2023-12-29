@@ -21,6 +21,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.East
 import androidx.compose.material.icons.rounded.Error
@@ -33,6 +35,7 @@ import androidx.compose.material.icons.rounded.SouthWest
 import androidx.compose.material.icons.rounded.West
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -80,6 +83,21 @@ fun GameScreen(
     modifier: Modifier = Modifier,
     viewModel: GameScreenViewModel = viewModel(factory = STIBleViewModelProvider.Factory)
 ) {
+    val requestState = viewModel.requestState
+
+    if (!viewModel.isGameReady) {
+        if (requestState is RequestState.Loading) {
+            LoadingScreen(Modifier.fillMaxSize())
+        } else if (requestState is RequestState.Error) {
+            ErrorMessageScreen(
+                errorType = requestState.error,
+                onReload = viewModel::initializeGame,
+                Modifier.fillMaxSize()
+            )
+        }
+        return
+    }
+
     GameScreenBody(
         gameRules = viewModel.gameRules,
         userGuess = viewModel.userGuess,
@@ -96,19 +114,73 @@ fun GameScreen(
     )
 
 
-    val requestState = viewModel.requestState
+
 
     if (requestState is RequestState.Error) {
-        val errorMsgId = when (requestState.error) {
-            ErrorType.GAME_OVER -> R.string.error_game_over
-            ErrorType.NO_INTERNET -> R.string.error_no_internet
-            ErrorType.NEW_LEVEL_AVAILABLE -> R.string.error_new_level_available
-            ErrorType.BAD_LANGUAGE -> R.string.error_bad_language
-            ErrorType.BAD_STOP -> R.string.error_bad_stop
-            ErrorType.UNKNOWN -> R.string.error_unknown
+        Toast.makeText(
+            LocalContext.current,
+            stringResource(id = getErrorStringResId(requestState.error)),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
+
+/**
+ * Fetches the error messages for each [ErrorType]
+ */
+private fun getErrorStringResId(errorType: ErrorType): Int {
+    return when (errorType) {
+        ErrorType.GAME_OVER -> R.string.error_game_over
+        ErrorType.NO_INTERNET -> R.string.error_no_internet
+        ErrorType.NEW_LEVEL_AVAILABLE -> R.string.error_new_level_available
+        ErrorType.BAD_LANGUAGE -> R.string.error_bad_language
+        ErrorType.BAD_STOP -> R.string.error_bad_stop
+        ErrorType.UNKNOWN -> R.string.error_unknown
+    }
+}
+
+/**
+ * Displays a little spinny thing.
+ */
+@Composable
+fun LoadingScreen(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        CircularProgressIndicator()
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.main_padding)))
+        Text(text = stringResource(id = R.string.loading))
+    }
+}
+
+/**
+ * Displays an error message according to a provided [ErrorType] and a reload button.
+ */
+@Composable
+fun ErrorMessageScreen(errorType: ErrorType, onReload: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        var icon = Icons.Default.Error
+
+        if (errorType == ErrorType.NO_INTERNET) {
+            icon = Icons.Default.WifiOff
         }
-        Toast.makeText(LocalContext.current, stringResource(id = errorMsgId), Toast.LENGTH_SHORT)
-            .show()
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(dimensionResource(id = R.dimen.error_icon))
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.main_padding)))
+        Text(text = stringResource(id = getErrorStringResId(errorType)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.main_padding)))
+        Button(onClick = onReload) {
+            Text(text = stringResource(id = R.string.reload))
+        }
     }
 }
 
