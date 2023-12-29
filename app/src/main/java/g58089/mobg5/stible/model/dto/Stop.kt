@@ -14,7 +14,7 @@ data class Stop(
      */
     @SerialName("stop_name")
     @ColumnInfo("stop_name")
-    val stopName: String,
+    val stopName: String = "",
 
     // TODO: get geo-coordinates too.
 )

@@ -72,7 +72,6 @@ import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.theme.Green
 import g58089.mobg5.stible.ui.theme.Yellow
 import java.util.Locale
-import kotlin.math.max
 
 const val TAG = "GameScreen"
 
@@ -88,7 +87,8 @@ fun GameScreen(
         guessHistory = viewModel.madeGuesses,
         gameState = viewModel.gameState,
         mysteryStop = viewModel.mysteryStop,
-        onUserGuessChange = viewModel::guessChange,
+        bestPercentage = viewModel.highestProximity,
+        onUserGuessChange = viewModel::changeGuess,
         onGuess = viewModel::guess,
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -120,6 +120,7 @@ fun GameScreenBody(
     guessHistory: List<GuessResponse>,
     gameState: GameState,
     mysteryStop: String?,
+    bestPercentage: Double,
     onUserGuessChange: (String) -> Unit,
     onGuess: () -> Unit,
     modifier: Modifier = Modifier,
@@ -165,6 +166,7 @@ fun GameScreenBody(
                 puzzleNumber = gameRules.puzzleNumber,
                 maxGuessCount = gameRules.maxGuessCount,
                 guessHistory = guessHistory,
+                bestPercentage = bestPercentage,
                 gameState = gameState
             )
 
@@ -486,23 +488,25 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
  * @param puzzleNumber today's puzzle number
  * @param maxGuessCount the amount of times the user can guess in a day
  * @param guessHistory all [GuessResponse] received during the session
+ * @param bestPercentage the proximity percentage of the guess closest to the mystery stop
  * @param gameState whether the user has lost or not //TODO: this should be a boolean
  */
 @Composable
 private fun buildShareMessage(
-    puzzleNumber: Int, maxGuessCount: Int, guessHistory: List<GuessResponse>, gameState: GameState
+    puzzleNumber: Int,
+    maxGuessCount: Int,
+    bestPercentage: Double,
+    guessHistory: List<GuessResponse>,
+    gameState: GameState
 ): String {
     // i've thought of not letting the user share if the game isn't finished, but who cares honestly.
 
     val nbTries = if (gameState == GameState.LOST) "X" else guessHistory.size
 
     val squares = StringBuilder()
-    var bestPercentage = 0.0
-
 
     guessHistory.forEach {
         squares.append(buildSquaresForShare(it)).append('\n')
-        bestPercentage = max(bestPercentage, it.proximityPecentage)
     }
 
     return """
@@ -528,6 +532,7 @@ fun GameScreenBodyPreview() {
         guessHistory = emptyList(),
         gameState = GameState.PLAYING,
         mysteryStop = null,
+        bestPercentage = 0.0,
         onUserGuessChange = {},
         onGuess = {},
         modifier = Modifier.fillMaxSize()

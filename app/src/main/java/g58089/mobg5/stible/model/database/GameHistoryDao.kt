@@ -2,6 +2,7 @@ package g58089.mobg5.stible.model.database
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import g58089.mobg5.stible.model.dto.GameRecap
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,7 @@ interface GameHistoryDao {
     /**
      * Inserts a new [GameRecap] to the games history.
      */
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(guess: GameRecap)
 
     /**

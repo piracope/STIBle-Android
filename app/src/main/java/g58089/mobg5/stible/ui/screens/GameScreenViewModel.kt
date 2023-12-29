@@ -7,9 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import g58089.mobg5.stible.model.CurrentSessionRepository
+import g58089.mobg5.stible.model.GameHistoryRepository
 import g58089.mobg5.stible.model.GameInteraction
+import g58089.mobg5.stible.model.dto.GameRecap
 import g58089.mobg5.stible.model.dto.GameRules
 import g58089.mobg5.stible.model.dto.GuessResponse
+import g58089.mobg5.stible.model.dto.Stop
 import g58089.mobg5.stible.model.network.RequestState
 import g58089.mobg5.stible.model.util.ErrorType
 import g58089.mobg5.stible.model.util.GameState
@@ -23,7 +27,11 @@ import java.io.IOException
  *
  * So the base gameplay.
  */
-class GameScreenViewModel(private val gameInteraction: GameInteraction) : ViewModel() {
+class GameScreenViewModel(
+    private val gameInteraction: GameInteraction,
+    private val currentSessionRepo: CurrentSessionRepository,
+    private val gameHistoryRepo: GameHistoryRepository
+) : ViewModel() {
 
     /**
      * The guessed stop name provided by the user.
@@ -81,39 +89,69 @@ class GameScreenViewModel(private val gameInteraction: GameInteraction) : ViewMo
     /**
      * All [GuessResponse] received during the current game session.
      */
-    var madeGuesses = mutableStateListOf<GuessResponse>()
-        private set
+    val madeGuesses = mutableStateListOf<GuessResponse>()
+    /*
+    NOTE: I could observe the database's current session, as it's a flow. That said,
+    if i replace adding the newly received guess to a mutableList with a database insert,
+    it significantly slows down my app. What I could do is instead save it to this list for display
+    purposes, unblock the input and send it to the database. So that's what I'm doing.
+     */
 
     /**
-     * Calls the backend for initial game data.
+     * `true` if we managed to load initial data.
      */
-    init {
-        requestState = RequestState.Loading
+    var isGameReady by mutableStateOf(false)
+        private set
 
+
+    /**
+     * The biggest proximity percentage achieved during this session.
+     */
+    val highestProximity: Double
+        get() = madeGuesses.maxOf { it.proximityPecentage }
+
+    init {
         viewModelScope.launch {
-            try {
-                // get initial data
-                gameRules = gameInteraction.getGameRules(userLang)
-                requestState = RequestState.Success
+            fetchGameRules()
+            if (requestState is RequestState.Success) {
+                isGameReady = true
+            }
+            currentSessionRepo.clearForNewSession() // TODO: conditional
+
+            if (isGameReady) {
                 gameState = GameState.PLAYING
-            } catch (e: IOException) {
-                requestState = RequestState.Error(ErrorType.NO_INTERNET)
-            } catch (e: HttpException) {
-                requestState =
-                    if (e.code() == 400)
-                    // language wasn't "fr" or "nl" --> should never happen
-                        RequestState.Error(ErrorType.BAD_LANGUAGE)
-                    else
-                    // idk an error 500 or something you can never be sure
-                        RequestState.Error(ErrorType.UNKNOWN)
             }
         }
     }
 
+
+    /**
+     * Grabs the latest [GameRules] from the back-end.
+     */
+    private suspend fun fetchGameRules() {
+        requestState = RequestState.Loading
+
+        try {
+            gameRules = gameInteraction.getGameRules(userLang)
+            requestState = RequestState.Success
+        } catch (e: IOException) {
+            requestState = RequestState.Error(ErrorType.NO_INTERNET)
+        } catch (e: HttpException) {
+            requestState =
+                if (e.code() == 400)
+                // language wasn't "fr" or "nl" --> should never happen
+                    RequestState.Error(ErrorType.BAD_LANGUAGE)
+                else
+                // idk an error 500 or something you can never be sure
+                    RequestState.Error(ErrorType.UNKNOWN)
+        }
+    }
+
+
     /**
      * Updates the currently input guess in the view model with what the user wrote.
      */
-    fun guessChange(newGuess: String) {
+    fun changeGuess(newGuess: String) {
         // TODO: check if game over (probably)
         userGuess = newGuess
     }
@@ -134,69 +172,108 @@ class GameScreenViewModel(private val gameInteraction: GameInteraction) : ViewMo
             return
         }
 
-        requestState = RequestState.Loading
-
         // to prevent going from LOST -> BLOCKED -> PLAYING
         val oldGameState = gameState
 
+        requestState = RequestState.Loading
         gameState = GameState.BLOCKED // block user input
         viewModelScope.launch {
-            try {
-                val response =
-                    gameInteraction.guess(userGuess, gameRules.puzzleNumber, guessCount, userLang)
-                if (response.code() == 205) {
-                    // I need to catch 205, because it signifies that the client has outdated info
-                    requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)
-                    // let user stay blocked
-                    return@launch
+
+            val response = sendGuessRequest()
+            response?.let {
+                // display to the database
+                madeGuesses.add(it)
+                guessCount++ // only increment if we actually succeed at guessing
+
+                // figure out whether the game ended and unblock input if needed
+                gameState = handleStateAfterGuess(it, oldGameState)
+                userGuess = ""
+
+                // save the newly made guess to the session
+                currentSessionRepo.insertGuessResponse(it)
+
+                if (gameState != GameState.PLAYING) {
+                    handleGameOver(it.mysteryStop)
                 }
 
-                if (response.isSuccessful) {
-                    // i have no idea what this does but Android Studio wrote it so i guess it's good
-                    response.body()?.let {
-                        madeGuesses.add(it)
-                        guessCount++ // only increment if we actually succeed at guessing
+            }
+        }
+    }
 
-                        // handle game over
-                        gameState = if (it.directionEmoji == "✅") { // i hate this so much
-                            GameState.WON
-                        } else if (guessCount >= gameRules.maxGuessCount) {
-                            GameState.LOST
-                        } else {
-                            oldGameState
-                        }
+    /**
+     * Generates a [GameRecap] for this session and stores it.
+     */
+    private suspend fun handleGameOver(mystery: Stop?) {
+        mysteryStop = mystery?.stopName
+        // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
+        // that said, it's the same for the web game. would need an additional HTTP request.
 
-                        if (gameState != GameState.PLAYING) {
-                            mysteryStop = it.mysteryStop?.stopName
-                            // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
-                        }
+        val stopToSave = mystery ?: Stop()
+        val recap = GameRecap(gameRules.puzzleNumber, guessCount, highestProximity, stopToSave)
+        gameHistoryRepo.insertRecap(recap)
+    }
 
-                        userGuess = "" // reset input
-                    }
-                    requestState = RequestState.Success
-                    return@launch
-                }
+    /**
+     * Figures out what is the state of the game after a guess.
+     *
+     * @param guess the newly received [GuessResponse]
+     * @param oldGameState the [GameState] we were in before. Restored if this guess wasn't significant
+     *
+     * @return the [GameState] according to what happened during this guess
+     */
+    private fun handleStateAfterGuess(guess: GuessResponse, oldGameState: GameState): GameState {
+        return if (guess.directionEmoji == "✅") { // i hate this so much
+            GameState.WON
+        } else if (guessCount >= gameRules.maxGuessCount) {
+            GameState.LOST
+        } else {
+            oldGameState
+        }
+    }
 
-                // Can't use HttpException because i have a Response object
-                requestState = if (response.code() == 400) {
-                    /* the stop probably didn't exist.
-                   well the fun stuff is that a 400 is returned by the server if
-                   an exception occurs while it's handling it.
-                   Which is usually when the request body is malformed, so it *is*
-                   a user error, but still some function could fail and it wouldn't
-                   be the user's fault. Also past me used 400 for both "this stop doesn't exist"
-                   and "idl something happened" so now i'm... well i'll just put bad stop.
-                 */
-                    RequestState.Error(ErrorType.BAD_STOP)
-                } else {
-                    RequestState.Error(ErrorType.UNKNOWN)
-                }
-            } catch (e: IOException) {
-                requestState = RequestState.Error(ErrorType.NO_INTERNET)
+
+    /**
+     * Sends the guessed stop name to the back-end and retrieves its response.
+     *
+     * @return the [GuessResponse] received by the backend or `null` if an error occurred.
+     * Details about the error can be found by examining [requestState].
+     *
+     * TODO: returning null or throwing a custom exception ?
+     */
+    private suspend fun sendGuessRequest(): GuessResponse? {
+        try {
+            val response =
+                gameInteraction.guess(userGuess, gameRules.puzzleNumber, guessCount, userLang)
+            if (response.code() == 205) {
+                // I need to catch 205, because it signifies that the client has outdated info
+                requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)
+                // let user stay blocked
+                return null
             }
 
-            // non fatal errors
-            gameState = oldGameState
+            if (response.isSuccessful) {
+                requestState = RequestState.Success
+                return response.body()
+            }
+
+            // Can't use HttpException because i have a Response object
+            requestState = if (response.code() == 400) {
+                /* the stop probably didn't exist.
+               well the fun stuff is that a 400 is returned by the server if
+               an exception occurs while it's handling it.
+               Which is usually when the request body is malformed, so it *is*
+               a user error, but still some function could fail and it wouldn't
+               be the user's fault. Also past me used 400 for both "this stop doesn't exist"
+               and "idk something happened" so now i'm... well i'll just put bad stop.
+             */
+                RequestState.Error(ErrorType.BAD_STOP)
+            } else {
+                RequestState.Error(ErrorType.UNKNOWN)
+            }
+        } catch (e: IOException) {
+            requestState = RequestState.Error(ErrorType.NO_INTERNET)
         }
+
+        return null
     }
 }

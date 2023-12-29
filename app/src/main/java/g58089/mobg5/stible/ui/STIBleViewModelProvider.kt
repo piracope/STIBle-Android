@@ -13,7 +13,11 @@ import g58089.mobg5.stible.ui.screens.GameScreenViewModel
 object STIBleViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            GameScreenViewModel(stibleApplication().container.gameInteraction)
+            GameScreenViewModel(
+                stibleApplication().container.gameInteraction,
+                stibleApplication().container.currentSessionRepository,
+                stibleApplication().container.gameHistoryRepository
+            )
         }
     }
 }
