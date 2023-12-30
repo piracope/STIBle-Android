@@ -72,9 +72,11 @@ import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
-import g58089.mobg5.stible.ui.theme.Green
-import g58089.mobg5.stible.ui.theme.Red
-import g58089.mobg5.stible.ui.theme.Yellow
+import g58089.mobg5.stible.ui.theme.STIBleBlue
+import g58089.mobg5.stible.ui.theme.STIBleGreen
+import g58089.mobg5.stible.ui.theme.STIBleRed
+import g58089.mobg5.stible.ui.theme.STIBleYellow
+import g58089.mobg5.stible.ui.theme.light_onSTIBleGreen
 import java.util.Locale
 
 private const val TAG = "GameScreen"
@@ -91,13 +93,13 @@ fun GameScreen(
             // TODO: change font
             Text(
                 text = stringResource(id = R.string.app_name_first_part),
-                color = MaterialTheme.colorScheme.inversePrimary,
+                color = STIBleBlue,
                 style = MaterialTheme.typography.displayLarge,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = stringResource(id = R.string.app_name_second_part),
-                color = Red,
+                color = STIBleRed,
                 style = MaterialTheme.typography.displayLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -279,7 +281,10 @@ fun GameScreenBody(
                     context.startActivity(Intent.createChooser(intent, shareHeader))
                 },
                 Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Green)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = STIBleGreen,
+                    contentColor = light_onSTIBleGreen
+                )
             ) {
                 Text(text = stringResource(id = R.string.share))
             }
@@ -343,6 +348,7 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
         GuessRowIcon(
             icon = vector,
             bgColor = colorDirection,
+            fgColor = if (colorDirection == STIBleGreen) light_onSTIBleGreen else MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.size(dimensionResource(R.dimen.guess_row_height))
         )
     }
@@ -355,10 +361,13 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
  */
 @Composable
 private fun GuessRowTextCell(text: String?, modifier: Modifier = Modifier) {
+    val color =
+        if (text == null) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.secondary
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
-            .background(MaterialTheme.colorScheme.outline)
+            .background(color)
             .height(dimensionResource(R.dimen.guess_row_height))
 
     ) {
@@ -367,7 +376,8 @@ private fun GuessRowTextCell(text: String?, modifier: Modifier = Modifier) {
                 text = it,
                 textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
+                color = MaterialTheme.colorScheme.onSecondary,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
@@ -387,8 +397,8 @@ private fun GuessRowPercentageSquares(proximityPercentage: Double?, modifier: Mo
         val nbOfYellow: Int =
             proximityPercentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
         repeat(5) { sqNb ->
-            val color: Color = if (sqNb < nbOfGreen) Green
-            else if (sqNb < nbOfGreen + nbOfYellow) Yellow
+            val color: Color = if (sqNb < nbOfGreen) STIBleGreen
+            else if (sqNb < nbOfGreen + nbOfYellow) STIBleYellow
             // if there are 2 green 1 yellow, yellow starts at 3
             else MaterialTheme.colorScheme.surfaceVariant
             Box(
@@ -401,14 +411,19 @@ private fun GuessRowPercentageSquares(proximityPercentage: Double?, modifier: Mo
 }
 
 @Composable
-private fun GuessRowIcon(icon: ImageVector?, bgColor: Color, modifier: Modifier = Modifier) {
+private fun GuessRowIcon(
+    icon: ImageVector?,
+    bgColor: Color,
+    fgColor: Color,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
             .background(bgColor)
     ) {
         icon?.let {
-            Icon(imageVector = it, contentDescription = it.name)
+            Icon(imageVector = it, contentDescription = it.name, tint = fgColor)
         }
     }
 }
@@ -425,14 +440,14 @@ private fun GuessRowIcon(icon: ImageVector?, bgColor: Color, modifier: Modifier 
 @Composable
 private fun getDirectionBackgroundColor(guess: GuessResponse?): Color {
     if (guess == null) {
-        return MaterialTheme.colorScheme.outline
+        return MaterialTheme.colorScheme.surfaceVariant
     }
 
     if (guess.directionEmoji == "✅") { // doesn't display on my machine but it's
-        return Green
+        return STIBleGreen
     }
 
-    return MaterialTheme.colorScheme.inversePrimary
+    return MaterialTheme.colorScheme.primaryContainer
 }
 
 /**
