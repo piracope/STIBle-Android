@@ -3,10 +3,13 @@ package g58089.mobg5.stible.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -27,6 +30,7 @@ fun SettingsScreen(
     SettingsScreenBody(
         isMapModeEnabled = viewModel.isMapModeEnabled,
         onMapModeChange = viewModel::changeMapMode,
+        onClearAll = viewModel::removeAllData,
         modifier
             .fillMaxSize()
     )
@@ -36,6 +40,7 @@ fun SettingsScreen(
 fun SettingsScreenBody(
     isMapModeEnabled: Boolean,
     onMapModeChange: (Boolean) -> Unit,
+    onClearAll: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
@@ -46,6 +51,20 @@ fun SettingsScreenBody(
             onChange = onMapModeChange,
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.weight(1f))
+
+        FilledTonalButton(
+            onClick = onClearAll,
+            colors = ButtonDefaults.filledTonalButtonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.outer_padding))
+        ) {
+            Text(
+                text = stringResource(id = R.string.remove_all_data_button),
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+        }
     }
 }
 

@@ -49,6 +49,12 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
         }
     }
 
+    override suspend fun clearPreferences() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         val lastSeenPuzzleNumber = preferences[PreferencesKeys.LAST_SEEN_PUZZLE_NUMBER] ?: -1
         val isMapModeEnabled = preferences[PreferencesKeys.IS_MAP_MODE_ENABLED] ?: false

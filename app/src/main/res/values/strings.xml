@@ -25,6 +25,7 @@
     <!--Settings Screen-->
     <string name="map_mode_title">Mode Facile</string>
     <string name="map_mode_subtitle">Place vos essais sur une carte de Bruxelles</string>
+    <string name="remove_all_data_button">Supprimer toutes vos données</string>
 
     <!--Help Screen-->
     <string-array name="help_messages">

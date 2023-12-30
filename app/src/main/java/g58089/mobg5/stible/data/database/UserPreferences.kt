@@ -14,3 +14,4 @@ data class UserPreferences(
      */
     val isMapModeEnabled: Boolean = false
 )
+

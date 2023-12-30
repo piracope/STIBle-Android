@@ -15,4 +15,9 @@ interface UserPreferencesRepository {
 
     suspend fun setLastSeenPuzzleNumber(puzzleNumber: Int)
     suspend fun setIsMapModeEnabled(isMapModeEnabled: Boolean)
+
+    /**
+     * Restores all user data and preferences to their defaults.
+     */
+    suspend fun clearPreferences()
 }

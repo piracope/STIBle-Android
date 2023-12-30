@@ -31,4 +31,12 @@ class SettingsScreenViewModel(
             userPreferencesRepository.setIsMapModeEnabled(isOn)
         }
     }
+
+    fun removeAllData() {
+        viewModelScope.launch {
+            userPreferencesRepository.clearPreferences()
+            currentSessionRepo.clearForNewSession()
+            gameHistoryRepo.clearGameHistory()
+        }
+    }
 }
