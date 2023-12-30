@@ -5,9 +5,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import g58089.mobg5.stible.data.database.OfflineCurrentSessionRepository
 import g58089.mobg5.stible.data.database.OfflineGameHistoryRepository
 import g58089.mobg5.stible.data.database.STIBleDatabase
+import g58089.mobg5.stible.data.datastore.OfflineUserPreferencesRepository
 import g58089.mobg5.stible.data.network.OnlineGameInteraction
 import g58089.mobg5.stible.data.network.STIBleApi
-import g58089.mobg5.stible.data.preferences.OfflineUserPreferencesRepository
 
 /**
  * Name of the DataStore where our user preferences will be stored.
@@ -31,7 +31,7 @@ interface AppContainer {
  */
 class AppDataContainer(private val context: Context) : AppContainer {
     /**
-     * Creates a DataStore for the provided context.
+     * Creates a DataStore for the provided [Context].
      */
     private val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)
 

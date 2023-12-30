@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.data.preferences
+package g58089.mobg5.stible.data.database
 
 /**
  * Data needed to be stored in as key-value pairs.

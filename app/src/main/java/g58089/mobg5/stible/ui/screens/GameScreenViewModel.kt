@@ -11,12 +11,12 @@ import g58089.mobg5.stible.data.CurrentSessionRepository
 import g58089.mobg5.stible.data.GameHistoryRepository
 import g58089.mobg5.stible.data.GameInteraction
 import g58089.mobg5.stible.data.UserPreferencesRepository
+import g58089.mobg5.stible.data.database.UserPreferences
 import g58089.mobg5.stible.data.dto.GameRecap
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.data.network.RequestState
-import g58089.mobg5.stible.data.preferences.UserPreferences
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.data.util.Language
@@ -73,7 +73,7 @@ class GameScreenViewModel(
      * The number of times the user guessed TODAY.
      */
     private val guessCount
-        get() = madeGuesses.size
+        get() = _madeGuesses.size
 
     /**
      * The current state of play.
@@ -95,10 +95,14 @@ class GameScreenViewModel(
     val canGuess
         get() = gameState == GameState.PLAYING
 
+
+    private val _madeGuesses = mutableStateListOf<GuessResponse>()
+
     /**
      * All [GuessResponse] received during the current game session.
      */
-    val madeGuesses = mutableStateListOf<GuessResponse>()
+    val madeGuesses: List<GuessResponse>
+        get() = _madeGuesses
     /*
     NOTE: I could observe the database's current session, as it's a flow. That said,
     if i replace adding the newly received guess to a mutableList with a database insert,
@@ -117,7 +121,7 @@ class GameScreenViewModel(
      * The biggest proximity percentage achieved during this session.
      */
     val highestProximity: Double
-        get() = madeGuesses.maxOfOrNull { it.proximityPecentage } ?: 0.0
+        get() = _madeGuesses.maxOfOrNull { it.proximityPecentage } ?: 0.0
 
     /**
      * The [UserPreferences] containing various key-value pairs.
@@ -151,10 +155,10 @@ class GameScreenViewModel(
 
             // old session was already recovered from our flow collectors
 
-            if (madeGuesses.isNotEmpty()) {
-                gameState = handleStateAfterGuess(madeGuesses.last(), GameState.PLAYING)
+            if (_madeGuesses.isNotEmpty()) {
+                gameState = handleStateAfterGuess(_madeGuesses.last(), GameState.PLAYING)
                 if (gameState != GameState.PLAYING) {
-                    mysteryStop = madeGuesses.last().mysteryStop?.stopName
+                    mysteryStop = _madeGuesses.last().mysteryStop?.stopName
                 } // FIXME: NOT DRY !!
             } else {
                 gameState = GameState.PLAYING
@@ -178,8 +182,8 @@ class GameScreenViewModel(
                 currentSessionRepo.getAllGuessResponses()
             ) { pref, session ->
                 userPreferences = pref
-                madeGuesses.clear()
-                madeGuesses.addAll(session)
+                _madeGuesses.clear()
+                _madeGuesses.addAll(session)
             }.collect()
         }
     }
@@ -241,7 +245,7 @@ class GameScreenViewModel(
             val response = sendGuessRequest()
             response?.let {
                 // display to the database
-                madeGuesses.add(it)
+                _madeGuesses.add(it)
 
                 // figure out whether the game ended and unblock input if needed
                 gameState = handleStateAfterGuess(it, oldGameState)
