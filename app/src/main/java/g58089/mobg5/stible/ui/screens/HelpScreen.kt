@@ -59,9 +59,9 @@ fun HelpScreen(modifier: Modifier = Modifier) {
                 val color =
                     // except for the colors which i changed. I need to understand how Material works
                     if (pagerState.currentPage == iteration)
-                        MaterialTheme.colorScheme.primary
+                        MaterialTheme.colorScheme.surfaceTint
                     else
-                        MaterialTheme.colorScheme.onSurface
+                        MaterialTheme.colorScheme.surfaceVariant
                 Box(
                     modifier = Modifier
                         .padding(2.dp)

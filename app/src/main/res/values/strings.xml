@@ -1,11 +1,10 @@
 <resources>
-    <!--TODO: internationalisation-->
     <string name="app_name">STIBle</string>
-    <string name="app_author">Ayoub Moufidi</string>
+    <string name="app_author" translatable="false">Ayoub Moufidi</string>
 
     <string name="app_name_first_part">STI</string>
     <string name="app_name_second_part">B</string>
-    <string name="app_name_third_part">le</string>
+    <string name="app_name_third_part" translatable="false">le</string>
 
     <!--Navigation Bar-->
     <string name="home">Accueil</string>
@@ -30,7 +29,7 @@
     <!--Help Screen-->
     <string-array name="help_messages">
         <!--TODO: display STIBle nicely and replace 6 with a parameter-->
-        <item>Devinez le STIBle en 6 essais</item>
+        <item>Devinez le STIBle en 6 essais.</item>
         <item>Nous vous donnons les lignes qui passent sur l\'arrêt que vous cherchez.</item>
         <item>Chaque essai doit être un arrêt quelconque sur le réseau de la STIB.</item>
         <item>Après chaque essai, vous aurez la distance et la direction entre votre essai et l\'arrêt mystère.</item>
@@ -38,7 +37,7 @@
     </string-array>
 
     <!--Error messages-->
-    <string name="error_game_over">La partie est déjà terminée</string>
+    <string name="error_game_over">Impossible de deviner à nouveau</string>
     <string name="error_no_internet">Connectez-vous à Internet</string>
     <string name="error_new_level_available">Un nouvel arrêt mystère est disponible. Relancez l\'application.</string>
     <string name="error_bad_language">Langue inconnue. Relancez l\'application.</string>
