@@ -54,6 +54,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 dependencies {
@@ -85,8 +89,12 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
-    // Preferences
+    // Preferences (local key-value pairs)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Backwards compatibility (needed for language picker)
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.appcompat:appcompat-resources:1.6.1")
 
     testImplementation("junit:junit:4.13.2")
 

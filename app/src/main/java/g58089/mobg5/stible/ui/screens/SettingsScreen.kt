@@ -31,6 +31,8 @@ fun SettingsScreen(
         isMapModeEnabled = viewModel.isMapModeEnabled,
         onMapModeChange = viewModel::changeMapMode,
         onClearAll = viewModel::removeAllData,
+        nederlands = viewModel.isInNederlands,
+        switchToNl = viewModel::changeToNederlands,
         modifier
             .fillMaxSize()
     )
@@ -41,7 +43,9 @@ fun SettingsScreenBody(
     isMapModeEnabled: Boolean,
     onMapModeChange: (Boolean) -> Unit,
     onClearAll: () -> Unit,
-    modifier: Modifier = Modifier
+    nederlands: Boolean,
+    switchToNl: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier) {
         SwitchSetting(
@@ -51,6 +55,26 @@ fun SettingsScreenBody(
             onChange = onMapModeChange,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Row(
+            modifier.padding(dimensionResource(id = R.dimen.outer_padding)),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = "Language", style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    text = "Change in-app language",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Text(text = "FR")
+            Switch(checked = nederlands, onCheckedChange = switchToNl)
+            Text(text = "NL")
+        }
+
+
         Spacer(modifier = Modifier.weight(1f))
 
         FilledTonalButton(

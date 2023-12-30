@@ -14,16 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.STIBle"
         tools:targetApi="31">
+        <!--Custom Application class-->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.STIBle">
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--Needed for Android <12 for language picker-->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
 </manifest>
