@@ -22,6 +22,10 @@
     <string name="loading">Chargement…</string>
     <string name="reload">Recharger</string>
 
+    <!--Settings Screen-->
+    <string name="map_mode_title">Mode Facile</string>
+    <string name="map_mode_subtitle">Place vos essais sur une carte de Bruxelles</string>
+
     <!--Help Screen-->
     <string-array name="help_messages">
         <!--TODO: display STIBle nicely and replace 6 with a parameter-->

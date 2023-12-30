@@ -25,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.ui.screens.GameScreen
 import g58089.mobg5.stible.ui.screens.HelpScreen
+import g58089.mobg5.stible.ui.screens.SettingsScreen
 
 /**
  * The different navigation destinations.
@@ -109,14 +110,14 @@ fun STIBleNavHost(
         }
 
         composable(route = Screen.Settings.route) {
-            // TODO: Settings Screen
+            SettingsScreen()
         }
 
         composable(route = Screen.Help.route) {
             HelpScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(dimensionResource(id = R.dimen.main_padding))
+                    .padding(dimensionResource(id = R.dimen.outer_padding))
             )
         }
     }

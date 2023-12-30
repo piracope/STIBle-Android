@@ -133,7 +133,7 @@ fun GameScreen(
             onGuess = viewModel::guess,
             modifier = modifier
                 .verticalScroll(rememberScrollState())
-                .padding(dimensionResource(id = R.dimen.main_padding))
+                .padding(dimensionResource(id = R.dimen.outer_padding))
         )
     }
 
@@ -171,7 +171,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
     ) {
         CircularProgressIndicator()
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.main_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.outer_padding)))
         Text(text = stringResource(id = R.string.loading))
     }
 }
@@ -196,9 +196,9 @@ fun ErrorMessageScreen(errorType: ErrorType, onReload: () -> Unit, modifier: Mod
             contentDescription = null,
             modifier = Modifier.size(dimensionResource(id = R.dimen.error_icon))
         )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.main_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.outer_padding)))
         Text(text = stringResource(id = getErrorStringResId(errorType)))
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.main_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.outer_padding)))
         Button(onClick = onReload) {
             Text(text = stringResource(id = R.string.reload))
         }
@@ -224,12 +224,14 @@ fun GameScreenBody(
 
         Row {
             repeat(gameRules.puzzleRoutes.size) {
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.inner_padding)))
                 RouteSquare(
                     gameRules.puzzleRoutes[it],
-                    Modifier.padding(dimensionResource(R.dimen.main_padding))
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.inner_padding)))
 
         /* GUESS ROWS */
 
@@ -239,13 +241,15 @@ fun GameScreenBody(
             }
         }
 
-        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.main_padding)))
+        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.inner_padding).times(2)))
 
         /* GUESS INPUT */
 
         StopSearchBar(
             userGuess, onUserGuessChange, gameRules.stops, canStillPlay, Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.inner_padding)))
 
         /* BIG INTERACTION BUTTON */
 
@@ -280,6 +284,8 @@ fun GameScreenBody(
                 Text(text = stringResource(id = R.string.share))
             }
         }
+
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.inner_padding)))
 
         /* POST GAME MESSAGE */
 

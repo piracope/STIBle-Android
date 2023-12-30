@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Definite sizes for things-->
+    <dimen name="error_icon">128dp</dimen>
     <dimen name="route_logo">32dp</dimen>
     <dimen name="guess_row_height">24dp</dimen>
-    <dimen name="rounded_amount">3dp</dimen>
-    <dimen name="guess_row_padding">2dp</dimen>
-    <dimen name="main_padding">8dp</dimen>
     <dimen name="route_number_size">16sp</dimen>
-    <dimen name="error_icon">128dp</dimen>
+
+    <!--Padding values-->
+    <dimen name="outer_padding">16dp</dimen>
+    <dimen name="inner_padding">8dp</dimen>
+    <dimen name="guess_row_padding">2dp</dimen>
+
+    <!--Miscellaneous-->
+    <dimen name="rounded_amount">3dp</dimen>
 </resources>
