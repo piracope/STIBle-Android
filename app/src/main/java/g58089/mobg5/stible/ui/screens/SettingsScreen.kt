@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
@@ -47,7 +49,7 @@ fun SettingsScreenBody(
     switchToNl: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier) {
+    Column(modifier, verticalArrangement = Arrangement.Top) {
         SwitchSetting(
             title = stringResource(id = R.string.map_mode_title),
             subtitle = stringResource(id = R.string.map_mode_subtitle),
@@ -55,26 +57,15 @@ fun SettingsScreenBody(
             onChange = onMapModeChange,
             modifier = Modifier.fillMaxWidth()
         )
-
-        Row(
-            modifier.padding(dimensionResource(id = R.dimen.outer_padding)),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = "Language", style = MaterialTheme.typography.bodyLarge)
-                Text(
-                    text = "Change in-app language",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Text(text = "FR")
-            Switch(checked = nederlands, onCheckedChange = switchToNl)
-            Text(text = "NL")
-        }
-
-
+        SwitchSetting(
+            title = stringResource(id = R.string.lang_picker_title),
+            subtitle = stringResource(id = R.string.lang_picker_subtitle),
+            onLabel = "\uD83C\uDDF3\uD83C\uDDF1", // NL flag
+            offLabel = "\uD83C\uDDEB\uD83C\uDDF7", // FR flag
+            checked = nederlands,
+            onChange = switchToNl,
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.weight(1f))
 
         FilledTonalButton(
@@ -88,7 +79,9 @@ fun SettingsScreenBody(
                 text = stringResource(id = R.string.remove_all_data_button),
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
-        }
+        } // TODO: alert
+
+
     }
 }
 
@@ -98,7 +91,9 @@ fun SwitchSetting(
     subtitle: String,
     checked: Boolean,
     onChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLabel: String? = null,
+    offLabel: String? = null,
 ) {
     Row(
         modifier
@@ -115,6 +110,30 @@ fun SwitchSetting(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        Switch(checked = checked, onCheckedChange = onChange)
+        offLabel?.let {
+            Text(text = offLabel)
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.inner_padding)))
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onChange,
+        )
+        onLabel?.let {
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.inner_padding)))
+            Text(text = onLabel)
+        }
+
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenBodyPreview() {
+    SettingsScreenBody(
+        isMapModeEnabled = false,
+        onMapModeChange = {},
+        onClearAll = {},
+        nederlands = false,
+        switchToNl = {}
+    )
 }

@@ -43,5 +43,7 @@
     <string name="error_bad_language">Langue inconnue. Relancez l\'application.</string>
     <string name="error_bad_stop">Cet arrêt n\'existe pas</string>
     <string name="error_unknown">Une erreur est survenue</string>
+    <string name="lang_picker_title">Langue</string>
+    <string name="lang_picker_subtitle">Change la langue de l\'application</string>
 
 </resources>
