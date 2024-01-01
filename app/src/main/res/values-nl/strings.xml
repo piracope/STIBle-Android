@@ -34,5 +34,5 @@
         <item>Elke dag zal er een nieuwe MIVBle beschikbaar zijn!</item>
     </string-array>
     <string name="lang_picker_title">Taal</string>
-    <string name="lang_picker_subtitle">Kies de taal van deze app</string>
+    <string name="lang_picker_subtitle">Schakelen de taal van deze app tussen Frans and Nederlands</string>
 </resources>

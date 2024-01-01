@@ -92,9 +92,13 @@ dependencies {
     // Preferences (local key-value pairs)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    // Backwards compatibility (needed for language picker)
+    // Backwards compatibility (needed for in-app language picker and changing the app locale)
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.appcompat:appcompat-resources:1.6.1")
+
+    // Country flags ImageVector
+    implementation("dev.carlsen.flagkit:flagkit:1.0.1")
+    // FIXME: github repository has like 12 stars on github. Can i trust this ?
 
     testImplementation("junit:junit:4.13.2")
 
