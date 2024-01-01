@@ -43,7 +43,7 @@
     <string name="error_bad_language">Langue inconnue. Relancez l\'application.</string>
     <string name="error_bad_stop">Cet arrêt n\'existe pas</string>
     <string name="error_unknown">Une erreur est survenue</string>
-    <string name="lang_picker_title">Langue</string>
-    <string name="lang_picker_subtitle">Basculer l\'application du Français au Néerlandais</string>
+    <string name="nl_mode_title">Jouer en néerlandais</string>
+    <string name="nl_subtitle">Basculer du français au néerlandais</string>
 
 </resources>

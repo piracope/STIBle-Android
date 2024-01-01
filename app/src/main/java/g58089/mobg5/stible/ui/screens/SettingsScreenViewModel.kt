@@ -23,6 +23,16 @@ class SettingsScreenViewModel(
     val isInNederlands: Boolean
         get() = AppCompatDelegate.getApplicationLocales().toLanguageTags().contains("nl")
 
+    /* FIXME: returns false if system set to NL but never interacted with in-app lang picker
+    If the user never interacted with changeToNederlands(), the returned list of app locales
+    will be empty -> returns false, DESPITE THE FACT that the UI is ACTUALLY in NL.
+    To get the language, I should use LocaleManagerCompat, but this requires the Context,
+    which according to StackOverflow shouldn't be passed to the ViewModel.
+
+    HOW TO FIX THIS : move the language handling OUTSIDE of this, in a new class, like
+    LanguageManager or even inside OfflineUserPreferencesRepository. This would be created
+    like everything else inside AppDataContainer which HAS the context.
+     */
     init {
         viewModelScope.launch {
             userPreferencesRepository.userData.collect {
@@ -42,11 +52,13 @@ class SettingsScreenViewModel(
             userPreferencesRepository.clearPreferences()
             currentSessionRepo.clearForNewSession()
             gameHistoryRepo.clearGameHistory()
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
         }
     }
 
     fun changeToNederlands(isSufferingEnabled: Boolean) {
         val locale = if (isSufferingEnabled) "nl" else "fr"
+        // FIXME: translate every stop in current_session
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale))
     }
 }

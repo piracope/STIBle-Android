@@ -1,6 +1,5 @@
 package g58089.mobg5.stible.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,28 +7,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.carlsen.flagkit.FlagIcons
-import dev.carlsen.flagkit.flagicons.FR
-import dev.carlsen.flagkit.flagicons.NL
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 
@@ -67,30 +57,11 @@ fun SettingsScreenBody(
             modifier = Modifier.fillMaxWidth()
         )
         SwitchSetting(
-            title = stringResource(id = R.string.lang_picker_title),
-            subtitle = stringResource(id = R.string.lang_picker_subtitle),
-            //onLabel = "\uD83C\uDDF3\uD83C\uDDF1", // NL flag
-            //offLabel = "\uD83C\uDDEB\uD83C\uDDF7", // FR flag
+            title = stringResource(id = R.string.nl_mode_title),
+            subtitle = stringResource(id = R.string.nl_subtitle),
             checked = nederlands,
             onChange = switchToNl,
             modifier = Modifier.fillMaxWidth(),
-            hasCustomHandleIcon = true,
-            handleIcon = {
-                val flag =
-                    if (nederlands) {
-                        FlagIcons.NL
-                    } else {
-                        FlagIcons.FR
-                    }
-                Image(
-                    imageVector = flag,
-                    contentDescription = flag.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(SwitchDefaults.IconSize)
-                        .clip(CircleShape)
-                )
-            }
         )
         Spacer(modifier = Modifier.weight(1f))
 
@@ -106,8 +77,6 @@ fun SettingsScreenBody(
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
         } // TODO: alert
-
-
     }
 }
 
@@ -118,10 +87,6 @@ fun SwitchSetting(
     checked: Boolean,
     onChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    onLabel: String? = null,
-    offLabel: String? = null,
-    hasCustomHandleIcon: Boolean = false,
-    handleIcon: @Composable () -> Unit = {}
 ) {
     Row(
         modifier
@@ -138,31 +103,14 @@ fun SwitchSetting(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        offLabel?.let {
-            Text(text = offLabel)
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.inner_padding)))
-        }
-        if (hasCustomHandleIcon) {
-            Switch(
-                checked = checked,
-                onCheckedChange = onChange,
-                thumbContent = handleIcon
-            )
-        } else {
-            Switch(
-                checked = checked,
-                onCheckedChange = onChange,
-            )
-        }
-        onLabel?.let {
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.inner_padding)))
-            Text(text = onLabel)
-        }
-
+        Switch(
+            checked = checked,
+            onCheckedChange = onChange,
+        )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, locale = "fr")
 @Composable
 fun SettingsScreenBodyPreview() {
     SettingsScreenBody(

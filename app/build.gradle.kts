@@ -96,10 +96,6 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.appcompat:appcompat-resources:1.6.1")
 
-    // Country flags ImageVector
-    implementation("dev.carlsen.flagkit:flagkit:1.0.1")
-    // FIXME: github repository has like 12 stars on github. Can i trust this ?
-
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

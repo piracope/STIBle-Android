@@ -65,6 +65,7 @@ class GameScreenViewModel(
 
     /**
      * The user's chosen [Language].
+     * TODO: use the actual language.
      */
     var userLang by mutableStateOf(Language.FRENCH)
         private set

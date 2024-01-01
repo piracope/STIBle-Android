@@ -33,6 +33,6 @@
         <item>Na elke gok krijgt u de afstand en richting tussen uw gok en de mystery halte</item>
         <item>Elke dag zal er een nieuwe MIVBle beschikbaar zijn!</item>
     </string-array>
-    <string name="lang_picker_title">Taal</string>
-    <string name="lang_picker_subtitle">Schakelen de taal van deze app tussen Frans and Nederlands</string>
+    <string name="nl_mode_title">In Nederlands spelen</string>
+    <string name="nl_subtitle">Schakelen de taal van Frans naar Nederlands</string>
 </resources>
