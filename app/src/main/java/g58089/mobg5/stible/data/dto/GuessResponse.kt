@@ -67,5 +67,5 @@ data class GuessResponse(
      */
     @SerialName("secret")
     @Embedded("mystery")
-    val mysteryStop: Stop? = null // FIXME: room doesn't know what to do with this
+    val mysteryStop: Stop? = null
 )

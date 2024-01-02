@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import g58089.mobg5.stible.data.UserPreferencesRepository
-import g58089.mobg5.stible.data.database.UserPreferences
+import g58089.mobg5.stible.data.dto.UserPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map

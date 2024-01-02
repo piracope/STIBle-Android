@@ -1,6 +1,6 @@
 package g58089.mobg5.stible.data
 
-import g58089.mobg5.stible.data.database.UserPreferences
+import g58089.mobg5.stible.data.dto.UserPreferences
 import kotlinx.coroutines.flow.Flow
 
 /**

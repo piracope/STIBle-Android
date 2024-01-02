@@ -1,5 +1,6 @@
 package g58089.mobg5.stible.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -73,7 +74,7 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun STIBleTheme(
-    useDarkTheme: Boolean = true, // TODO: handle light theme
+    useDarkTheme: Boolean = isSystemInDarkTheme(), // TODO: handle light theme
     content: @Composable () -> Unit
 ) {
     val colors = if (!useDarkTheme) {

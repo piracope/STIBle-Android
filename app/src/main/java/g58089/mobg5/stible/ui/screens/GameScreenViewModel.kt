@@ -11,16 +11,15 @@ import g58089.mobg5.stible.data.CurrentSessionRepository
 import g58089.mobg5.stible.data.GameHistoryRepository
 import g58089.mobg5.stible.data.GameInteraction
 import g58089.mobg5.stible.data.UserPreferencesRepository
-import g58089.mobg5.stible.data.database.UserPreferences
 import g58089.mobg5.stible.data.dto.GameRecap
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.dto.Stop
+import g58089.mobg5.stible.data.dto.UserPreferences
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.data.util.Language
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -185,7 +184,7 @@ class GameScreenViewModel(
                 userPreferences = pref
                 _madeGuesses.clear()
                 _madeGuesses.addAll(session)
-            }.collect()
+            }
         }
     }
 
