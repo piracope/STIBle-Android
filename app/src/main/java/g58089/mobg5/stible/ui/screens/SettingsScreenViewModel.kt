@@ -9,6 +9,7 @@ import g58089.mobg5.stible.data.CurrentSessionRepository
 import g58089.mobg5.stible.data.GameHistoryRepository
 import g58089.mobg5.stible.data.LocaleRepository
 import g58089.mobg5.stible.data.UserPreferencesRepository
+import g58089.mobg5.stible.data.util.Language
 import kotlinx.coroutines.launch
 
 class SettingsScreenViewModel(
@@ -47,8 +48,8 @@ class SettingsScreenViewModel(
     }
 
     fun changeToNederlands(isSufferingEnabled: Boolean) {
-        val locale = if (isSufferingEnabled) "nl" else "fr"
+        val lang = if (isSufferingEnabled) Language.DUTCH else Language.FRENCH
         // FIXME: translate every stop in current_session
-        localeRepository.setLocale(locale)
+        localeRepository.setLocale(lang)
     }
 }

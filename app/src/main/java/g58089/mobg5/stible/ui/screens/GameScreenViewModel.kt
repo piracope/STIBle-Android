@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import g58089.mobg5.stible.data.CurrentSessionRepository
 import g58089.mobg5.stible.data.GameHistoryRepository
 import g58089.mobg5.stible.data.GameInteraction
+import g58089.mobg5.stible.data.LocaleRepository
 import g58089.mobg5.stible.data.UserPreferencesRepository
 import g58089.mobg5.stible.data.dto.GameRecap
 import g58089.mobg5.stible.data.dto.GameRules
@@ -19,7 +20,6 @@ import g58089.mobg5.stible.data.dto.UserPreferences
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
-import g58089.mobg5.stible.data.util.Language
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -39,6 +39,7 @@ class GameScreenViewModel(
     private val currentSessionRepo: CurrentSessionRepository,
     private val gameHistoryRepo: GameHistoryRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val localeRepository: LocaleRepository,
 ) : ViewModel() {
 
     /**
@@ -61,13 +62,6 @@ class GameScreenViewModel(
      * The current state of any call to the backend.
      */
     var requestState: RequestState by mutableStateOf(RequestState.Default)
-        private set
-
-    /**
-     * The user's chosen [Language].
-     * TODO: use the actual language.
-     */
-    var userLang by mutableStateOf(Language.FRENCH)
         private set
 
     /**
@@ -198,7 +192,7 @@ class GameScreenViewModel(
         requestState = RequestState.Loading
 
         try {
-            gameRules = gameInteraction.getGameRules(userLang)
+            gameRules = gameInteraction.getGameRules(localeRepository.language)
             requestState = RequestState.Success
         } catch (e: IOException) {
             requestState = RequestState.Error(ErrorType.NO_INTERNET)
@@ -313,7 +307,12 @@ class GameScreenViewModel(
     private suspend fun sendGuessRequest(): GuessResponse? {
         try {
             val response =
-                gameInteraction.guess(userGuess, gameRules.puzzleNumber, guessCount, userLang)
+                gameInteraction.guess(
+                    userGuess,
+                    gameRules.puzzleNumber,
+                    guessCount,
+                    localeRepository.language
+                )
             if (response.code() == 205) {
                 // I need to catch 205, because it signifies that the client has outdated info
                 requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)

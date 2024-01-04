@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.LocaleManagerCompat
 import androidx.core.os.LocaleListCompat
+import g58089.mobg5.stible.data.util.Language
 import java.util.IllformedLocaleException
 
 /**
@@ -12,12 +13,12 @@ import java.util.IllformedLocaleException
 class LocaleRepository(private val context: Context) {
 
     /**
-     * The two-letter code of the app's current displayed language.
+     * The app's current displayed [Language].
      *
-     * It's "fr" by default, or "nl" if the user plays in dutch.
+     * It's [Language.FRENCH] by default, or [Language.DUTCH] if the user plays in dutch.
      */
-    val language: String
-        get() = if (isInNederlands()) "nl" else "fr"
+    val language: Language
+        get() = if (isInNederlands()) Language.DUTCH else Language.FRENCH
 
     /**
      * Checks whether the app should be displayed in Dutch.
@@ -25,10 +26,11 @@ class LocaleRepository(private val context: Context) {
     fun isInNederlands(): Boolean {
         val appLocales = AppCompatDelegate.getApplicationLocales().toLanguageTags()
         if (appLocales.isBlank()) {
-            return LocaleManagerCompat.getSystemLocales(context).toLanguageTags().contains("nl")
+            return LocaleManagerCompat.getSystemLocales(context).toLanguageTags()
+                .contains(Language.DUTCH.code)
         }
 
-        return appLocales.contains("nl")
+        return appLocales.contains(Language.DUTCH.code)
     }
 
     /**
@@ -36,9 +38,9 @@ class LocaleRepository(private val context: Context) {
      *
      * If the given string isn't valid, the locales will be reset to default.
      */
-    fun setLocale(locale: String) {
+    fun setLocale(lang: Language) {
         try {
-            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale))
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(lang.code))
         } catch (e: IllformedLocaleException) {
             resetToDefault()
         }

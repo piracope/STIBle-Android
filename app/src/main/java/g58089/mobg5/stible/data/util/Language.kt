@@ -10,9 +10,7 @@ enum class Language(val code: String) {
     FRENCH("fr"),
 
     /**
-     * Nederlands
+     * The accursed "language" known to sorcerers and other vile monsters as """Dutch"""
      */
     DUTCH("nl")
 }
-
-// TODO: shouldn't I just use Locale or whatever ?
