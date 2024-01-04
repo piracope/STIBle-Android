@@ -1,6 +1,5 @@
 package g58089.mobg5.stible.data.dto
 
-import androidx.room.ColumnInfo
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,8 +12,17 @@ data class Stop(
      * The Stop's name.
      */
     @SerialName("stop_name")
-    @ColumnInfo("stop_name")
-    val stopName: String = "",
+    val name: String = "",
 
-    // TODO: get geo-coordinates too.
+    /**
+     * The Stop's latitude.
+     */
+    @SerialName("stop_lat")
+    val latitude: Double = 50.850416,
+
+    /**
+     * The Stop's longitude.
+     */
+    @SerialName("stop_lon")
+    val longitude: Double = 4.364237
 )

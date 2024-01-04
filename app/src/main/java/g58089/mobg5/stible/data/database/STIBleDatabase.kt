@@ -7,11 +7,10 @@ import androidx.room.RoomDatabase
 import g58089.mobg5.stible.data.dto.GameRecap
 import g58089.mobg5.stible.data.dto.GuessResponse
 
-// TODO: figure out if we keep the schema
 /**
  * Room Database providing DAOs for the games history and the current game session.
  */
-@Database(entities = [GameRecap::class, GuessResponse::class], version = 1)
+@Database(entities = [GameRecap::class, GuessResponse::class], version = 3)
 abstract class STIBleDatabase : RoomDatabase() {
     abstract fun currentSessionDao(): CurrentSessionDao
     abstract fun gameHistoryDao(): GameHistoryDao

@@ -66,6 +66,6 @@ data class GuessResponse(
      *  - the user ran out of possible tries -> the user lost
      */
     @SerialName("secret")
-    @Embedded("mystery")
+    @Embedded("mystery_stop_")
     val mysteryStop: Stop? = null
 )

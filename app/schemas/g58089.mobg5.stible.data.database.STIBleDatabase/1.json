@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "29201ce94b80b052c88cf10e2ee3b969",
+    "identityHash": "a8738dc06c9f8fb096a110925866344e",
     "entities": [
       {
         "tableName": "history",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzle_number` INTEGER NOT NULL, `guess_count` INTEGER NOT NULL, `best_percentage` REAL NOT NULL, `mysterystop_name` TEXT NOT NULL, PRIMARY KEY(`puzzle_number`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzle_number` INTEGER NOT NULL, `guess_count` INTEGER NOT NULL, `best_percentage` REAL NOT NULL, `mysteryname` TEXT NOT NULL, `mysterylatitude` REAL NOT NULL, `mysterylongitude` REAL NOT NULL, PRIMARY KEY(`puzzle_number`))",
         "fields": [
           {
             "fieldPath": "puzzleNumber",
@@ -27,9 +27,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "mysteryStop.stopName",
-            "columnName": "mysterystop_name",
+            "fieldPath": "mysteryStop.name",
+            "columnName": "mysteryname",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mysteryStop.latitude",
+            "columnName": "mysterylatitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mysteryStop.longitude",
+            "columnName": "mysterylongitude",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
@@ -44,7 +56,7 @@
       },
       {
         "tableName": "current_session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stop_name` TEXT NOT NULL, `distance` REAL NOT NULL, `percentage` REAL NOT NULL, `direction` TEXT NOT NULL, `mysterystop_name` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stop_name` TEXT NOT NULL, `distance` REAL NOT NULL, `percentage` REAL NOT NULL, `direction` TEXT NOT NULL, `mysteryname` TEXT, `mysterylatitude` REAL, `mysterylongitude` REAL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -77,9 +89,21 @@
             "notNull": true
           },
           {
-            "fieldPath": "mysteryStop.stopName",
-            "columnName": "mysterystop_name",
+            "fieldPath": "mysteryStop.name",
+            "columnName": "mysteryname",
             "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mysteryStop.latitude",
+            "columnName": "mysterylatitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mysteryStop.longitude",
+            "columnName": "mysterylongitude",
+            "affinity": "REAL",
             "notNull": false
           }
         ],
@@ -96,7 +120,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '29201ce94b80b052c88cf10e2ee3b969')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a8738dc06c9f8fb096a110925866344e')"
     ]
   }
 }
