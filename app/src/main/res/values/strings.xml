@@ -20,6 +20,7 @@
     <string name="share">Partager</string>
     <string name="loading">Chargement…</string>
     <string name="reload">Recharger</string>
+    <string name="map_fab_content_description">Ouvrir la carte</string>
 
     <!--Settings Screen-->
     <string name="map_mode_title">Mode Facile</string>

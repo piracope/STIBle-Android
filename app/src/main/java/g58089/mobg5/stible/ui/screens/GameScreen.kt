@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.East
@@ -39,9 +40,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -90,51 +93,68 @@ fun GameScreen(
 ) {
     val requestState = viewModel.requestState
 
-    Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Row {
-            Text(
-                text = stringResource(id = R.string.app_name_first_part),
-                color = STIBleBlue,
-                style = MaterialTheme.typography.displayLarge,
-            )
-            Text(
-                text = stringResource(id = R.string.app_name_second_part),
-                color = STIBleRed,
-                style = MaterialTheme.typography.displayLarge,
-            )
-            Text(
-                text = stringResource(id = R.string.app_name_third_part),
-                style = MaterialTheme.typography.displayLarge,
-            )
+    Scaffold(
+        modifier = modifier, floatingActionButton = {
+            if (viewModel.isMapModeEnabled) {
+                FloatingActionButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Default.Map,
+                        contentDescription = stringResource(id = R.string.map_fab_content_description)
+                    )
+                }
+            }
         }
-
-        if (!viewModel.isGameReady) {
-            if (requestState is RequestState.Loading) {
-                LoadingScreen(Modifier.fillMaxSize())
-            } else if (requestState is RequestState.Error) {
-                ErrorMessageScreen(
-                    errorType = requestState.error,
-                    onReload = viewModel::initializeGame,
-                    Modifier.fillMaxSize()
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row {
+                Text(
+                    text = stringResource(id = R.string.app_name_first_part),
+                    color = STIBleBlue,
+                    style = MaterialTheme.typography.displayLarge,
+                )
+                Text(
+                    text = stringResource(id = R.string.app_name_second_part),
+                    color = STIBleRed,
+                    style = MaterialTheme.typography.displayLarge,
+                )
+                Text(
+                    text = stringResource(id = R.string.app_name_third_part),
+                    style = MaterialTheme.typography.displayLarge,
                 )
             }
-            return
-        }
 
-        GameScreenBody(
-            gameRules = viewModel.gameRules,
-            userGuess = viewModel.userGuess,
-            canStillPlay = viewModel.canGuess,
-            guessHistory = viewModel.madeGuesses,
-            gameState = viewModel.gameState,
-            mysteryStop = viewModel.mysteryStop,
-            bestPercentage = viewModel.highestProximity,
-            onUserGuessChange = viewModel::changeGuess,
-            onGuess = viewModel::guess,
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(dimensionResource(id = R.dimen.outer_padding))
-        )
+            if (!viewModel.isGameReady) {
+                if (requestState is RequestState.Loading) {
+                    LoadingScreen(Modifier.fillMaxSize())
+                } else if (requestState is RequestState.Error) {
+                    ErrorMessageScreen(
+                        errorType = requestState.error,
+                        onReload = viewModel::initializeGame,
+                        Modifier.fillMaxSize()
+                    )
+                }
+            } else {
+                GameScreenBody(
+                    gameRules = viewModel.gameRules,
+                    userGuess = viewModel.userGuess,
+                    canStillPlay = viewModel.canGuess,
+                    guessHistory = viewModel.madeGuesses,
+                    gameState = viewModel.gameState,
+                    mysteryStop = viewModel.mysteryStop,
+                    bestPercentage = viewModel.highestProximity,
+                    onUserGuessChange = viewModel::changeGuess,
+                    onGuess = viewModel::guess,
+                    modifier = modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(dimensionResource(id = R.dimen.outer_padding))
+                )
+            }
+        }
     }
 
     if (requestState is RequestState.Error) {

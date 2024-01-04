@@ -128,6 +128,12 @@ class GameScreenViewModel(
      */
     private var userPreferences by mutableStateOf(UserPreferences())
 
+    /**
+     * Checks if the player has enabled Map/Easy mode.
+     */
+    val isMapModeEnabled: Boolean
+        get() = userPreferences.isMapModeEnabled
+
     // FIXME: apparently init is bad
     init {
         setupFlowCollectors()
