@@ -10,7 +10,6 @@ sealed interface RequestState {
     /**
      * The request succeeded.
      */
-    // FIXME: will this be used ? should i just use Default ?
     data object Success : RequestState
 
     /**

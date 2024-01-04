@@ -145,10 +145,6 @@ class GameScreenViewModel(
                 // if we can't even get the game rules -> it's over
                 return@launch
             }
-            Log.d(
-                TAG,
-                "stored vs received : ${userPreferences.lastSeenPuzzleNumber} and ${gameRules.puzzleNumber}"
-            )
 
             // check if today is a new day
             if (userPreferences.lastSeenPuzzleNumber < gameRules.puzzleNumber) {
@@ -161,7 +157,7 @@ class GameScreenViewModel(
             if (_madeGuesses.isNotEmpty()) {
                 gameState = handleStateAfterGuess(_madeGuesses.last(), GameState.PLAYING)
                 if (gameState != GameState.PLAYING) {
-                    mysteryStop = _madeGuesses.last().mysteryStop?.stopName
+                    mysteryStop = _madeGuesses.last().mysteryStop?.name
                 } // FIXME: NOT DRY !!
             } else {
                 gameState = GameState.PLAYING
@@ -185,7 +181,6 @@ class GameScreenViewModel(
                 userPreferences = pref
                 _madeGuesses.clear()
                 _madeGuesses.addAll(session)
-                Log.d(TAG, "newUserPref : $userPreferences")
             }.collect()
         }
     }
@@ -245,7 +240,7 @@ class GameScreenViewModel(
 
             val response = sendGuessRequest()
             response?.let {
-                // display to the database
+                // display on the screen
                 _madeGuesses.add(it)
 
                 // figure out whether the game ended and unblock input if needed
@@ -270,7 +265,10 @@ class GameScreenViewModel(
      * Generates a [GameRecap] for this session and stores it.
      */
     private suspend fun handleGameOver(mystery: Stop?) {
-        mysteryStop = mystery?.stopName
+        mysteryStop = mystery?.name
+        if (mystery == null) {
+            Log.e(TAG, "Game is over, but no mystery stop was provided by the backend.")
+        }
         // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
         // that said, it's the same for the web game. would need an additional HTTP request.
 
