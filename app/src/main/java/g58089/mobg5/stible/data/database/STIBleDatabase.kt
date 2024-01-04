@@ -11,7 +11,7 @@ import g58089.mobg5.stible.data.dto.GuessResponse
 /**
  * Room Database providing DAOs for the games history and the current game session.
  */
-@Database(entities = [GameRecap::class, GuessResponse::class], version = 1, exportSchema = false)
+@Database(entities = [GameRecap::class, GuessResponse::class], version = 1)
 abstract class STIBleDatabase : RoomDatabase() {
     abstract fun currentSessionDao(): CurrentSessionDao
     abstract fun gameHistoryDao(): GameHistoryDao

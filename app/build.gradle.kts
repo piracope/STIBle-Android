@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
+    id("androidx.room")
 }
 
 android {
@@ -59,6 +60,11 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+}
+
+// Set Room schema export location
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 dependencies {
