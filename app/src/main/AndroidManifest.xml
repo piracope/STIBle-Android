@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--Custom Application class (android:name)-->
     <application
         android:name=".STIBleApplication"
         android:allowBackup="true"
@@ -14,14 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.STIBle"
         tools:targetApi="31">
-        <!--Custom Application class-->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,5 +35,4 @@
                 android:value="true" />
         </service>
     </application>
-
 </manifest>
