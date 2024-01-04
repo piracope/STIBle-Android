@@ -1,4 +1,4 @@
-package g58089.mobg5.stible.data.util
+package g58089.mobg5.stible.ui.util
 
 import android.icu.text.Normalizer2
 

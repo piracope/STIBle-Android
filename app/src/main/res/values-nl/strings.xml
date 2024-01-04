@@ -40,4 +40,5 @@
     <string name="confirm">Bevestigen</string>
     <string name="cancel">Annuleren</string>
     <string name="map_fab_content_description">Open een map</string>
+    <string name="error_translation_failure">Kan niet uw spelletje vertalen</string>
 </resources>

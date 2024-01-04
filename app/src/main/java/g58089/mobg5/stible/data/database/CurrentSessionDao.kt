@@ -3,6 +3,7 @@ package g58089.mobg5.stible.data.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import g58089.mobg5.stible.data.dto.GuessResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +33,10 @@ interface CurrentSessionDao {
      */
     @Query("DELETE FROM current_session")
     suspend fun wipeSession()
+
+    /**
+     * Updates a given [GuessResponse] (identified by its id field).
+     */
+    @Update
+    suspend fun update(newGuessResponse: GuessResponse)
 }

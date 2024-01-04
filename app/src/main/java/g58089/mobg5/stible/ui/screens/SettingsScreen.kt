@@ -30,7 +30,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import g58089.mobg5.stible.R
+import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
+import g58089.mobg5.stible.ui.util.ShowToast
 
 @Composable
 fun SettingsScreen(
@@ -46,6 +48,12 @@ fun SettingsScreen(
         modifier
             .fillMaxSize()
     )
+
+    val requestState = viewModel.requestState
+
+    if (requestState is RequestState.Error) {
+        ShowToast(error = requestState.error)
+    }
 }
 
 @Composable

@@ -30,6 +30,11 @@ enum class ErrorType {
     GAME_OVER,
 
     /**
+     * An error occurred specifically during session translation.
+     */
+    TRANSLATION_FAILURE,
+
+    /**
      * Catch-all lol
      */
     UNKNOWN

@@ -18,6 +18,11 @@ interface CurrentSessionRepository {
     suspend fun insertGuessResponse(guessResponse: GuessResponse)
 
     /**
+     * Updates an existing [GuessResponse.stopName] with a new name.
+     */
+    suspend fun setStopName(guessResponse: GuessResponse, newStopName: String)
+
+    /**
      * Clears the current session to make way for a new one.
      */
     suspend fun clearForNewSession()

@@ -13,5 +13,10 @@ class OfflineCurrentSessionRepository(private val sessionDao: CurrentSessionDao)
     override suspend fun insertGuessResponse(guessResponse: GuessResponse) =
         sessionDao.insert(guessResponse)
 
+    override suspend fun setStopName(guessResponse: GuessResponse, newStopName: String) {
+        val newGuessResponse = guessResponse.copy(stopName = newStopName)
+        sessionDao.update(newGuessResponse)
+    }
+
     override suspend fun clearForNewSession() = sessionDao.wipeSession()
 }

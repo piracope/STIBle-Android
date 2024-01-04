@@ -1,7 +1,6 @@
 package g58089.mobg5.stible.ui.screens
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -75,13 +74,15 @@ import g58089.mobg5.stible.data.dto.Route
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
-import g58089.mobg5.stible.data.util.unaccent
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.theme.STIBleBlue
 import g58089.mobg5.stible.ui.theme.STIBleGreen
 import g58089.mobg5.stible.ui.theme.STIBleRed
 import g58089.mobg5.stible.ui.theme.STIBleYellow
 import g58089.mobg5.stible.ui.theme.light_onSTIBleGreen
+import g58089.mobg5.stible.ui.util.ShowToast
+import g58089.mobg5.stible.ui.util.getErrorStringResId
+import g58089.mobg5.stible.ui.util.unaccent
 import java.util.Locale
 
 private const val TAG = "GameScreen"
@@ -158,27 +159,10 @@ fun GameScreen(
     }
 
     if (requestState is RequestState.Error) {
-        Toast.makeText(
-            LocalContext.current,
-            stringResource(id = getErrorStringResId(requestState.error)),
-            Toast.LENGTH_SHORT
-        ).show()
+        ShowToast(error = requestState.error)
     }
 }
 
-/**
- * Fetches the error messages for each [ErrorType]
- */
-private fun getErrorStringResId(errorType: ErrorType): Int {
-    return when (errorType) {
-        ErrorType.GAME_OVER -> R.string.error_game_over
-        ErrorType.NO_INTERNET -> R.string.error_no_internet
-        ErrorType.NEW_LEVEL_AVAILABLE -> R.string.error_new_level_available
-        ErrorType.BAD_LANGUAGE -> R.string.error_bad_language
-        ErrorType.BAD_STOP -> R.string.error_bad_stop
-        ErrorType.UNKNOWN -> R.string.error_unknown
-    }
-}
 
 /**
  * Displays a little spinny thing.

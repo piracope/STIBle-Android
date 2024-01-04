@@ -4,6 +4,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.Guess
 import g58089.mobg5.stible.data.dto.GuessResponse
+import g58089.mobg5.stible.data.dto.StopTranslation
 import g58089.mobg5.stible.data.util.Language
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -64,6 +65,17 @@ interface STIBleApiService {
      */
     @POST("guess")
     suspend fun guess(@Body guess: Guess): Response<GuessResponse>
+
+    /**
+     * Sends a [StopTranslation] to the backend.
+     *
+     * Can return :
+     * - 200 : a [String], the translated stop name
+     * - 204 : the [StopTranslation.stopName] was blank
+     * - 400 : a server exception occurred
+     */
+    @POST("tl")
+    suspend fun translate(@Body translation: StopTranslation): String
 }
 
 /**

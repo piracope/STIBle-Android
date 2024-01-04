@@ -1,9 +1,11 @@
 package g58089.mobg5.stible.data.network
 
+import android.util.Log
 import g58089.mobg5.stible.data.GameInteraction
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.Guess
 import g58089.mobg5.stible.data.dto.GuessResponse
+import g58089.mobg5.stible.data.dto.StopTranslation
 import g58089.mobg5.stible.data.util.Language
 import retrofit2.Response
 
@@ -29,5 +31,15 @@ class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInter
         )
 
         return stibleApi.guess(guess)
+    }
+
+    override suspend fun translateStop(
+        stopName: String,
+        oldLang: Language,
+        newLang: Language
+    ): String {
+        val translation = StopTranslation(stopName, oldLang.code, newLang.code)
+        Log.d("OnlineGameInteraction", "sending this translation: $translation")
+        return stibleApi.translate(translation)
     }
 }

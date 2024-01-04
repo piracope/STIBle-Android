@@ -32,4 +32,15 @@ interface GameInteraction {
      * network layer handles it, throws an exception, then the application layer can just
      * use the exception instead of validating code 205 and 400 itself.
      */
+
+    /**
+     * Translates a Stop's name from one [Language] to another.
+     *
+     * For example, translating "Cimetière d'Ixelles" from [Language.FRENCH] to [Language.DUTCH]
+     * returns "Begraafplaats van Elsene".
+     *
+     * If the translation fails, for example translating a French stop name to French, the
+     * given stopName will be returned.
+     */
+    suspend fun translateStop(stopName: String, oldLang: Language, newLang: Language): String
 }
