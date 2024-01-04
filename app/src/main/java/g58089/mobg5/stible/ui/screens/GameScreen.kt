@@ -88,25 +88,21 @@ fun GameScreen(
 ) {
     val requestState = viewModel.requestState
 
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Row {
-            // TODO: change font
             Text(
                 text = stringResource(id = R.string.app_name_first_part),
                 color = STIBleBlue,
                 style = MaterialTheme.typography.displayLarge,
-                fontWeight = FontWeight.Bold
             )
             Text(
                 text = stringResource(id = R.string.app_name_second_part),
                 color = STIBleRed,
                 style = MaterialTheme.typography.displayLarge,
-                fontWeight = FontWeight.Bold
             )
             Text(
                 text = stringResource(id = R.string.app_name_third_part),
                 style = MaterialTheme.typography.displayLarge,
-                fontWeight = FontWeight.Bold
             )
         }
 

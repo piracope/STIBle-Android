@@ -34,6 +34,7 @@ android {
         }
     }
     compileOptions {
+        // needed to switch from 1.8 to 17 to use the newest stable Room version
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -46,7 +47,6 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.7"
@@ -58,6 +58,7 @@ android {
     }
 
     androidResources {
+        // Generates necessary LocaleConfig files for syst
         generateLocaleConfig = true
     }
 }
