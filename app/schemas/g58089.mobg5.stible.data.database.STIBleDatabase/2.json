@@ -1,0 +1,126 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "a8738dc06c9f8fb096a110925866344e",
+    "entities": [
+      {
+        "tableName": "history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzle_number` INTEGER NOT NULL, `guess_count` INTEGER NOT NULL, `best_percentage` REAL NOT NULL, `mysteryname` TEXT NOT NULL, `mysterylatitude` REAL NOT NULL, `mysterylongitude` REAL NOT NULL, PRIMARY KEY(`puzzle_number`))",
+        "fields": [
+          {
+            "fieldPath": "puzzleNumber",
+            "columnName": "puzzle_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "guessCount",
+            "columnName": "guess_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bestPercentage",
+            "columnName": "best_percentage",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mysteryStop.name",
+            "columnName": "mysteryname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mysteryStop.latitude",
+            "columnName": "mysterylatitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mysteryStop.longitude",
+            "columnName": "mysterylongitude",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "puzzle_number"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "current_session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `stop_name` TEXT NOT NULL, `distance` REAL NOT NULL, `percentage` REAL NOT NULL, `direction` TEXT NOT NULL, `mysteryname` TEXT, `mysterylatitude` REAL, `mysterylongitude` REAL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stopName",
+            "columnName": "stop_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "distance",
+            "columnName": "distance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "proximityPecentage",
+            "columnName": "percentage",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "directionEmoji",
+            "columnName": "direction",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mysteryStop.name",
+            "columnName": "mysteryname",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mysteryStop.latitude",
+            "columnName": "mysterylatitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mysteryStop.longitude",
+            "columnName": "mysterylongitude",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a8738dc06c9f8fb096a110925866344e')"
+    ]
+  }
+}
