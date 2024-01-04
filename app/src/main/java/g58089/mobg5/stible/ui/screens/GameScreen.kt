@@ -88,7 +88,7 @@ fun GameScreen(
 ) {
     val requestState = viewModel.requestState
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Row {
             // TODO: change font
             Text(

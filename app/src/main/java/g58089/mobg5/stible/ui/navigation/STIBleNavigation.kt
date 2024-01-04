@@ -94,8 +94,6 @@ fun STIBleNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    // TODO: have a splash screen that is open while initial data isn't fetched.
-    // or have a spinning thing, you know those ones
     NavHost(
         navController = navController,
         startDestination = Screen.Main.route,

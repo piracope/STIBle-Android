@@ -90,7 +90,6 @@ class GameScreenViewModel(
      * A short hand for [gameState] == PLAYING.
      *
      * Easier for the view.
-     * TODO: do i keep this
      */
     val canGuess
         get() = gameState == GameState.PLAYING
@@ -172,8 +171,6 @@ class GameScreenViewModel(
 
     /**
      * Sets up the Flows to automatically put their new data inside my own little silly fields.
-     *
-     * // TODO: ask QHB about this because i do NOT understand this
      */
     private fun setupFlowCollectors() {
         viewModelScope.launch {
@@ -215,7 +212,6 @@ class GameScreenViewModel(
      * Updates the currently input guess in the view model with what the user wrote.
      */
     fun changeGuess(newGuess: String) {
-        // TODO: check if game over (probably)
         userGuess = newGuess
     }
 

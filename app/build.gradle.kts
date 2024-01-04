@@ -24,6 +24,7 @@ android {
 
     buildTypes {
         release {
+            // TODO: set to true for final release
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -76,7 +77,6 @@ dependencies {
 
     // Icons
     implementation("androidx.compose.material:material-icons-extended")
-    // TODO: this thing is big, use Proguard or whatever to minify it
 
     // Network handling
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
