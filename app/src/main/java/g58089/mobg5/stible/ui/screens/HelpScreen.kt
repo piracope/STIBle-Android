@@ -48,10 +48,12 @@ fun HelpScreen(modifier: Modifier = Modifier) {
             Text(
                 text = messages[page],
                 textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        // copied straight from Android Developers
+
+        // copied straight from https://developer.android.com/jetpack/compose/layouts/pager
         Row(
             modifier = Modifier
                 .wrapContentHeight()
@@ -62,7 +64,6 @@ fun HelpScreen(modifier: Modifier = Modifier) {
         ) {
             repeat(pagerState.pageCount) { iteration ->
                 val color =
-                    // except for the colors which i changed. I need to understand how Material works
                     if (pagerState.currentPage == iteration)
                         MaterialTheme.colorScheme.surfaceTint
                     else
@@ -70,7 +71,7 @@ fun HelpScreen(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
-                        .clip(CircleShape) // circle :D
+                        .clip(CircleShape)
                         .background(color)
                         .size(16.dp)
                 )
