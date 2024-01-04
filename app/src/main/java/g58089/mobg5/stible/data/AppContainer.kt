@@ -21,6 +21,7 @@ interface AppContainer {
     val gameHistoryRepository: GameHistoryRepository
     val currentSessionRepository: CurrentSessionRepository
     val userPreferencesRepository: UserPreferencesRepository
+    val localeRepository: LocaleRepository
     val gameInteraction: GameInteraction
 }
 
@@ -54,6 +55,13 @@ class AppDataContainer(private val context: Context) : AppContainer {
      */
     override val userPreferencesRepository: UserPreferencesRepository by lazy {
         OfflineUserPreferencesRepository(context.dataStore)
+    }
+
+    /**
+     * Nothing to say here. Go check [LocaleRepository] if you want help.
+     */
+    override val localeRepository: LocaleRepository by lazy {
+        LocaleRepository(context)
     }
 
     /**

@@ -25,7 +25,8 @@ object STIBleViewModelProvider {
             SettingsScreenViewModel(
                 stibleApplication().container.currentSessionRepository,
                 stibleApplication().container.gameHistoryRepository,
-                stibleApplication().container.userPreferencesRepository
+                stibleApplication().container.userPreferencesRepository,
+                stibleApplication().container.localeRepository
             )
         }
     }
