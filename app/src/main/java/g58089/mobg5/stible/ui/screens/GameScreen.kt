@@ -263,7 +263,7 @@ fun GameScreenBody(
                 maxGuessCount = gameRules.maxGuessCount,
                 guessHistory = guessHistory,
                 bestPercentage = bestPercentage,
-                gameState = gameState
+                hasLost = gameState == GameState.LOST
             )
 
             val shareHeader = "${stringResource(id = R.string.app_name)} #${gameRules.puzzleNumber}"
@@ -604,7 +604,7 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
  * @param maxGuessCount the amount of times the user can guess in a day
  * @param guessHistory all [GuessResponse] received during the session
  * @param bestPercentage the proximity percentage of the guess closest to the mystery stop
- * @param gameState whether the user has lost or not //TODO: this should be a boolean
+ * @param hasLost whether the user has lost or not //TODO: this should be a boolean
  */
 @Composable
 private fun buildShareMessage(
@@ -612,11 +612,11 @@ private fun buildShareMessage(
     maxGuessCount: Int,
     bestPercentage: Double,
     guessHistory: List<GuessResponse>,
-    gameState: GameState
+    hasLost: Boolean
 ): String {
     // i've thought of not letting the user share if the game isn't finished, but who cares honestly.
 
-    val nbTries = if (gameState == GameState.LOST) "X" else guessHistory.size
+    val nbTries = if (hasLost) "X" else guessHistory.size
 
     val squares = StringBuilder()
 
@@ -625,7 +625,7 @@ private fun buildShareMessage(
     }
 
     return """
-${stringResource(id = R.string.app_name)} #${puzzleNumber} $nbTries/$maxGuessCount (${
+#${stringResource(id = R.string.app_name)} #${puzzleNumber} $nbTries/$maxGuessCount (${
         bestPercentage.times(
             100
         ).toInt()
@@ -634,7 +634,7 @@ ${stringResource(id = R.string.app_name)} #${puzzleNumber} $nbTries/$maxGuessCou
 $squares
 
 ${stringResource(id = R.string.app_name)} App - https://stible.elitios.net/
-    """
+"""
 }
 
 @Preview
