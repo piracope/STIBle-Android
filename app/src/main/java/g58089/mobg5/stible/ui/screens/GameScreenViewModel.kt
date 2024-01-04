@@ -269,8 +269,6 @@ class GameScreenViewModel(
         if (mystery == null) {
             Log.e(TAG, "Game is over, but no mystery stop was provided by the backend.")
         }
-        // TODO : the stop name is untranslated (GARE DU MIDI instead of Gare du Midi/Zuidstation)
-        // that said, it's the same for the web game. would need an additional HTTP request.
 
         val stopToSave = mystery ?: Stop()
         val recap = GameRecap(gameRules.puzzleNumber, guessCount, highestProximity, stopToSave)
