@@ -35,4 +35,8 @@
     </string-array>
     <string name="nl_mode_title">In Nederlands spelen</string>
     <string name="nl_subtitle">Schakelen de taal van Frans naar Nederlands</string>
+    <string name="remove_all_data_dialog_title">Uw gegevens verwijderen</string>
+    <string name="remove_all_data_dialog_text">Het spel van vandaag en uw spelhistorie zal worden verwijdered. Alle instellingen zal worden gereset.</string>
+    <string name="confirm">Bevestigen</string>
+    <string name="cancel">Annuleren</string>
 </resources>

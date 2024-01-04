@@ -25,6 +25,10 @@
     <string name="map_mode_title">Mode Facile</string>
     <string name="map_mode_subtitle">Place vos essais sur une carte de Bruxelles</string>
     <string name="remove_all_data_button">Supprimer toutes vos données</string>
+    <string name="remove_all_data_dialog_title">Supprimer vos données</string>
+    <string name="remove_all_data_dialog_text">La partie d\'aujourd\'hui et l\'historique des parties précédentes seront supprimés. Tous les paramètres seront remis à leur valeur par défaut.</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
 
     <!--Help Screen-->
     <string-array name="help_messages">

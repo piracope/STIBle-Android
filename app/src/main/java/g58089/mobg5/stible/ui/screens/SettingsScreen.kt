@@ -8,12 +8,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -48,6 +57,8 @@ fun SettingsScreenBody(
     switchToNl: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var isRemoveDialogOpen by rememberSaveable { mutableStateOf(false) }
+
     Column(modifier, verticalArrangement = Arrangement.Top) {
         SwitchSetting(
             title = stringResource(id = R.string.map_mode_title),
@@ -66,7 +77,7 @@ fun SettingsScreenBody(
         Spacer(modifier = Modifier.weight(1f))
 
         FilledTonalButton(
-            onClick = onClearAll,
+            onClick = { isRemoveDialogOpen = !isRemoveDialogOpen },
             colors = ButtonDefaults.filledTonalButtonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,7 +87,39 @@ fun SettingsScreenBody(
                 text = stringResource(id = R.string.remove_all_data_button),
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
-        } // TODO: alert
+        }
+
+        if (isRemoveDialogOpen) {
+            AlertDialog(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.DeleteForever,
+                        contentDescription = null
+                    )
+                },
+                title = {
+                    Text(text = stringResource(id = R.string.remove_all_data_dialog_title))
+                },
+                text = {
+                    Text(text = stringResource(id = R.string.remove_all_data_dialog_text))
+                },
+                onDismissRequest = { isRemoveDialogOpen = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        isRemoveDialogOpen = false
+                        onClearAll()
+                    }) {
+                        Text(text = stringResource(id = R.string.confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { isRemoveDialogOpen = false }) {
+                        Text(text = stringResource(id = R.string.cancel))
+                    }
+                }
+            )
+        }
+
     }
 }
 
