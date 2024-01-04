@@ -72,6 +72,7 @@ import g58089.mobg5.stible.data.dto.Route
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
+import g58089.mobg5.stible.data.util.unaccent
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.theme.STIBleBlue
 import g58089.mobg5.stible.ui.theme.STIBleGreen
@@ -510,9 +511,8 @@ fun StopSearchBar(
             enabled = guessEnabled
         )
         // filter options based on text field value
-        val filteredStops = allStops.filter { it.contains(userGuess, ignoreCase = true) }
-        // FIXME: accents don't pass, so you have to actually write them
-        // which is the behaviour in the online game so....
+        val filteredStops =
+            allStops.filter { it.unaccent().contains(userGuess.unaccent(), ignoreCase = true) }
         if (filteredStops.isNotEmpty()) {
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = {
                 expanded = false
@@ -604,7 +604,7 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
  * @param maxGuessCount the amount of times the user can guess in a day
  * @param guessHistory all [GuessResponse] received during the session
  * @param bestPercentage the proximity percentage of the guess closest to the mystery stop
- * @param hasLost whether the user has lost or not //TODO: this should be a boolean
+ * @param hasLost whether the user has lost or not
  */
 @Composable
 private fun buildShareMessage(
