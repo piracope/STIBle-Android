@@ -20,6 +20,7 @@ import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.data.util.Language
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -141,10 +142,13 @@ class GameScreenViewModel(
             isGameReady = false
             fetchGameRules()
             if (requestState !is RequestState.Success) {
-                Log.d(TAG, "request state : $requestState")
                 // if we can't even get the game rules -> it's over
                 return@launch
             }
+            Log.d(
+                TAG,
+                "stored vs received : ${userPreferences.lastSeenPuzzleNumber} and ${gameRules.puzzleNumber}"
+            )
 
             // check if today is a new day
             if (userPreferences.lastSeenPuzzleNumber < gameRules.puzzleNumber) {
@@ -181,7 +185,8 @@ class GameScreenViewModel(
                 userPreferences = pref
                 _madeGuesses.clear()
                 _madeGuesses.addAll(session)
-            }
+                Log.d(TAG, "newUserPref : $userPreferences")
+            }.collect()
         }
     }
 
