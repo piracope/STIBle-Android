@@ -254,6 +254,10 @@ class GameScreenViewModel(
                     handleGameOver(it.mysteryStop)
                 }
             }
+
+            if (response == null) {
+                gameState = oldGameState
+            }
         }
     }
 
