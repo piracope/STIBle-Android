@@ -1,9 +1,9 @@
 package g58089.mobg5.stible.ui.screens
 
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -299,9 +300,6 @@ fun GameScreenBody(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-        } else if (gameState in arrayOf(GameState.LOST, GameState.WON)) {
-            Log.e(TAG, "Game is over, but no mystery stop was provided by the backend.")
-            // FIXME: we end up here for no reason
         }
     }
 }
@@ -321,9 +319,14 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
         modifier = modifier.padding(vertical = dimensionResource(R.dimen.guess_row_padding)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))
     ) {
+        var isNameExpanded by rememberSaveable { mutableStateOf(false) }
+        var isDistanceExpanded by rememberSaveable { mutableStateOf(false) }
+
         GuessRowTextCell(
             guessResponse?.stopName,
-            Modifier.fillMaxWidth(0.4f)
+            Modifier
+                .fillMaxWidth(if (isNameExpanded) 1.0f else 0.4f)
+                .clickable(enabled = guessResponse != null) { isNameExpanded = !isNameExpanded }
         )
         GuessRowPercentageSquares(
             guessResponse?.proximityPecentage,
@@ -334,10 +337,12 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
             guessResponse?.distance?.let { String.format(Locale.ENGLISH, "%.1fkm", it) }
         GuessRowTextCell(
             text = distanceText,
-            Modifier.weight(1f)
+            modifier = (if (isDistanceExpanded) Modifier.fillMaxWidth() else Modifier.weight(
+                1f
+            )).clickable(enabled = guessResponse != null) {
+                isDistanceExpanded = !isDistanceExpanded
+            }
         )
-
-        // TODO: put a tooltip for small screens that can't display the whole thing
 
         val colorDirection = getDirectionBackgroundColor(guessResponse)
         val vector = guessResponse?.directionEmoji?.let { emojiToIcon(it) }
@@ -359,7 +364,6 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
 private fun GuessRowTextCell(text: String?, modifier: Modifier = Modifier) {
     val color =
         if (text == null) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.secondary
-
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_amount)))
