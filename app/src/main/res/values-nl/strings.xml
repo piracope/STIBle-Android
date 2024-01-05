@@ -14,6 +14,10 @@
     <string name="share">Delen</string>
     <string name="loading">Even geduld…</string>
     <string name="reload">Herladen</string>
+    <string name="guess_distribution">Gissingen verdeelschema</string>
+    <string name="number_of_games">spelletjes</string>
+    <string name="win_rate">wint</string>
+    <string name="current_streak">Huidige reeks</string>
     <string name="map_mode_title">Easy Mode</string>
     <string name="map_mode_subtitle">Plaatst uw gissinen op een map van Brussel</string>
     <string name="remove_all_data_button">Al uw gegevens verwijderen</string>
@@ -41,4 +45,5 @@
     <string name="cancel">Annuleren</string>
     <string name="map_fab_content_description">Open een map</string>
     <string name="error_translation_failure">Kan niet uw spelletje vertalen</string>
+    <string name="best_streak">Beste reeks</string>
 </resources>

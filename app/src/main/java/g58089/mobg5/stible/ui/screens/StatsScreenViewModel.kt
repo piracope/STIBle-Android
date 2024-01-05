@@ -76,7 +76,7 @@ class StatsScreenViewModel(
     /**
      * The number of games the player has won
      */
-    val numberOfWins: Int
+    private val numberOfWins: Int
         get() = numberOfGames - numberOfLosses
 
     /**
@@ -84,9 +84,6 @@ class StatsScreenViewModel(
      */
     val winRate: Double
         get() = numberOfWins / (numberOfGames * 1.0)
-
-    val maxGuessCount: Int
-        get() = userPreferences.maxGuessCount
 
     init {
         viewModelScope.launch {
@@ -115,9 +112,12 @@ class StatsScreenViewModel(
      */
     private fun hasLost(recap: GameRecap) = recap.bestPercentage != 1.0
 
+    /**
+     * Restores the [guessCountRepartition] back to its default state of 1 -> 0, 2 -> 0, ...
+     */
     private fun MutableMap<Int, Int>.backToDefault() {
         this.clear()
-        for (i in 0..maxGuessCount) {
+        for (i in 0..userPreferences.maxGuessCount) {
             this[i] = 0
         }
     }

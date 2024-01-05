@@ -23,8 +23,12 @@
     <string name="map_fab_content_description">Ouvrir la carte</string>
 
     <!--Stats Screen-->
-    <string name="loss_marker">💀</string>
+    <string name="loss_marker" translatable="false">💀</string>
     <string name="guess_distribution">Graphique de répartition des essais</string>
+    <string name="number_of_games">parties</string>
+    <string name="win_rate">de victoires</string>
+    <string name="current_streak">Série en cours</string>
+    <string name="best_streak">Meilleure série</string>
 
     <!--Settings Screen-->
     <string name="map_mode_title">Mode Facile</string>
