@@ -34,7 +34,8 @@ object STIBleViewModelProvider {
         }
         initializer {
             StatsScreenViewModel(
-                stibleApplication().container.gameHistoryRepository
+                stibleApplication().container.gameHistoryRepository,
+                stibleApplication().container.userPreferencesRepository
             )
         }
     }

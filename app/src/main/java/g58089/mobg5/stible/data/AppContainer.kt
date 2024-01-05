@@ -6,6 +6,7 @@ import g58089.mobg5.stible.data.database.OfflineCurrentSessionRepository
 import g58089.mobg5.stible.data.database.OfflineGameHistoryRepository
 import g58089.mobg5.stible.data.database.STIBleDatabase
 import g58089.mobg5.stible.data.datastore.OfflineUserPreferencesRepository
+import g58089.mobg5.stible.data.locale.AndroidLocaleRepository
 import g58089.mobg5.stible.data.network.OnlineGameInteraction
 import g58089.mobg5.stible.data.network.STIBleApi
 
@@ -58,10 +59,10 @@ class AppDataContainer(private val context: Context) : AppContainer {
     }
 
     /**
-     * Nothing to say here. Go check [LocaleRepository] if you want help.
+     * Implementation for [LocaleRepository].
      */
     override val localeRepository: LocaleRepository by lazy {
-        LocaleRepository(context)
+        AndroidLocaleRepository(context)
     }
 
     /**
