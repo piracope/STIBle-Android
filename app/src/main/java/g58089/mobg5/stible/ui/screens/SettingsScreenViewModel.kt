@@ -16,6 +16,9 @@ import g58089.mobg5.stible.data.util.Language
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+/**
+ * [ViewModel] handling logic for the settings screen.
+ */
 class SettingsScreenViewModel(
     private val currentSessionRepo: CurrentSessionRepository,
     private val gameHistoryRepo: GameHistoryRepository,
@@ -23,12 +26,22 @@ class SettingsScreenViewModel(
     private val localeRepository: LocaleRepository,
     private val gameInteraction: GameInteraction,
 ) : ViewModel() {
+
+    /**
+     * Whether the user has turned on map/easy mode.
+     */
     var isMapModeEnabled by mutableStateOf(false)
         private set
 
+    /**
+     * Checks whether the user chose to play in Dutch.
+     */
     val isInNederlands: Boolean
         get() = localeRepository.isInNederlands()
 
+    /**
+     * State of any HTTP request.
+     */
     var requestState: RequestState = RequestState.Default
         private set
 
@@ -40,6 +53,9 @@ class SettingsScreenViewModel(
         }
     }
 
+    /**
+     * Updates [isMapModeEnabled]
+     */
     fun changeMapMode(isOn: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setIsMapModeEnabled(isOn)
@@ -47,6 +63,12 @@ class SettingsScreenViewModel(
         }
     }
 
+    /**
+     * Wipes everything.
+     *
+     * Clears the current session and history. Reverts all user settings to their default state.
+     * Restores the default Locale.
+     */
     fun removeAllData() {
         viewModelScope.launch {
             userPreferencesRepository.clearPreferences()
@@ -56,6 +78,16 @@ class SettingsScreenViewModel(
         }
     }
 
+    /**
+     * Switches the in-app Locale to Dutch if [isSufferingEnabled] is true.
+     *
+     * This method will also ask the backend for a translation of all stops in the current session,
+     * so that every word displayed is translated. These translations are done in a separate thread
+     * fpr each GuessResponse in the database to avoid having to wait for 0..6 consecutive HTTP
+     * requests to finalize before switching the locale.
+     *
+     * NOTE : this method calls a function that causes a configuration change.
+     */
     fun changeToNederlands(isSufferingEnabled: Boolean) {
         val newLang = if (isSufferingEnabled) Language.DUTCH else Language.FRENCH
         val oldLang = localeRepository.language
