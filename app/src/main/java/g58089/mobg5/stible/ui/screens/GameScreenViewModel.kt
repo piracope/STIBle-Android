@@ -131,6 +131,34 @@ class GameScreenViewModel(
     // FIXME: apparently init is bad
     init {
         setupFlowCollectors()
+
+        /* FIXME: called on each navigation.
+
+        This function is quite hefty, as roughly 20kB of data is sent by the server.
+        On slower connections, this is a pain. This is exacerbated by the fact that going to
+        another screen then navigating back to here recreates this ViewModel, which runs this
+        request AGAIN.
+
+        This is quite redundant, as game initialization should be done ONCE per day (or more if the
+        player decided to wipe out all data).
+
+        What I could do is build a cache system of sorts : caching the GameRules i receive into a
+        database and then upon creating the ViewModel check FIRST if we haven't received a GameRules
+        already. But how would we know ? Maybe adding a date field, but that only complicates things
+        (dates.... + the fact that it assumes that puzzleNumbers are generated once per day, but in
+        fact while that's usually the case, it's arbitrary.)
+
+        For this last problem, I could do a cache miss thing. If the server replies with 205 to a
+        guess, the GameRules MUST be outdated.
+
+        But that doesn't solve all my problems : there's a list of Route and a list of Stops. How
+        do I store that in a database ??? like i need a Stop and a Route table which will
+        obviously be fed little by little by the server.
+
+        In short, I acknowledge that this is a glaring problem, but I do not find an easy fix for
+        it, especially with the two huge features (stats and map at the time of writing) I need to
+        build.
+         */
         initializeGame()
     }
 
