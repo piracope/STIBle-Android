@@ -22,6 +22,7 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
     private object PreferencesKeys {
         val LAST_SEEN_PUZZLE_NUMBER = intPreferencesKey("last_seen_puzzle_number")
         val IS_MAP_MODE_ENABLED = booleanPreferencesKey("is_map_mode_enabled")
+        val MAX_GUESS_COUNT = intPreferencesKey("max_guess_count")
     }
 
     override val userData: Flow<UserPreferences> = dataStore.data
@@ -46,6 +47,12 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
     override suspend fun setIsMapModeEnabled(isMapModeEnabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.IS_MAP_MODE_ENABLED] = isMapModeEnabled
+        }
+    }
+
+    override suspend fun setMaxGuessCount(maxGuessCount: Int) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.MAX_GUESS_COUNT] = maxGuessCount
         }
     }
 

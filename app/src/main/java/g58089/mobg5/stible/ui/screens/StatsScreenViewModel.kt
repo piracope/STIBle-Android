@@ -24,6 +24,10 @@ class StatsScreenViewModel(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
+    companion object {
+        const val FLOAT_LOSS_MARKER = 0.0f
+    }
+
     /**
      * All previously recorded [GameRecap]s.
      */
@@ -34,16 +38,15 @@ class StatsScreenViewModel(
      */
     private var userPreferences by mutableStateOf(UserPreferences())
 
-
     /**
      * A [Map] of the repartition of number of guesses it took to finish each game.
      *
      * Looks like this :
      * {"X": 2, "1", 5, ... "6": 8}
      */
-    val guessCountRepartition: Map<String, Int>
+    val guessCountRepartition: Map<Int, Int>
         get() = _gameRecapGuessCount
-    private val _gameRecapGuessCount = mutableStateMapOf<String, Int>()
+    private val _gameRecapGuessCount = mutableStateMapOf<Int, Int>()
 
     /**
      * Total number of [GameRecap]s stored in the device.
@@ -82,6 +85,9 @@ class StatsScreenViewModel(
     val winRate: Double
         get() = numberOfWins / (numberOfGames * 1.0)
 
+    val maxGuessCount: Int
+        get() = userPreferences.maxGuessCount
+
     init {
         viewModelScope.launch {
             combine(
@@ -109,11 +115,18 @@ class StatsScreenViewModel(
      */
     private fun hasLost(recap: GameRecap) = recap.bestPercentage != 1.0
 
+    private fun MutableMap<Int, Int>.backToDefault() {
+        this.clear()
+        for (i in 0..maxGuessCount) {
+            this[i] = 0
+        }
+    }
+
     /**
      * Updates all values when a change occurs in the game history.
      */
     private fun update() {
-        _gameRecapGuessCount.clear()
+        _gameRecapGuessCount.backToDefault()
 
         var lastSeenPuzzle = 0
         var best = 0
@@ -137,7 +150,7 @@ class StatsScreenViewModel(
             }
 
             // Incrementing the guess count thingie for the bar chart
-            val guessCount = if (hasLost(recap)) "X" else recap.guessCount.toString()
+            val guessCount = if (hasLost(recap)) 0 else recap.guessCount
 
             _gameRecapGuessCount[guessCount] =
                 _gameRecapGuessCount.getOrDefault(guessCount, 0) + 1

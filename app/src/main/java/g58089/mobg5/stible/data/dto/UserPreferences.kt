@@ -12,6 +12,11 @@ data class UserPreferences(
     /**
      * Whether the user may access a map showing them where their guesses are.
      */
-    val isMapModeEnabled: Boolean = false
+    val isMapModeEnabled: Boolean = false,
+
+    /**
+     * The number of guesses a player has for each puzzle.
+     */
+    val maxGuessCount: Int = 6
 )
 

@@ -22,6 +22,10 @@
     <string name="reload">Recharger</string>
     <string name="map_fab_content_description">Ouvrir la carte</string>
 
+    <!--Stats Screen-->
+    <string name="loss_marker">💀</string>
+    <string name="guess_distribution">Graphique de répartition des essais</string>
+
     <!--Settings Screen-->
     <string name="map_mode_title">Mode Facile</string>
     <string name="map_mode_subtitle">Place vos essais sur une carte de Bruxelles</string>

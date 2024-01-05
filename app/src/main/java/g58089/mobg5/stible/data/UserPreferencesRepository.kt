@@ -15,6 +15,7 @@ interface UserPreferencesRepository {
 
     suspend fun setLastSeenPuzzleNumber(puzzleNumber: Int)
     suspend fun setIsMapModeEnabled(isMapModeEnabled: Boolean)
+    suspend fun setMaxGuessCount(maxGuessCount: Int)
 
     /**
      * Restores all user data and preferences to their defaults.

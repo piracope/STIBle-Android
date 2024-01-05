@@ -174,6 +174,9 @@ class GameScreenViewModel(
                 return@launch
             }
 
+            // a little thingie to make this available for other ViewModels
+            userPreferencesRepository.setMaxGuessCount(gameRules.maxGuessCount)
+
             // check if today is a new day
             if (userPreferences.lastSeenPuzzleNumber < gameRules.puzzleNumber) {
                 currentSessionRepo.clearForNewSession()
