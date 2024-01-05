@@ -3,9 +3,8 @@ package g58089.mobg5.stible.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -45,10 +44,11 @@ fun StatsScreen(
     }
 
     Column(
-        modifier = modifier.padding(dimensionResource(id = R.dimen.outer_padding)),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.outer_padding))
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))
     ) {
-
         Card {
             Chart(
                 chart = columnChart(
@@ -92,46 +92,43 @@ fun StatsScreen(
                 isZoomEnabled = false,
             )
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.outer_padding)))
-
-        Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                StatsCard(
-                    value = viewModel.numberOfGames.toString(),
-                    label = stringResource(id = R.string.number_of_games),
-                    modifier = Modifier.weight(1f)
-                )
-                StatsCard(
-                    value = viewModel.winRate.times(100).toInt().toString() + "%",
-                    label = stringResource(id = R.string.win_rate),
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                StatsCard(
-                    value = viewModel.currentStreak.toString(),
-                    label = stringResource(id = R.string.current_streak),
-                    modifier = Modifier.weight(1f)
-                )
-                StatsCard(
-                    value = viewModel.bestStreak.toString(),
-                    label = stringResource(id = R.string.best_streak),
-                    modifier = Modifier.weight(1f)
-                )
-            }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            StatsCard(
+                value = viewModel.numberOfGames.toString(),
+                label = stringResource(id = R.string.number_of_games),
+                modifier = Modifier.weight(1f)
+            )
+            StatsCard(
+                value = viewModel.winRate.times(100).toInt().toString() + "%",
+                label = stringResource(id = R.string.win_rate),
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            StatsCard(
+                value = viewModel.currentStreak.toString(),
+                label = stringResource(id = R.string.current_streak),
+                modifier = Modifier.weight(1f)
+            )
+            StatsCard(
+                value = viewModel.bestStreak.toString(),
+                label = stringResource(id = R.string.best_streak),
+                modifier = Modifier.weight(1f)
+            )
         }
 
+        Card {
+            MapWithStopsPoints(stops = viewModel.stopsInHistory)
+        }
     }
-
-
 }
+
 
 @Composable
 private fun StatsCard(value: String, label: String, modifier: Modifier = Modifier) {

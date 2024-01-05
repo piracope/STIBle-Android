@@ -3,6 +3,7 @@ package g58089.mobg5.stible.ui.screens
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,9 +43,11 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,9 +57,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,10 +72,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mapbox.bindgen.Value
+import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraBoundsOptions
+import com.mapbox.maps.CoordinateBounds
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.style.layers.properties.generated.IconAnchor
+import com.mapbox.maps.extension.style.layers.properties.generated.TextAnchor
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.dto.Route
+import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
@@ -91,11 +113,12 @@ fun GameScreen(
     viewModel: GameScreenViewModel = viewModel(factory = STIBleViewModelProvider.Factory)
 ) {
     val requestState = viewModel.requestState
+    var mapboxSheetShown by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier, floatingActionButton = {
             if (viewModel.isMapModeEnabled) {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
+                FloatingActionButton(onClick = { mapboxSheetShown = true }) {
                     Icon(
                         imageVector = Icons.Default.Map,
                         contentDescription = stringResource(id = R.string.map_fab_content_description)
@@ -104,28 +127,21 @@ fun GameScreen(
             }
         }
     ) { innerPadding ->
+
+        if (mapboxSheetShown) {
+            MapboxBottomSheet(
+                onDismissRequest = { mapboxSheetShown = false },
+                stops = viewModel.madeGuesses.map { Stop(it.stopName) })
+        }
+
         Column(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row {
-                Text(
-                    text = stringResource(id = R.string.app_name_first_part),
-                    color = STIBleBlue,
-                    style = MaterialTheme.typography.displayLarge,
-                )
-                Text(
-                    text = stringResource(id = R.string.app_name_second_part),
-                    color = STIBleRed,
-                    style = MaterialTheme.typography.displayLarge,
-                )
-                Text(
-                    text = stringResource(id = R.string.app_name_third_part),
-                    style = MaterialTheme.typography.displayLarge,
-                )
-            }
+
+            STIBleTitle()
 
             if (!viewModel.isGameReady) {
                 if (requestState is RequestState.Loading) {
@@ -162,6 +178,115 @@ fun GameScreen(
     }
 }
 
+@OptIn(MapboxExperimental::class)
+@Composable
+fun MapWithStopsPoints(stops: List<Stop>, modifier: Modifier = Modifier) {
+    val initialZoom = 11.5
+    val initialPitch = 0.0
+    val centerPoint = Point.fromLngLat(4.34878, 50.85045) // Brussels center
+    val minZoom = 10.5
+    val brusselsCoordinateBounds = CoordinateBounds(
+        Point.fromLngLat(4.26, 50.77),
+        Point.fromLngLat(4.52, 50.93),
+        false
+    )
+    val markerImage = ImageBitmap.imageResource(R.drawable.red_marker).asAndroidBitmap()
+    val textIconOffset = listOf(0.0, -2.0)
+    val textIconSize = MaterialTheme.typography.labelLarge.fontSize.value.toDouble()
+    val textIconColor = MaterialTheme.colorScheme.onSurface.toArgb()
+    val textIconHalo = MaterialTheme.colorScheme.surfaceVariant.toArgb()
+    val textIconHaloStrength = 1.0
+
+    val mapViewportState = rememberMapViewportState {
+        setCameraOptions {
+            zoom(initialZoom)
+            pitch(initialPitch)
+            center(centerPoint)
+        }
+    }
+
+    MapboxMap(
+        modifier,
+        mapViewportState = mapViewportState,
+    ) {
+
+        val darkTheme = isSystemInDarkTheme()
+
+        MapEffect(Unit) { mapView ->
+            val cameraBoundsOptions = CameraBoundsOptions.Builder()
+                .bounds(brusselsCoordinateBounds)
+                .minZoom(minZoom)
+                .build()
+
+            val mapboxMap = mapView.mapboxMap
+
+            mapboxMap.setBounds(cameraBoundsOptions)
+            mapboxMap.loadStyle(if (darkTheme) Style.DARK else Style.STANDARD) { style ->
+                style.setStyleImportConfigProperty(
+                    "basemap",
+                    "showTransitLabels",
+                    Value.valueOf(false)
+                )
+            }
+        }
+
+
+
+        MapEffect(stops) { mapView ->
+            val annotationApi = mapView.annotations
+            val pointAnnotationManager = annotationApi.createPointAnnotationManager()
+
+            stops.forEach { stop ->
+                val point = PointAnnotationOptions()
+                    .withPoint(Point.fromLngLat(stop.longitude, stop.latitude))
+                    .withIconImage(markerImage)
+                    .withIconAnchor(IconAnchor.BOTTOM)
+                    .withTextField(stop.name)
+                    .withTextAnchor(TextAnchor.BOTTOM)
+                    .withTextOffset(textIconOffset)
+                    .withTextSize(textIconSize)
+                    .withTextColor(textIconColor)
+                    .withTextHaloColor(textIconHalo)
+                    .withTextHaloWidth(textIconHaloStrength)
+                pointAnnotationManager.create(point)
+            }
+        }
+    }
+}
+
+@Composable
+fun MapboxBottomSheet(
+    stops: List<Stop>,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val sheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
+        MapWithStopsPoints(stops = stops, modifier)
+    }
+
+}
+
+@Composable
+fun STIBleTitle(modifier: Modifier = Modifier) {
+    Row(modifier) {
+        Text(
+            text = stringResource(id = R.string.app_name_first_part),
+            color = STIBleBlue,
+            style = MaterialTheme.typography.displayLarge,
+        )
+        Text(
+            text = stringResource(id = R.string.app_name_second_part),
+            color = STIBleRed,
+            style = MaterialTheme.typography.displayLarge,
+        )
+        Text(
+            text = stringResource(id = R.string.app_name_third_part),
+            style = MaterialTheme.typography.displayLarge,
+        )
+    }
+}
 
 /**
  * Displays a little spinny thing.

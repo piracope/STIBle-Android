@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name">STIBle</string>
     <string name="app_author" translatable="false">Ayoub Moufidi</string>
-
-    <string name="app_name_first_part">STI</string>
-    <string name="app_name_second_part">B</string>
-    <string name="app_name_third_part" translatable="false">le</string>
+    <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoicGlyYWNvcGUiLCJhIjoiY2xyMHcwbWxsMGpnNDJscG5wcWJqNXQ5cyJ9.hzSjD_3IKBBCsrV8ArpenQ</string>
 
     <!--Navigation Bar-->
     <string name="home">Accueil</string>
@@ -13,6 +10,10 @@
     <string name="help">Aide</string>
 
     <!--Game Screen-->
+    <string name="app_name_first_part">STI</string>
+    <string name="app_name_second_part">B</string>
+    <string name="app_name_third_part" translatable="false">le</string>
+
     <string name="input_placeholder">Arrêt de métro, bus, tram…</string>
     <string name="guess">Deviner</string>
     <string name="stop_name_lost">Raté ! L\'arrêt était %1$s</string>

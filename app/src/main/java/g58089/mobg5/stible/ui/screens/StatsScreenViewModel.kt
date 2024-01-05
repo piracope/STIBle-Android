@@ -86,6 +86,9 @@ class StatsScreenViewModel(
     val winRate: Double
         get() = numberOfWins / (numberOfGames * 1.0)
 
+    val stopsInHistory: List<Stop>
+        get() = historyData.map { it.mysteryStop }
+
     init {
         viewModelScope.launch {
             combine(

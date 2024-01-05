@@ -109,6 +109,10 @@ dependencies {
     // Charts for Stats screen
     implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
 
+    // Mapbox
+    implementation("com.mapbox.maps:android:11.0.0")
+    implementation("com.mapbox.extension:maps-compose:11.0.0")
+
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
