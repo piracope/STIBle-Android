@@ -1,11 +1,14 @@
 package g58089.mobg5.stible.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +36,53 @@ import g58089.mobg5.stible.R
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 
 @Composable
+private fun GuessDistributionChart(entries: List<FloatEntry>, modifier: Modifier = Modifier) {
+
+    Chart(
+        chart = columnChart(
+            innerSpacing = dimensionResource(id = R.dimen.inner_padding),
+            spacing = dimensionResource(id = R.dimen.inner_padding),
+            columns = listOf(
+                lineComponent(
+                    color = MaterialTheme.colorScheme.primary,
+                    thickness = DefaultDimens.COLUMN_WIDTH.dp,
+                    shape = Shapes.roundedCornerShape(
+                        DefaultDimens.COLUMN_ROUNDNESS_PERCENT,
+                        DefaultDimens.COLUMN_ROUNDNESS_PERCENT,
+                        0,
+                        0
+                    )
+                )
+            ),
+            dataLabel = textComponent {
+                color = MaterialTheme.colorScheme.onPrimary.toArgb()
+                textSizeSp = MaterialTheme.typography.titleMedium.fontSize.value
+            },
+            dataLabelVerticalPosition = VerticalPosition.Bottom,
+            dataLabelValueFormatter = getAxisFormatterReplacingFloatWithString(
+                0f,
+                ""
+            )
+        ),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.inner_padding)),
+        model = entryModelOf(entries),
+        bottomAxis = rememberBottomAxis(
+            valueFormatter = getAxisFormatterReplacingFloatWithString(
+                StatsScreenViewModel.FLOAT_LOSS_MARKER,
+                stringResource(id = R.string.loss_marker)
+            ),
+            title = stringResource(id = R.string.guess_distribution),
+            titleComponent = textComponent {
+                color = MaterialTheme.colorScheme.onSurface.toArgb()
+                textSizeSp = MaterialTheme.typography.titleMedium.fontSize.value
+            }
+        ),
+        isZoomEnabled = false,
+    )
+}
+
+
+@Composable
 fun StatsScreen(
     modifier: Modifier = Modifier,
     viewModel: StatsScreenViewModel = viewModel(factory = STIBleViewModelProvider.Factory)
@@ -43,55 +93,8 @@ fun StatsScreen(
         currentChartValues.add(FloatEntry(it.key.toFloat(), it.value.toFloat()))
     }
 
-    Column(
-        modifier = modifier
-            .padding(dimensionResource(id = R.dimen.outer_padding))
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))
-    ) {
-        Card {
-            Chart(
-                chart = columnChart(
-                    innerSpacing = dimensionResource(id = R.dimen.inner_padding),
-                    spacing = dimensionResource(id = R.dimen.inner_padding),
-                    columns = listOf(
-                        lineComponent(
-                            color = MaterialTheme.colorScheme.primary,
-                            thickness = DefaultDimens.COLUMN_WIDTH.dp,
-                            shape = Shapes.roundedCornerShape(
-                                DefaultDimens.COLUMN_ROUNDNESS_PERCENT,
-                                DefaultDimens.COLUMN_ROUNDNESS_PERCENT,
-                                0,
-                                0
-                            )
-                        )
-                    ),
-                    dataLabel = textComponent {
-                        color = MaterialTheme.colorScheme.onPrimary.toArgb()
-                        textSizeSp = MaterialTheme.typography.titleMedium.fontSize.value
-                    },
-                    dataLabelVerticalPosition = VerticalPosition.Bottom,
-                    dataLabelValueFormatter = getAxisFormatterReplacingFloatWithString(
-                        0f,
-                        ""
-                    )
-                ),
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.inner_padding)),
-                model = entryModelOf(currentChartValues),
-                bottomAxis = rememberBottomAxis(
-                    valueFormatter = getAxisFormatterReplacingFloatWithString(
-                        StatsScreenViewModel.FLOAT_LOSS_MARKER,
-                        stringResource(id = R.string.loss_marker)
-                    ),
-                    title = stringResource(id = R.string.guess_distribution),
-                    titleComponent = textComponent {
-                        color = MaterialTheme.colorScheme.onSurface.toArgb()
-                        textSizeSp = MaterialTheme.typography.titleMedium.fontSize.value
-                    }
-                ),
-                isZoomEnabled = false,
-            )
-        }
+    // I don't wanna pass all of that to another composable function, i'm just lambdaing this
+    val statisticsCards = @Composable {
         Row(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
             modifier = Modifier.fillMaxWidth()
@@ -122,13 +125,47 @@ fun StatsScreen(
                 modifier = Modifier.weight(1f)
             )
         }
+    }
 
-        Card {
-            MapWithStopsPoints(stops = viewModel.stopsInHistory)
+    BoxWithConstraints(
+        modifier
+            .padding(dimensionResource(id = R.dimen.outer_padding))
+            .fillMaxSize()
+    ) {
+        if (maxHeight > 500.dp) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))
+            ) {
+                Card {
+                    GuessDistributionChart(entries = currentChartValues)
+                }
+                statisticsCards()
+
+                Card(modifier = Modifier.weight(1.0f)) {
+                    MapWithStopsPoints(stops = viewModel.stopsInHistory)
+                }
+            }
+        } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
+                    modifier = Modifier
+                        .weight(1.0f)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Card {
+                        GuessDistributionChart(entries = currentChartValues)
+                    }
+                    statisticsCards()
+                }
+                Card(modifier = Modifier.weight(1.0f)) {
+                    MapWithStopsPoints(stops = viewModel.stopsInHistory)
+                }
+            }
+
         }
     }
 }
-
 
 @Composable
 private fun StatsCard(value: String, label: String, modifier: Modifier = Modifier) {
@@ -141,7 +178,7 @@ private fun StatsCard(value: String, label: String, modifier: Modifier = Modifie
         ) {
             Text(
                 text = value,
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.titleLarge,
             )
             Text(text = label)
         }
