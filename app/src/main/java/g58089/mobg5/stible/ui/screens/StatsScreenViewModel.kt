@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import g58089.mobg5.stible.data.GameHistoryRepository
 import g58089.mobg5.stible.data.UserPreferencesRepository
 import g58089.mobg5.stible.data.dto.GameRecap
+import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.data.dto.UserPreferences
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
@@ -128,7 +129,8 @@ class StatsScreenViewModel(
     private fun update() {
         _gameRecapGuessCount.backToDefault()
 
-        var lastSeenPuzzle = 0
+        var lastSeenPuzzle =
+            if (historyData.isNotEmpty()) historyData.first().puzzleNumber - 1 else 0
         var best = 0
         var current = 0
 
@@ -137,7 +139,9 @@ class StatsScreenViewModel(
             if (!recap.puzzleNumber.isNext(lastSeenPuzzle) || hasLost(recap)) {
                 best = maxOf(best, current)
                 current = 0
-            } else {
+            }
+
+            if (!hasLost(recap)) {
                 current++
             }
 
@@ -155,6 +159,8 @@ class StatsScreenViewModel(
             _gameRecapGuessCount[guessCount] =
                 _gameRecapGuessCount.getOrDefault(guessCount, 0) + 1
         }
+
+        best = maxOf(best, current)
 
         // Edge case : he won last time (current = x) but last time was BEFORE yesterday
         // -> should be 0
