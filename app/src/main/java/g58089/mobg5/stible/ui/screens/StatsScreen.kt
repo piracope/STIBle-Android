@@ -25,7 +25,7 @@ fun StatsScreen(
         if (value == 0.0f) "X" else value.toString()
     }
 
-    viewModel.gameRecapGuessCount.entries.forEach {
+    viewModel.guessCountRepartition.entries.forEach {
         val countInFloat = if (it.key == "X") FLOAT_LOSS_MARKER else it.key.toFloat()
         listOfEntriesForChart.add(FloatEntry(countInFloat, it.value.toFloat()))
     }
