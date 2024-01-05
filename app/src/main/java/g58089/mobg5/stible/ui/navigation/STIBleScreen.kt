@@ -12,7 +12,7 @@ import g58089.mobg5.stible.R
 /**
  * The different navigation destinations.
  */
-sealed class Screen(
+sealed class STIBleScreen(
     /**
      * Unique name to define the destination screen.
      */
@@ -28,8 +28,8 @@ sealed class Screen(
      */
     val icon: ImageVector
 ) {
-    data object Main : Screen("main", R.string.home, Icons.Default.Home)
-    data object Help : Screen("help", R.string.help, Icons.Default.Help)
-    data object Stats : Screen("stats", R.string.stats, Icons.Default.BarChart)
-    data object Settings : Screen("settings", R.string.settings, Icons.Default.Settings)
+    data object Main : STIBleScreen("main", R.string.home, Icons.Default.Home)
+    data object Help : STIBleScreen("help", R.string.help, Icons.Default.Help)
+    data object Stats : STIBleScreen("stats", R.string.stats, Icons.Default.BarChart)
+    data object Settings : STIBleScreen("settings", R.string.settings, Icons.Default.Settings)
 }

@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import g58089.mobg5.stible.ui.navigation.STIBleNavHost
 import g58089.mobg5.stible.ui.navigation.STIBleNavigationBar
-import g58089.mobg5.stible.ui.navigation.Screen
+import g58089.mobg5.stible.ui.navigation.STIBleScreen
 
 /**
  * Top composable of the application.
@@ -24,7 +24,12 @@ fun STIBleApp(
     Scaffold(
         bottomBar = {
             val bottomNavigableScreens =
-                listOf(Screen.Main, Screen.Stats, Screen.Settings, Screen.Help)
+                listOf(
+                    STIBleScreen.Main,
+                    STIBleScreen.Stats,
+                    STIBleScreen.Settings,
+                    STIBleScreen.Help
+                )
             STIBleNavigationBar(navItems = bottomNavigableScreens, navController = navController)
         }
     ) { innerPadding ->

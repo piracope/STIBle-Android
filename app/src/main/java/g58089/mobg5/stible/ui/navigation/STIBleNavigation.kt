@@ -15,13 +15,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import g58089.mobg5.stible.ui.screens.GameScreen
 import g58089.mobg5.stible.ui.screens.HelpScreen
 import g58089.mobg5.stible.ui.screens.SettingsScreen
+import g58089.mobg5.stible.ui.screens.StatsScreen
 
 /**
- * [NavigationBar] that displays buttons to access the provided [Screen]s.
+ * [NavigationBar] that displays buttons to access the provided [STIBleScreen]s.
  */
 @Composable
 fun STIBleNavigationBar(
-    navItems: List<Screen>,
+    navItems: List<STIBleScreen>,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -60,22 +61,22 @@ fun STIBleNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Main.route,
+        startDestination = STIBleScreen.Main.route,
         modifier = modifier
     ) {
-        composable(route = Screen.Main.route) {
+        composable(route = STIBleScreen.Main.route) {
             GameScreen()
         }
 
-        composable(route = Screen.Stats.route) {
-            // TODO: Stats Screen
+        composable(route = STIBleScreen.Stats.route) {
+            StatsScreen()
         }
 
-        composable(route = Screen.Settings.route) {
+        composable(route = STIBleScreen.Settings.route) {
             SettingsScreen()
         }
 
-        composable(route = Screen.Help.route) {
+        composable(route = STIBleScreen.Help.route) {
             HelpScreen()
         }
     }
