@@ -148,6 +148,7 @@ fun GameScreen(
                     bestPercentage = viewModel.highestProximity,
                     onUserGuessChange = viewModel::changeGuess,
                     onGuess = viewModel::guess,
+                    isMapModeEnabled = viewModel.isMapModeEnabled,
                     modifier = modifier
                         .verticalScroll(rememberScrollState())
                         .padding(dimensionResource(id = R.dimen.outer_padding))
@@ -212,6 +213,7 @@ fun GameScreenBody(
     gameRules: GameRules,
     userGuess: String,
     canStillPlay: Boolean,
+    isMapModeEnabled: Boolean,
     guessHistory: List<GuessResponse>,
     gameState: GameState,
     mysteryStop: String?,
@@ -266,7 +268,8 @@ fun GameScreenBody(
                 maxGuessCount = gameRules.maxGuessCount,
                 guessHistory = guessHistory,
                 bestPercentage = bestPercentage,
-                hasLost = gameState == GameState.LOST
+                hasLost = gameState == GameState.LOST,
+                easyMode = isMapModeEnabled
             )
 
             val shareHeader = "${stringResource(id = R.string.app_name)} #${gameRules.puzzleNumber}"
@@ -595,6 +598,7 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
  *
  * STIBle App - https://stible.elitios.net/
  *
+ * @param easyMode true if the player enabled easy/map mode
  * @param puzzleNumber today's puzzle number
  * @param maxGuessCount the amount of times the user can guess in a day
  * @param guessHistory all [GuessResponse] received during the session
@@ -603,6 +607,7 @@ private fun buildSquaresForShare(guess: GuessResponse): String {
  */
 @Composable
 private fun buildShareMessage(
+    easyMode: Boolean,
     puzzleNumber: Int,
     maxGuessCount: Int,
     bestPercentage: Double,
@@ -624,7 +629,7 @@ private fun buildShareMessage(
         bestPercentage.times(
             100
         ).toInt()
-    }%)
+    }%) ${if (easyMode) stringResource(id = R.string.share_easy_mode_on) else ""}
 
 $squares
 
@@ -645,6 +650,7 @@ fun GameScreenBodyPreview() {
         bestPercentage = 0.0,
         onUserGuessChange = {},
         onGuess = {},
+        isMapModeEnabled = true,
         modifier = Modifier.fillMaxSize()
     )
 }

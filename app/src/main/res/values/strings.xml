@@ -21,6 +21,7 @@
     <string name="loading">Chargement…</string>
     <string name="reload">Recharger</string>
     <string name="map_fab_content_description">Ouvrir la carte</string>
+    <string name="share_easy_mode_on">(Facile)</string>
 
     <!--Stats Screen-->
     <string name="loss_marker" translatable="false">💀</string>

@@ -43,6 +43,7 @@ class SettingsScreenViewModel(
     fun changeMapMode(isOn: Boolean) {
         viewModelScope.launch {
             userPreferencesRepository.setIsMapModeEnabled(isOn)
+            // FIXME: the player can change Map Mode during a game -> cheating
         }
     }
 
