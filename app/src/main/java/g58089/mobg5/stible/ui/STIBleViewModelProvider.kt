@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import g58089.mobg5.stible.STIBleApplication
 import g58089.mobg5.stible.ui.screens.GameScreenViewModel
 import g58089.mobg5.stible.ui.screens.SettingsScreenViewModel
+import g58089.mobg5.stible.ui.screens.StatsScreenViewModel
 
 /**
  * Provides a factory to create instances of ViewModels for the entire STIBle app.
@@ -29,6 +30,11 @@ object STIBleViewModelProvider {
                 stibleApplication().container.userPreferencesRepository,
                 stibleApplication().container.localeRepository,
                 stibleApplication().container.gameInteraction
+            )
+        }
+        initializer {
+            StatsScreenViewModel(
+                stibleApplication().container.gameHistoryRepository
             )
         }
     }

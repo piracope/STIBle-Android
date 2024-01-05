@@ -106,6 +106,9 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.appcompat:appcompat-resources:1.6.1")
 
+    // Charts for Stats screen
+    implementation("com.patrykandpatrick.vico:compose-m3:1.13.1")
+
     testImplementation("junit:junit:4.13.2")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
