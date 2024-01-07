@@ -33,11 +33,152 @@ import com.patrykandpatrick.vico.core.component.text.textComponent
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import g58089.mobg5.stible.R
+import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 
 @Composable
-private fun GuessDistributionChart(entries: List<FloatEntry>, modifier: Modifier = Modifier) {
+fun StatsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: StatsScreenViewModel = viewModel(factory = STIBleViewModelProvider.Factory)
+) {
 
+    StatsScreenBody(
+        numberOfGames = viewModel.numberOfGames,
+        winRate = viewModel.winRate,
+        currentStreak = viewModel.currentStreak,
+        bestStreak = viewModel.bestStreak,
+        stopsInHistory = viewModel.stopsInHistory,
+        guessCountRepartition = viewModel.guessCountRepartition,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun StatsScreenBody(
+    numberOfGames: Int,
+    winRate: Double,
+    currentStreak: Int,
+    bestStreak: Int,
+    stopsInHistory: List<Stop>,
+    guessCountRepartition: Map<Int, Int>,
+    modifier: Modifier = Modifier
+) {
+    val currentChartValues = mutableListOf<FloatEntry>()
+
+    guessCountRepartition.entries.forEach {
+        currentChartValues.add(FloatEntry(it.key.toFloat(), it.value.toFloat()))
+    }
+
+    BoxWithConstraints(
+        modifier
+            .padding(dimensionResource(id = R.dimen.outer_padding))
+            .fillMaxSize()
+    ) {
+        if (maxHeight > 500.dp) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))
+            ) {
+                Card {
+                    GuessDistributionChart(entries = currentChartValues)
+                }
+
+                StatsCards(
+                    numberOfGames = numberOfGames,
+                    winRate = winRate,
+                    currentStreak = currentStreak,
+                    bestStreak = bestStreak
+                )
+
+                Card(modifier = Modifier.weight(1.0f)) {
+                    MapWithStopsPoints(stops = stopsInHistory)
+                }
+            }
+        } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
+                    modifier = Modifier
+                        .weight(1.0f)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Card {
+                        GuessDistributionChart(entries = currentChartValues)
+                    }
+                    StatsCards(
+                        numberOfGames = numberOfGames,
+                        winRate = winRate,
+                        currentStreak = currentStreak,
+                        bestStreak = bestStreak
+                    )
+                }
+                Card(modifier = Modifier.weight(1.0f)) {
+                    MapWithStopsPoints(stops = stopsInHistory)
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+private fun StatsCards(
+    numberOfGames: Int,
+    winRate: Double,
+    currentStreak: Int,
+    bestStreak: Int
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        StatsCard(
+            value = numberOfGames.toString(),
+            label = stringResource(id = R.string.number_of_games),
+            modifier = Modifier.weight(1f)
+        )
+        StatsCard(
+            value = winRate.times(100).toInt().toString() + "%",
+            label = stringResource(id = R.string.win_rate),
+            modifier = Modifier.weight(1f)
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        StatsCard(
+            value = currentStreak.toString(),
+            label = stringResource(id = R.string.current_streak),
+            modifier = Modifier.weight(1f)
+        )
+        StatsCard(
+            value = bestStreak.toString(),
+            label = stringResource(id = R.string.best_streak),
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun StatsCard(value: String, label: String, modifier: Modifier = Modifier) {
+    Card(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.inner_padding)),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(text = label)
+        }
+    }
+}
+
+@Composable
+private fun GuessDistributionChart(entries: List<FloatEntry>, modifier: Modifier = Modifier) {
     Chart(
         chart = columnChart(
             innerSpacing = dimensionResource(id = R.dimen.inner_padding),
@@ -81,110 +222,6 @@ private fun GuessDistributionChart(entries: List<FloatEntry>, modifier: Modifier
     )
 }
 
-
-@Composable
-fun StatsScreen(
-    modifier: Modifier = Modifier,
-    viewModel: StatsScreenViewModel = viewModel(factory = STIBleViewModelProvider.Factory)
-) {
-    val currentChartValues = mutableListOf<FloatEntry>()
-
-    viewModel.guessCountRepartition.entries.forEach {
-        currentChartValues.add(FloatEntry(it.key.toFloat(), it.value.toFloat()))
-    }
-
-    // I don't wanna pass all of that to another composable function, i'm just lambdaing this
-    val statisticsCards = @Composable {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            StatsCard(
-                value = viewModel.numberOfGames.toString(),
-                label = stringResource(id = R.string.number_of_games),
-                modifier = Modifier.weight(1f)
-            )
-            StatsCard(
-                value = viewModel.winRate.times(100).toInt().toString() + "%",
-                label = stringResource(id = R.string.win_rate),
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            StatsCard(
-                value = viewModel.currentStreak.toString(),
-                label = stringResource(id = R.string.current_streak),
-                modifier = Modifier.weight(1f)
-            )
-            StatsCard(
-                value = viewModel.bestStreak.toString(),
-                label = stringResource(id = R.string.best_streak),
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-
-    BoxWithConstraints(
-        modifier
-            .padding(dimensionResource(id = R.dimen.outer_padding))
-            .fillMaxSize()
-    ) {
-        if (maxHeight > 500.dp) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))
-            ) {
-                Card {
-                    GuessDistributionChart(entries = currentChartValues)
-                }
-                statisticsCards()
-
-                Card(modifier = Modifier.weight(1.0f)) {
-                    MapWithStopsPoints(stops = viewModel.stopsInHistory)
-                }
-            }
-        } else {
-            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding))) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.inner_padding)),
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Card {
-                        GuessDistributionChart(entries = currentChartValues)
-                    }
-                    statisticsCards()
-                }
-                Card(modifier = Modifier.weight(1.0f)) {
-                    MapWithStopsPoints(stops = viewModel.stopsInHistory)
-                }
-            }
-
-        }
-    }
-}
-
-@Composable
-private fun StatsCard(value: String, label: String, modifier: Modifier = Modifier) {
-    Card(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.inner_padding)),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(text = label)
-        }
-    }
-}
-
 private fun getAxisFormatterReplacingFloatWithString(
     floatToReplace: Float,
     replacementString: String
@@ -193,3 +230,5 @@ private fun getAxisFormatterReplacingFloatWithString(
         if (value == floatToReplace) replacementString else value.toInt().toString()
     }
 }
+
+// Can't preview with mapbox

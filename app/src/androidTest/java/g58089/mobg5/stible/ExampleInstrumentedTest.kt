@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("g58089.mobg5.remise1", appContext.packageName)
+        assertEquals("g58089.mobg5.stible", appContext.packageName)
     }
 }

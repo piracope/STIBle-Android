@@ -40,7 +40,6 @@ fun HelpScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.outer_padding))
     ) {
-        // the pager
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()

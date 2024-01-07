@@ -21,6 +21,9 @@ data class UserPreferences(
 
     /**
      * The puzzle number where the map mode should be locked to its current state.
+     *
+     * Used to prevent a user turning map mode on, doing some guesses with it, then disabling it
+     * later, showing that he won the game without using the map mode (cheating).
      */
     val mapModeLockPuzzleNumber: Int = -2
 )

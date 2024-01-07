@@ -58,7 +58,7 @@ fun SettingsScreen(
 }
 
 @Composable
-fun SettingsScreenBody(
+private fun SettingsScreenBody(
     isMapModeEnabled: Boolean,
     canChangeMapMode: Boolean,
     onMapModeChange: (Boolean) -> Unit,
@@ -130,7 +130,6 @@ fun SettingsScreenBody(
                 }
             )
         }
-
     }
 }
 
@@ -166,7 +165,7 @@ fun SwitchSetting(
     }
 }
 
-@Preview(showBackground = true, locale = "fr")
+@Preview(showBackground = true)
 @Composable
 fun SettingsScreenBodyPreview() {
     SettingsScreenBody(

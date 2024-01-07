@@ -27,9 +27,15 @@ interface AppContainer {
 }
 
 /**
- * [AppContainer] implementation that uses a local database for history saving.
+ * [AppContainer] implementation that uses a local database for history saving
+ * and interacts with an online backend.
  *
- * Provides instance of [OfflineGameHistoryRepository]
+ * Provides instance of
+ * - [OfflineGameHistoryRepository]
+ * - [OfflineCurrentSessionRepository]
+ * - [OfflineUserPreferencesRepository]
+ * - [AndroidLocaleRepository]
+ * - [OnlineGameInteraction]
  */
 class AppDataContainer(private val context: Context) : AppContainer {
     /**
