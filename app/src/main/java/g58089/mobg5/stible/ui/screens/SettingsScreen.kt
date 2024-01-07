@@ -41,6 +41,7 @@ fun SettingsScreen(
 ) {
     SettingsScreenBody(
         isMapModeEnabled = viewModel.isMapModeEnabled,
+        canChangeMapMode = viewModel.canChangeMapMode,
         onMapModeChange = viewModel::changeMapMode,
         onClearAll = viewModel::removeAllData,
         nederlands = viewModel.isInNederlands,
@@ -59,6 +60,7 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenBody(
     isMapModeEnabled: Boolean,
+    canChangeMapMode: Boolean,
     onMapModeChange: (Boolean) -> Unit,
     onClearAll: () -> Unit,
     nederlands: Boolean,
@@ -73,6 +75,7 @@ fun SettingsScreenBody(
             subtitle = stringResource(id = R.string.map_mode_subtitle),
             checked = isMapModeEnabled,
             onChange = onMapModeChange,
+            enabled = canChangeMapMode,
             modifier = Modifier.fillMaxWidth()
         )
         SwitchSetting(
@@ -138,10 +141,11 @@ fun SwitchSetting(
     checked: Boolean,
     onChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Row(
         modifier
-            .toggleable(checked, onValueChange = onChange)
+            .toggleable(checked, enabled = enabled, onValueChange = onChange)
             .padding(dimensionResource(id = R.dimen.outer_padding)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -157,6 +161,7 @@ fun SwitchSetting(
         Switch(
             checked = checked,
             onCheckedChange = onChange,
+            enabled = enabled
         )
     }
 }
@@ -169,6 +174,7 @@ fun SettingsScreenBodyPreview() {
         onMapModeChange = {},
         onClearAll = {},
         nederlands = false,
+        canChangeMapMode = true,
         switchToNl = {}
     )
 }

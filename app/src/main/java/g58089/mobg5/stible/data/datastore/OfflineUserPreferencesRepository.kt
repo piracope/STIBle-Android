@@ -23,6 +23,7 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
         val LAST_SEEN_PUZZLE_NUMBER = intPreferencesKey("last_seen_puzzle_number")
         val IS_MAP_MODE_ENABLED = booleanPreferencesKey("is_map_mode_enabled")
         val MAX_GUESS_COUNT = intPreferencesKey("max_guess_count")
+        val MAP_MODE_LOCK_PUZZLE_NUMBER = intPreferencesKey("map_mode_lock_puzzle_number")
     }
 
     override val userData: Flow<UserPreferences> = dataStore.data
@@ -56,6 +57,12 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
         }
     }
 
+    override suspend fun setMapModeLockPuzzleNumber(mapModeLockPuzzleNumber: Int) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.MAP_MODE_LOCK_PUZZLE_NUMBER] = mapModeLockPuzzleNumber
+        }
+    }
+
     override suspend fun clearPreferences() {
         dataStore.edit { preferences ->
             preferences.clear()
@@ -65,8 +72,13 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
     private fun mapUserPreferences(preferences: Preferences): UserPreferences {
         val lastSeenPuzzleNumber = preferences[PreferencesKeys.LAST_SEEN_PUZZLE_NUMBER] ?: -1
         val isMapModeEnabled = preferences[PreferencesKeys.IS_MAP_MODE_ENABLED] ?: false
-        return UserPreferences(lastSeenPuzzleNumber, isMapModeEnabled)
+        val maxGuessCount = preferences[PreferencesKeys.MAX_GUESS_COUNT] ?: 6
+        val mapModeLockPuzzleNumber = preferences[PreferencesKeys.MAP_MODE_LOCK_PUZZLE_NUMBER] ?: -2
+        return UserPreferences(
+            lastSeenPuzzleNumber,
+            isMapModeEnabled,
+            maxGuessCount,
+            mapModeLockPuzzleNumber
+        )
     }
-
-
 }

@@ -293,6 +293,20 @@ class GameScreenViewModel(
     }
 
     /**
+     * Locks the map mode for the day.
+     *
+     * Should be called when the map is opened, as the player REALLY started to take advantage of
+     * the easy/map mode.
+     */
+    fun lockMapMode() {
+        if (userPreferences.isMapModeEnabled) {
+            viewModelScope.launch {
+                userPreferencesRepository.setMapModeLockPuzzleNumber(gameRules.puzzleNumber)
+            }
+        }
+    }
+
+    /**
      * Generates a [GameRecap] for this session and stores it.
      */
     private suspend fun handleGameOver(mystery: Stop?) {

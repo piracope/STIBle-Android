@@ -17,6 +17,11 @@ data class UserPreferences(
     /**
      * The number of guesses a player has for each puzzle.
      */
-    val maxGuessCount: Int = 6
+    val maxGuessCount: Int = 6,
+
+    /**
+     * The puzzle number where the map mode should be locked to its current state.
+     */
+    val mapModeLockPuzzleNumber: Int = -2
 )
 

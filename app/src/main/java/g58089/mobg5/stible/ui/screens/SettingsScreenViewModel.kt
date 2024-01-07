@@ -33,6 +33,9 @@ class SettingsScreenViewModel(
     var isMapModeEnabled by mutableStateOf(false)
         private set
 
+    var canChangeMapMode by mutableStateOf(true)
+        private set
+
     /**
      * Checks whether the user chose to play in Dutch.
      */
@@ -49,6 +52,7 @@ class SettingsScreenViewModel(
         viewModelScope.launch {
             userPreferencesRepository.userData.collect {
                 isMapModeEnabled = it.isMapModeEnabled
+                canChangeMapMode = it.mapModeLockPuzzleNumber != it.lastSeenPuzzleNumber
             }
         }
     }

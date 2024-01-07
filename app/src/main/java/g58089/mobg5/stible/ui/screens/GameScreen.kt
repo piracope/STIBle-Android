@@ -119,7 +119,10 @@ fun GameScreen(
     Scaffold(
         modifier = modifier, floatingActionButton = {
             if (viewModel.isMapModeEnabled) {
-                FloatingActionButton(onClick = { mapboxSheetShown = true }) {
+                FloatingActionButton(onClick = {
+                    mapboxSheetShown = true
+                    viewModel.lockMapMode()
+                }) {
                     Icon(
                         imageVector = Icons.Default.Map,
                         contentDescription = stringResource(id = R.string.map_fab_content_description)
