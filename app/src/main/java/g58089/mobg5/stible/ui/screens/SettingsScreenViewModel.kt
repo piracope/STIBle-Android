@@ -11,8 +11,8 @@ import g58089.mobg5.stible.data.GameInteraction
 import g58089.mobg5.stible.data.LocaleRepository
 import g58089.mobg5.stible.data.UserPreferencesRepository
 import g58089.mobg5.stible.data.network.RequestState
-import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.Language
+import g58089.mobg5.stible.data.util.STIBleException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -104,8 +104,8 @@ class SettingsScreenViewModel(
                         val newName =
                             gameInteraction.translateStop(guess.stopName, oldLang, newLang)
                         currentSessionRepo.setStopName(guess, newName)
-                    } catch (e: Exception) {
-                        requestState = RequestState.Error(ErrorType.TRANSLATION_FAILURE)
+                    } catch (e: STIBleException) {
+                        requestState = RequestState.Error(e.errorType)
                     }
                 }
             }

@@ -3,7 +3,6 @@ package g58089.mobg5.stible.data
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.util.Language
-import retrofit2.Response
 
 /**
  * Façade to interact with the game, such as getting [GameRules] or making a guess.
@@ -23,7 +22,7 @@ interface GameInteraction {
         puzzleNumber: Int,
         tryNumber: Int,
         lang: Language
-    ): Response<GuessResponse>
+    ): GuessResponse
     /* FIXME: this has nothing to do in an interface
      *
      * Maybe, here in GameInteraction, only assume that implementations will return a

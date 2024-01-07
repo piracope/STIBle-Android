@@ -20,11 +20,10 @@ import g58089.mobg5.stible.data.dto.UserPreferences
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.GameState
+import g58089.mobg5.stible.data.util.STIBleException
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.io.IOException
 
 private const val TAG = "GameScreenViewModel"
 // FIXME: general issue of functions having side-effects
@@ -225,16 +224,8 @@ class GameScreenViewModel(
         try {
             gameRules = gameInteraction.getGameRules(localeRepository.language)
             requestState = RequestState.Success
-        } catch (e: IOException) {
-            requestState = RequestState.Error(ErrorType.NO_INTERNET)
-        } catch (e: HttpException) {
-            requestState =
-                if (e.code() == 400)
-                // language wasn't "fr" or "nl" --> should never happen
-                    RequestState.Error(ErrorType.BAD_LANGUAGE)
-                else
-                // idk an error 500 or something you can never be sure
-                    RequestState.Error(ErrorType.UNKNOWN)
+        } catch (e: STIBleException) {
+            requestState = RequestState.Error(e.errorType)
         }
     }
 
@@ -348,7 +339,7 @@ class GameScreenViewModel(
      * TODO: returning null or throwing a custom exception ?
      */
     private suspend fun sendGuessRequest(): GuessResponse? {
-        try {
+        return try {
             val response =
                 gameInteraction.guess(
                     userGuess,
@@ -356,36 +347,12 @@ class GameScreenViewModel(
                     guessCount,
                     localeRepository.language
                 )
-            if (response.code() == 205) {
-                // I need to catch 205, because it signifies that the client has outdated info
-                requestState = RequestState.Error(ErrorType.NEW_LEVEL_AVAILABLE)
-                // let user stay blocked
-                return null
-            }
 
-            if (response.isSuccessful) {
-                requestState = RequestState.Success
-                return response.body()
-            }
-
-            // Can't use HttpException because i have a Response object
-            requestState = if (response.code() == 400) {
-                /* the stop probably didn't exist.
-               well the fun stuff is that a 400 is returned by the server if
-               an exception occurs while it's handling it.
-               Which is usually when the request body is malformed, so it *is*
-               a user error, but still some function could fail and it wouldn't
-               be the user's fault. Also past me used 400 for both "this stop doesn't exist"
-               and "idk something happened" so now i'm... well i'll just put bad stop.
-             */
-                RequestState.Error(ErrorType.BAD_STOP)
-            } else {
-                RequestState.Error(ErrorType.UNKNOWN)
-            }
-        } catch (e: IOException) {
-            requestState = RequestState.Error(ErrorType.NO_INTERNET)
+            requestState = RequestState.Success
+            response
+        } catch (e: STIBleException) {
+            requestState = RequestState.Error(e.errorType)
+            null
         }
-
-        return null
     }
 }
