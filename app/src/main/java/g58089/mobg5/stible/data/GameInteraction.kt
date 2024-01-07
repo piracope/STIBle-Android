@@ -23,14 +23,6 @@ interface GameInteraction {
         tryNumber: Int,
         lang: Language
     ): GuessResponse
-    /* FIXME: this has nothing to do in an interface
-     *
-     * Maybe, here in GameInteraction, only assume that implementations will return a
-     * GuessResponse, and then let the implementation handle errors.
-     * tbh, we only NEED to have a Response because I need to handle code 205, but if the
-     * network layer handles it, throws an exception, then the application layer can just
-     * use the exception instead of validating code 205 and 400 itself.
-     */
 
     /**
      * Translates a Stop's name from one [Language] to another.
