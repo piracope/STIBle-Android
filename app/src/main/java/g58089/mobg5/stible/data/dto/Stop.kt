@@ -12,7 +12,7 @@ data class Stop(
      * The Stop's name.
      */
     @SerialName("stop_name")
-    val name: String = "",
+    val name: String = "CONGRES",
 
     /**
      * The Stop's latitude.

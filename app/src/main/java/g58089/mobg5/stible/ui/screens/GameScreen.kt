@@ -46,6 +46,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -131,7 +132,7 @@ fun GameScreen(
         if (mapboxSheetShown) {
             MapboxBottomSheet(
                 onDismissRequest = { mapboxSheetShown = false },
-                stops = viewModel.madeGuesses.map { Stop(it.stopName) })
+                stops = viewModel.madeGuesses.map { it.guessedStop })
         }
 
         Column(
@@ -263,7 +264,10 @@ fun MapboxBottomSheet(
     val sheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(onDismissRequest = onDismissRequest, sheetState = sheetState) {
-        MapWithStopsPoints(stops = stops, modifier)
+        Surface(modifier) {
+            MapWithStopsPoints(stops = stops)
+        }
+
     }
 
 }

@@ -29,6 +29,13 @@ data class GuessResponse(
     val stopName: String,
 
     /**
+     * The actual [Stop] object that was guessed.
+     */
+    @SerialName("stop")
+    @Embedded("guessed_stop_")
+    val guessedStop: Stop = Stop(),
+
+    /**
      * The distance between the guessed [Stop] and the mystery stop, in km.
      */
     @SerialName("distance")

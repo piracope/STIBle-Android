@@ -13,7 +13,6 @@ import java.util.IllformedLocaleException
  * to handle the locale on an in-app and system basis.
  */
 class AndroidLocaleRepository(private val context: Context) : LocaleRepository {
-
     override val language: Language
         get() = if (isInNederlands()) Language.DUTCH else Language.FRENCH
 

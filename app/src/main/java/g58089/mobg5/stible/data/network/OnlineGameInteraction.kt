@@ -1,6 +1,5 @@
 package g58089.mobg5.stible.data.network
 
-import android.util.Log
 import g58089.mobg5.stible.data.GameInteraction
 import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.Guess
@@ -10,7 +9,7 @@ import g58089.mobg5.stible.data.util.Language
 import retrofit2.Response
 
 /**
- * Access point for HTTP requests and database access.
+ * [GameInteraction] that interacts with an online backend, provided by [STIBleApiService].
  */
 class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInteraction {
     override suspend fun getGameRules(lang: Language): GameRules {
@@ -39,7 +38,6 @@ class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInter
         newLang: Language
     ): String {
         val translation = StopTranslation(stopName, oldLang.code, newLang.code)
-        Log.d("OnlineGameInteraction", "sending this translation: $translation")
         return stibleApi.translate(translation)
     }
 }
