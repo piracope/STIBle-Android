@@ -24,6 +24,8 @@
 
 -keep public class com.google.android.gms.* { public *; }
 -dontwarn com.google.android.gms.**
+
+# This thing errors, but if i don't have this it simply doesn't run
 -dontwarn com.tobrun.datacompat.annotation.Default
 
 # Retrofit rules
@@ -44,6 +46,7 @@
 }
 
 # Ignore annotation used for build tooling.
+# Has error but this is copypasted from Retrofit this has to be right
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
 # Ignore JSR 305 annotations for embedding nullability information.
