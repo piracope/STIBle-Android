@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 private const val TAG = "GameScreenViewModel"
-// FIXME: general issue of functions having side-effects
 
 /**
  * The [ViewModel] handling all business logic in the [GameScreen].
@@ -129,7 +128,6 @@ class GameScreenViewModel(
     val isMapModeEnabled: Boolean
         get() = userPreferences.isMapModeEnabled
 
-    // FIXME: apparently init is bad
     init {
         setupFlowCollectors()
         initializeGame()
@@ -153,18 +151,16 @@ class GameScreenViewModel(
             // check if today is a new day
             if (userPreferences.lastSeenPuzzleNumber < gameRules.puzzleNumber) {
                 currentSessionRepo.clearForNewSession()
-
-                // TODO: maybe replace with just using GameRulesRepo
                 userPreferencesRepository.setLastSeenPuzzleNumber(gameRules.puzzleNumber)
             }
 
             // old session was already recovered from our flow collectors
 
             if (_madeGuesses.isNotEmpty()) {
-                gameState = handleStateAfterGuess(_madeGuesses.last(), GameState.PLAYING)
+                gameState = getStateAfterGuess(_madeGuesses.last(), GameState.PLAYING)
                 if (gameState != GameState.PLAYING) {
                     mysteryStop = _madeGuesses.last().mysteryStop?.name
-                } // FIXME: NOT DRY !!
+                }
             } else {
                 gameState = GameState.PLAYING
             }
@@ -242,7 +238,7 @@ class GameScreenViewModel(
                 _madeGuesses.add(it)
 
                 // figure out whether the game ended and unblock input if needed
-                gameState = handleStateAfterGuess(it, oldGameState)
+                gameState = getStateAfterGuess(it, oldGameState)
                 userGuess = ""
 
                 // save the newly made guess to the session
@@ -296,7 +292,7 @@ class GameScreenViewModel(
      *
      * @return the [GameState] according to what happened during this guess
      */
-    private fun handleStateAfterGuess(guess: GuessResponse, oldGameState: GameState): GameState {
+    private fun getStateAfterGuess(guess: GuessResponse, oldGameState: GameState): GameState {
         return if (guess.directionEmoji == "✅") { // i hate this so much
             GameState.WON
         } else if (guessCount >= gameRules.maxGuessCount) {
@@ -312,8 +308,6 @@ class GameScreenViewModel(
      *
      * @return the [GuessResponse] received by the backend or `null` if an error occurred.
      * Details about the error can be found by examining [requestState].
-     *
-     * TODO: returning null or throwing a custom exception ?
      */
     private suspend fun sendGuessRequest(): GuessResponse? {
         return try {

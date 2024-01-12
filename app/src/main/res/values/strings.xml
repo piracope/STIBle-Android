@@ -44,7 +44,6 @@
 
     <!--Help Screen-->
     <string-array name="help_messages">
-        <!--TODO: display STIBle nicely and replace 6 with a parameter-->
         <item>Devinez le STIBle en 6 essais.</item>
         <item>Nous vous donnons les lignes qui passent sur l\'arrêt que vous cherchez.</item>
         <item>Chaque essai doit être un arrêt quelconque sur le réseau de la STIB.</item>
