@@ -4,16 +4,10 @@
     android:viewportWidth="16"
     android:viewportHeight="16">
     <group
-        android:scaleX="0.6111111"
-        android:scaleY="0.6111111"
-        android:translateX="3.1111112"
-        android:translateY="3.1111112">
-        <group>
-            <clip-path android:pathData="M0,0h16v16h-16z" />
-            <path
-                android:fillColor="#005691"
-                android:pathData="M16,14c0,1.1 -0.9,2 -2,2H2c-1.1,0 -2,-0.9 -2,-2V2c0,-1.1 0.9,-2 2,-2h12c1.1,0 2,0.9 2,2V14z" />
-        </group>
+        android:scaleX="0.5669231"
+        android:scaleY="0.5669231"
+        android:translateX="3.4646153"
+        android:translateY="3.422621">
         <group>
             <clip-path android:pathData="M0,0h16v16h-16z" />
             <path

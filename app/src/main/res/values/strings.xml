@@ -1,7 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="fr">
     <string name="app_name">STIBle</string>
-    <string name="app_author" translatable="false">Ayoub Moufidi</string>
-    <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoicGlyYWNvcGUiLCJhIjoiY2xyMHcwbWxsMGpnNDJscG5wcWJqNXQ5cyJ9.hzSjD_3IKBBCsrV8ArpenQ</string>
+    <string name="mapbox_access_token" translatable="false" tools:keep="@string/mapbox_access_token">pk.eyJ1IjoicGlyYWNvcGUiLCJhIjoiY2xyMHcwbWxsMGpnNDJscG5wcWJqNXQ5cyJ9.hzSjD_3IKBBCsrV8ArpenQ</string>
 
     <!--Navigation Bar-->
     <string name="home">Accueil</string>
