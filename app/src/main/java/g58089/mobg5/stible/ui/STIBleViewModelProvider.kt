@@ -20,7 +20,8 @@ object STIBleViewModelProvider {
                 stibleApplication().container.currentSessionRepository,
                 stibleApplication().container.gameHistoryRepository,
                 stibleApplication().container.userPreferencesRepository,
-                stibleApplication().container.localeRepository
+                stibleApplication().container.localeRepository,
+                stibleApplication().container.gameRulesRepository
             )
         }
         initializer {

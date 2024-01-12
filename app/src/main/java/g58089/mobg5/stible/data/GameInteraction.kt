@@ -1,18 +1,13 @@
 package g58089.mobg5.stible.data
 
-import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.util.Language
 
 /**
- * Façade to interact with the game, such as getting [GameRules] or making a guess.
+ * Façade to interact with the game, like making a guess.
  */
 interface GameInteraction {
 
-    /**
-     * Retrieves [GameRules] from the game's backend according to the player's [Language]
-     */
-    suspend fun getGameRules(lang: Language): GameRules
 
     /**
      * Makes a guess and sends it to the game's backend

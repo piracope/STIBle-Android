@@ -8,12 +8,8 @@ import g58089.mobg5.stible.data.database.STIBleDatabase
 import g58089.mobg5.stible.data.datastore.OfflineUserPreferencesRepository
 import g58089.mobg5.stible.data.locale.AndroidLocaleRepository
 import g58089.mobg5.stible.data.network.OnlineGameInteraction
+import g58089.mobg5.stible.data.network.OnlineGameRulesRepository
 import g58089.mobg5.stible.data.network.STIBleApi
-
-/**
- * Name of the DataStore where our user preferences will be stored.
- */
-private const val USER_PREFERENCES_NAME = "user_preferences"
 
 /**
  * App container for Dependency injection.
@@ -23,6 +19,7 @@ interface AppContainer {
     val currentSessionRepository: CurrentSessionRepository
     val userPreferencesRepository: UserPreferencesRepository
     val localeRepository: LocaleRepository
+    val gameRulesRepository: GameRulesRepository
     val gameInteraction: GameInteraction
 }
 
@@ -76,5 +73,16 @@ class AppDataContainer(private val context: Context) : AppContainer {
      */
     override val gameInteraction: GameInteraction by lazy {
         OnlineGameInteraction(STIBleApi.retrofitService)
+    }
+
+    override val gameRulesRepository: GameRulesRepository by lazy {
+        OnlineGameRulesRepository(STIBleApi.retrofitService)
+    }
+
+    companion object {
+        /**
+         * Name of the DataStore where our user preferences will be stored.
+         */
+        private const val USER_PREFERENCES_NAME = "user_preferences"
     }
 }

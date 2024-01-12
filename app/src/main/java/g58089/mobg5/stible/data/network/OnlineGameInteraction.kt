@@ -1,35 +1,18 @@
 package g58089.mobg5.stible.data.network
 
 import g58089.mobg5.stible.data.GameInteraction
-import g58089.mobg5.stible.data.dto.GameRules
 import g58089.mobg5.stible.data.dto.Guess
 import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.dto.StopTranslation
 import g58089.mobg5.stible.data.util.ErrorType
 import g58089.mobg5.stible.data.util.Language
 import g58089.mobg5.stible.data.util.STIBleException
-import retrofit2.HttpException
 import java.io.IOException
 
 /**
  * [GameInteraction] that interacts with an online backend, provided by [STIBleApiService].
  */
 class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInteraction {
-    override suspend fun getGameRules(lang: Language): GameRules {
-        try {
-            return stibleApi.start(lang.code)
-        } catch (e: IOException) {
-            throw STIBleException(ErrorType.NO_INTERNET)
-        } catch (e: HttpException) {
-            if (e.code() == 400)
-            // language wasn't "fr" or "nl" --> should never happen
-                throw STIBleException(ErrorType.BAD_LANGUAGE)
-            else
-            // idk an error 500 or something you can never be sure
-                throw STIBleException(ErrorType.UNKNOWN)
-        }
-    }
-
     override suspend fun guess(
         stopName: String,
         puzzleNumber: Int,
