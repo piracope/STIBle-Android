@@ -125,12 +125,6 @@ class GameScreenViewModel(
      */
     val madeGuesses: List<GuessResponse>
         get() = _madeGuesses
-    /*
-    NOTE: I could observe the database's current session, as it's a flow. That said,
-    if i replace adding the newly received guess to a mutableList with a database insert,
-    it significantly slows down my app. What I could do is instead save it to this list for display
-    purposes, unblock the input and send it to the database. So that's what I'm doing.
-     */
 
     /**
      * `true` if we managed to load initial data.
@@ -205,8 +199,7 @@ class GameScreenViewModel(
     private fun setupFlowCollectors() {
         viewModelScope.launch {
             combine(
-                userPreferencesRepository.userData,
-                currentSessionRepo.getAllGuessResponses()
+                userPreferencesRepository.userData, currentSessionRepo.getAllGuessResponses()
             ) { pref, session ->
                 userPreferences = pref
                 _madeGuesses.clear()
@@ -262,9 +255,6 @@ class GameScreenViewModel(
 
             val response = sendGuessRequest()
             response?.let {
-                // display on the screen
-                _madeGuesses.add(it)
-
                 // figure out whether the game ended and unblock input if needed
                 gameState = getStateAfterGuess(it, oldGameState)
                 userGuess = ""
@@ -339,13 +329,9 @@ class GameScreenViewModel(
      */
     private suspend fun sendGuessRequest(): GuessResponse? {
         return try {
-            val response =
-                gameInteraction.guess(
-                    userGuess,
-                    gameRules.puzzleNumber,
-                    guessCount,
-                    localeRepository.language
-                )
+            val response = gameInteraction.guess(
+                userGuess, gameRules.puzzleNumber, guessCount, localeRepository.language
+            )
 
             requestState = RequestState.Success
             response
