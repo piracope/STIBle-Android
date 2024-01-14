@@ -32,12 +32,15 @@ private object ViewportDefaults {
     val BRUSSELS_CENTER: Point = Point.fromLngLat(4.34878, 50.85045) // Brussels center
     const val MIN_ZOOM = 10.5
     val STIB_COORDINATES_BOUNDS = CoordinateBounds(
-        Point.fromLngLat(4.26, 50.77),
-        Point.fromLngLat(4.52, 50.93),
-        false
+        Point.fromLngLat(4.26, 50.77), Point.fromLngLat(4.52, 50.93), false
     )
 }
 
+/**
+ * Displays a Mapbox map and marks all provided stops on it.
+ *
+ * This map is bounded to the STIB network limits and has public transport markers disabled.
+ */
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapWithStopsPoints(stops: List<Stop>, modifier: Modifier = Modifier) {
@@ -62,10 +65,9 @@ fun MapWithStopsPoints(stops: List<Stop>, modifier: Modifier = Modifier) {
             val textIconHaloStrength = 1.0
 
             MapEffect(Unit) { mapView ->
-                val cameraBoundsOptions = CameraBoundsOptions.Builder()
-                    .bounds(ViewportDefaults.STIB_COORDINATES_BOUNDS)
-                    .minZoom(ViewportDefaults.MIN_ZOOM)
-                    .build()
+                val cameraBoundsOptions =
+                    CameraBoundsOptions.Builder().bounds(ViewportDefaults.STIB_COORDINATES_BOUNDS)
+                        .minZoom(ViewportDefaults.MIN_ZOOM).build()
 
                 val mapboxMap = mapView.mapboxMap
 
@@ -86,16 +88,15 @@ fun MapWithStopsPoints(stops: List<Stop>, modifier: Modifier = Modifier) {
                 val pointAnnotationManager = annotationApi.createPointAnnotationManager()
 
                 stops.forEach { stop ->
-                    val point = PointAnnotationOptions()
-                        .withPoint(Point.fromLngLat(stop.longitude, stop.latitude))
-                        .withIconImage(markerImage)
-                        .withIconAnchor(IconAnchor.BOTTOM)
-                        .withTextField(stop.name)
-                        .withTextAnchor(TextAnchor.BOTTOM)
-                        .withTextOffset(textIconOffset)
-                        .withTextSize(textIconSize)
-                        .withTextColor(textIconColor)
-                        .withTextHaloColor(textIconHalo)
+                    val point = PointAnnotationOptions().withPoint(
+                        Point.fromLngLat(
+                            stop.longitude,
+                            stop.latitude
+                        )
+                    ).withIconImage(markerImage).withIconAnchor(IconAnchor.BOTTOM)
+                        .withTextField(stop.name).withTextAnchor(TextAnchor.BOTTOM)
+                        .withTextOffset(textIconOffset).withTextSize(textIconSize)
+                        .withTextColor(textIconColor).withTextHaloColor(textIconHalo)
                         .withTextHaloWidth(textIconHaloStrength)
                     pointAnnotationManager.create(point)
                 }

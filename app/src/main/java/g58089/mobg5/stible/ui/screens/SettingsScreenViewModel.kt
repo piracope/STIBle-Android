@@ -33,6 +33,9 @@ class SettingsScreenViewModel(
     var isMapModeEnabled by mutableStateOf(false)
         private set
 
+    /**
+     * Whether map mode is locked for the day or not.
+     */
     var canChangeMapMode by mutableStateOf(true)
         private set
 

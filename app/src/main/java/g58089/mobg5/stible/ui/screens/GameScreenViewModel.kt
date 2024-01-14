@@ -255,6 +255,10 @@ class GameScreenViewModel(
 
             val response = sendGuessRequest()
             response?.let {
+                // Add it to the displayed list
+                // NOTE : this is meh, but there's a race condition with the save of the game recap.
+                _madeGuesses.add(it)
+
                 // figure out whether the game ended and unblock input if needed
                 gameState = getStateAfterGuess(it, oldGameState)
                 userGuess = ""

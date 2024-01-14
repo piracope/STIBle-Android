@@ -13,4 +13,8 @@
 
     <!--Miscellaneous-->
     <dimen name="rounded_amount">3dp</dimen>
+
+    <!--Help Screen pager-->
+    <dimen name="pill_size">16dp</dimen>
+    <dimen name="pill_padding">2dp</dimen>
 </resources>

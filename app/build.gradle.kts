@@ -52,8 +52,7 @@ android {
             isShrinkResources = true
             isDebuggable = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
         }
@@ -83,7 +82,7 @@ android {
     }
 
     androidResources {
-        // Generates necessary LocaleConfig files for syst
+        // Generates necessary LocaleConfig files for system in-app language menu
         generateLocaleConfig = true
     }
 }

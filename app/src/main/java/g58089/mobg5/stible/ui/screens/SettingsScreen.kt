@@ -34,6 +34,14 @@ import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.util.ShowToast
 
+/**
+ * Shows a screen to let the user choose his settings.
+ *
+ * Settings :
+ * - switch button to enable/disable map mode
+ * - switch button to toggle between French and Dutch
+ * - button to remove all data
+ */
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
@@ -46,8 +54,7 @@ fun SettingsScreen(
         onClearAll = viewModel::removeAllData,
         nederlands = viewModel.isInNederlands,
         switchToNl = viewModel::changeToNederlands,
-        modifier
-            .fillMaxSize()
+        modifier.fillMaxSize()
     )
 
     val requestState = viewModel.requestState
@@ -101,38 +108,35 @@ private fun SettingsScreenBody(
         }
 
         if (isRemoveDialogOpen) {
-            AlertDialog(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.DeleteForever,
-                        contentDescription = null
-                    )
-                },
-                title = {
-                    Text(text = stringResource(id = R.string.remove_all_data_dialog_title))
-                },
-                text = {
-                    Text(text = stringResource(id = R.string.remove_all_data_dialog_text))
-                },
-                onDismissRequest = { isRemoveDialogOpen = false },
-                confirmButton = {
-                    TextButton(onClick = {
-                        isRemoveDialogOpen = false
-                        onClearAll()
-                    }) {
-                        Text(text = stringResource(id = R.string.confirm))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { isRemoveDialogOpen = false }) {
-                        Text(text = stringResource(id = R.string.cancel))
-                    }
+            AlertDialog(icon = {
+                Icon(
+                    imageVector = Icons.Default.DeleteForever, contentDescription = null
+                )
+            }, title = {
+                Text(text = stringResource(id = R.string.remove_all_data_dialog_title))
+            }, text = {
+                Text(text = stringResource(id = R.string.remove_all_data_dialog_text))
+            }, onDismissRequest = { isRemoveDialogOpen = false }, confirmButton = {
+                TextButton(onClick = {
+                    isRemoveDialogOpen = false
+                    onClearAll()
+                }) {
+                    Text(text = stringResource(id = R.string.confirm))
                 }
-            )
+            }, dismissButton = {
+                TextButton(onClick = { isRemoveDialogOpen = false }) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+            })
         }
     }
 }
 
+/**
+ * Toggleable setting.
+ *
+ * Shows a title and subtitle.
+ */
 @Composable
 fun SwitchSetting(
     title: String,
@@ -158,9 +162,7 @@ fun SwitchSetting(
             )
         }
         Switch(
-            checked = checked,
-            onCheckedChange = onChange,
-            enabled = enabled
+            checked = checked, onCheckedChange = onChange, enabled = enabled
         )
     }
 }
@@ -168,12 +170,10 @@ fun SwitchSetting(
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenBodyPreview() {
-    SettingsScreenBody(
-        isMapModeEnabled = false,
+    SettingsScreenBody(isMapModeEnabled = false,
         onMapModeChange = {},
         onClearAll = {},
         nederlands = false,
         canChangeMapMode = true,
-        switchToNl = {}
-    )
+        switchToNl = {})
 }

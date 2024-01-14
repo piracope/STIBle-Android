@@ -36,6 +36,17 @@ import g58089.mobg5.stible.R
 import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 
+/**
+ * Display statistics of the user's performance.
+ *
+ * Statistics displayed :
+ * - distribution of guess count it took to finish each game
+ * - number of played games
+ * - the success rate
+ * - the current streak
+ * - the best streak
+ * - a map of all past stops, won or lost
+ */
 @Composable
 fun StatsScreen(
     modifier: Modifier = Modifier,

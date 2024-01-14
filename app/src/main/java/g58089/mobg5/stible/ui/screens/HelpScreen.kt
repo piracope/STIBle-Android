@@ -22,7 +22,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import g58089.mobg5.stible.R
 
 /**
@@ -41,8 +40,7 @@ fun HelpScreen(modifier: Modifier = Modifier) {
             .padding(dimensionResource(id = R.dimen.outer_padding))
     ) {
         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            state = pagerState, modifier = Modifier.fillMaxSize()
         ) { page ->
             Text(
                 text = messages[page],
@@ -58,21 +56,19 @@ fun HelpScreen(modifier: Modifier = Modifier) {
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(8.dp),
+                .padding(dimensionResource(id = R.dimen.inner_padding)),
             horizontalArrangement = Arrangement.Center,
         ) {
             repeat(pagerState.pageCount) { iteration ->
                 val color =
-                    if (pagerState.currentPage == iteration)
-                        MaterialTheme.colorScheme.surfaceTint
-                    else
-                        MaterialTheme.colorScheme.surfaceVariant
+                    if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.surfaceTint
+                    else MaterialTheme.colorScheme.surfaceVariant
                 Box(
                     modifier = Modifier
-                        .padding(2.dp)
+                        .padding(dimensionResource(id = R.dimen.pill_padding))
                         .clip(CircleShape)
                         .background(color)
-                        .size(16.dp)
+                        .size(dimensionResource(id = R.dimen.pill_size))
                 )
             }
         }

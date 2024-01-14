@@ -24,9 +24,7 @@ import g58089.mobg5.stible.data.util.ErrorType
 @Composable
 fun ShowToast(error: ErrorType) {
     Toast.makeText(
-        LocalContext.current,
-        stringResource(id = getErrorStringResId(error)),
-        Toast.LENGTH_SHORT
+        LocalContext.current, stringResource(id = getErrorStringResId(error)), Toast.LENGTH_SHORT
     ).show()
 }
 

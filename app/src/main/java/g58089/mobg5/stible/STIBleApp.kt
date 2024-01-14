@@ -21,22 +21,15 @@ fun STIBleApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
-    Scaffold(
-        bottomBar = {
-            val bottomNavigableScreens =
-                listOf(
-                    STIBleScreen.Main,
-                    STIBleScreen.Stats,
-                    STIBleScreen.Settings,
-                    STIBleScreen.Help
-                )
-            STIBleNavigationBar(navItems = bottomNavigableScreens, navController = navController)
-        }
-    ) { innerPadding ->
+    Scaffold(bottomBar = {
+        val bottomNavigableScreens = listOf(
+            STIBleScreen.Main, STIBleScreen.Stats, STIBleScreen.Settings, STIBleScreen.Help
+        )
+        STIBleNavigationBar(navItems = bottomNavigableScreens, navController = navController)
+    }) { innerPadding ->
         Surface(modifier = modifier.padding(innerPadding)) {
             STIBleNavHost(
-                navController,
-                modifier
+                navController, modifier
             )
         }
     }

@@ -26,6 +26,9 @@ class StatsScreenViewModel(
 ) : ViewModel() {
 
     companion object {
+        /**
+         * The guess count of failed games.
+         */
         const val FLOAT_LOSS_MARKER = 0.0f
     }
 
@@ -95,8 +98,7 @@ class StatsScreenViewModel(
     init {
         viewModelScope.launch {
             combine(
-                gameHistoryRepository.getAllRecapsStream(),
-                userPreferencesRepository.userData
+                gameHistoryRepository.getAllRecapsStream(), userPreferencesRepository.userData
             ) { session, pref ->
                 userPreferences = pref
 
@@ -162,8 +164,7 @@ class StatsScreenViewModel(
             // Incrementing the guess count thingie for the bar chart
             val guessCount = if (hasLost(recap)) 0 else recap.guessCount
 
-            _gameRecapGuessCount[guessCount] =
-                _gameRecapGuessCount.getOrDefault(guessCount, 0) + 1
+            _gameRecapGuessCount[guessCount] = _gameRecapGuessCount.getOrDefault(guessCount, 0) + 1
         }
 
         best = maxOf(best, current)

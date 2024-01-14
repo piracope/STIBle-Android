@@ -54,8 +54,7 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
     ) {
 
         GuessRowTextCell(
-            guessResponse?.stopName,
-            Modifier.fillMaxWidth(0.4f)
+            guessResponse?.stopName, Modifier.fillMaxWidth(0.4f)
         )
         GuessRowPercentageSquares(
             guessResponse?.proximityPecentage,
@@ -65,8 +64,7 @@ fun GuessRow(guessResponse: GuessResponse?, modifier: Modifier = Modifier) {
         val distanceText =
             guessResponse?.distance?.let { String.format(Locale.ENGLISH, "%.1fkm", it) }
         GuessRowTextCell(
-            text = distanceText,
-            modifier = Modifier.weight(1f)
+            text = distanceText, modifier = Modifier.weight(1f)
         )
 
         val colorDirection = getDirectionBackgroundColor(guessResponse)
@@ -120,8 +118,7 @@ private fun GuessRowTextCell(text: String?, modifier: Modifier = Modifier) {
 private fun GuessRowPercentageSquares(proximityPercentage: Double?, modifier: Modifier = Modifier) {
     Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.guess_row_padding))) {
         val nbOfGreen: Int = proximityPercentage?.times(100)?.div(20)?.toInt() ?: 0
-        val nbOfYellow: Int =
-            proximityPercentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
+        val nbOfYellow: Int = proximityPercentage?.times(100)?.rem(20)?.div(10)?.toInt() ?: 0
         repeat(5) { sqNb ->
             val color: Color = if (sqNb < nbOfGreen) STIBleGreen
             else if (sqNb < nbOfGreen + nbOfYellow) STIBleYellow
@@ -138,10 +135,7 @@ private fun GuessRowPercentageSquares(proximityPercentage: Double?, modifier: Mo
 
 @Composable
 private fun GuessRowIcon(
-    icon: ImageVector?,
-    bgColor: Color,
-    fgColor: Color,
-    modifier: Modifier = Modifier
+    icon: ImageVector?, bgColor: Color, fgColor: Color, modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
