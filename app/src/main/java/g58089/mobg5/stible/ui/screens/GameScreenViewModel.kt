@@ -20,13 +20,41 @@ import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.data.dto.UserPreferences
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.data.util.ErrorType
-import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.data.util.STIBleException
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 private const val TAG = "GameScreenViewModel"
+
+/**
+ * The different states of play this session can be in.
+ */
+enum class GameState {
+    /**
+     * The user can make guesses.
+     */
+    PLAYING,
+
+    /**
+     * The user ran out of possible tries.
+     *
+     * The secret should be revealed.
+     */
+    LOST,
+
+    /**
+     * The user found the secret stop.
+     */
+    WON,
+
+    /**
+     * The user is blocked from input.
+     *
+     * This can be because a guess is pending, we couldn't fetch initial data, ...
+     */
+    BLOCKED
+}
 
 /**
  * The [ViewModel] handling all business logic in the [GameScreen].
