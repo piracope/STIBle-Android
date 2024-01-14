@@ -11,18 +11,15 @@ data class StopTranslation(
     /**
      * The name of the Stop to translate.
      */
-    @SerialName("stop_name")
-    val stopName: String,
+    @SerialName("stop_name") val stopName: String,
 
     /**
      * The current language of [stopName]
      */
-    @SerialName("oldLang")
-    val oldLang: String,
+    @SerialName("oldLang") val oldLang: String,
 
     /**
      * The language [stopName] should be translated to.
      */
-    @SerialName("newLang")
-    val newLang: String
+    @SerialName("newLang") val newLang: String
 )

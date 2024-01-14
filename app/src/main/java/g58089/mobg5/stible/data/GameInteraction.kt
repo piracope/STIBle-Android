@@ -8,15 +8,11 @@ import g58089.mobg5.stible.data.util.Language
  */
 interface GameInteraction {
 
-
     /**
      * Makes a guess and sends it to the game's backend
      */
     suspend fun guess(
-        stopName: String,
-        puzzleNumber: Int,
-        tryNumber: Int,
-        lang: Language
+        stopName: String, puzzleNumber: Int, tryNumber: Int, lang: Language
     ): GuessResponse
 
     /**

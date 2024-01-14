@@ -33,8 +33,7 @@ abstract class STIBleDatabase : RoomDatabase() {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, STIBleDatabase::class.java, DATABASE_NAME)
                     .fallbackToDestructiveMigration() // if schema changes, just wipe out everything lol
-                    .build()
-                    .also { Instance = it }
+                    .build().also { Instance = it }
             }
         }
     }

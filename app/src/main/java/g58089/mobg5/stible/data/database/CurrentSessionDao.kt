@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * DAO for the current play session history.
  *
- * The current session is all [GuessResponse] received related to a certain day.
+ * The current session is all [GuessResponse]s received related to a certain day.
  * If today's puzzle number is greater than the stored puzzle number, the current session
  * should be wiped and start anew.
  */
@@ -23,7 +23,7 @@ interface CurrentSessionDao {
     suspend fun insert(guess: GuessResponse)
 
     /**
-     * Retrieves all [GuessResponse] made during the day.
+     * Retrieves all [GuessResponse]s made during the day.
      */
     @Query("SELECT * FROM current_session")
     fun getAllItems(): Flow<List<GuessResponse>>

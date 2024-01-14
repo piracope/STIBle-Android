@@ -36,5 +36,4 @@ class AndroidLocaleRepository(private val context: Context) : LocaleRepository {
     override fun resetToDefault() {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
     }
-
 }

@@ -10,7 +10,9 @@ enum class Language(val code: String) {
     FRENCH("fr"),
 
     /**
-     * The accursed "language" known to sorcerers and other vile monsters as """Dutch"""
+     * The accursed "language" known to sorcerers and other vile monsters as """Dutch""".
+     *
+     * Unless the reader speaks Dutch, then I love this language haha
      */
     DUTCH("nl")
 }

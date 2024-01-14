@@ -59,7 +59,6 @@ import g58089.mobg5.stible.data.dto.GuessResponse
 import g58089.mobg5.stible.data.dto.Route
 import g58089.mobg5.stible.data.dto.Stop
 import g58089.mobg5.stible.data.network.RequestState
-import g58089.mobg5.stible.data.util.GameState
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
 import g58089.mobg5.stible.ui.theme.STIBleBlue
 import g58089.mobg5.stible.ui.theme.STIBleGreen
@@ -69,6 +68,21 @@ import g58089.mobg5.stible.ui.util.ErrorMessageScreen
 import g58089.mobg5.stible.ui.util.ShowToast
 import g58089.mobg5.stible.ui.util.unaccent
 
+/**
+ * Displays the game screen.
+ *
+ * The game screen is composed of the following components :
+ *
+ * - The game's title
+ * - Today's given routes
+ * - Rows used to display [GuessResponse]s
+ * - A searchable dropdown menu used to select a stop to send as guess
+ * - A button that launches a guess or shares recap info at the end of the game.
+ * - If map mode is on, a FAB that opens a map of Brussels with the guessed stop locations.
+ *
+ * While the ViewModel fetches initial data from the server, a loading screen is shown.
+ * If it couldn't be fetched, an error message is displayed.
+ */
 @Composable
 fun GameScreen(
     modifier: Modifier = Modifier,
@@ -77,25 +91,22 @@ fun GameScreen(
     val requestState = viewModel.requestState
     var mapboxSheetShown by remember { mutableStateOf(false) }
 
-    Scaffold(
-        modifier = modifier, floatingActionButton = {
-            if (viewModel.isMapModeEnabled) {
-                FloatingActionButton(onClick = {
-                    mapboxSheetShown = true
-                    viewModel.lockMapMode()
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Map,
-                        contentDescription = stringResource(id = R.string.map_fab_content_description)
-                    )
-                }
+    Scaffold(modifier = modifier, floatingActionButton = {
+        if (viewModel.isMapModeEnabled) {
+            FloatingActionButton(onClick = {
+                mapboxSheetShown = true
+                viewModel.lockMapMode()
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Map,
+                    contentDescription = stringResource(id = R.string.map_fab_content_description)
+                )
             }
         }
-    ) { innerPadding ->
+    }) { innerPadding ->
 
         if (mapboxSheetShown) {
-            MapModeBottomSheet(
-                onDismissRequest = { mapboxSheetShown = false },
+            MapModeBottomSheet(onDismissRequest = { mapboxSheetShown = false },
                 stops = viewModel.madeGuesses.map { it.guessedStop })
         }
 
@@ -143,11 +154,12 @@ fun GameScreen(
     }
 }
 
+/**
+ * A [MapWithStopsPoints] encased in a [ModalBottomSheet]
+ */
 @Composable
 private fun MapModeBottomSheet(
-    stops: List<Stop>,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
+    stops: List<Stop>, onDismissRequest: () -> Unit, modifier: Modifier = Modifier
 ) {
     val sheetState = rememberModalBottomSheetState()
 
@@ -195,6 +207,9 @@ private fun LoadingScreen(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * The actual body of the Game screen.
+ */
 @Composable
 private fun GameScreenBody(
     gameRules: GameRules,
@@ -262,9 +277,7 @@ private fun GameScreenBody(
             val shareHeader = "${stringResource(id = R.string.app_name)} #${gameRules.puzzleNumber}"
 
             ShareButton(
-                shareMessage = shareText,
-                shareHeader = shareHeader,
-                Modifier.fillMaxWidth()
+                shareMessage = shareText, shareHeader = shareHeader, Modifier.fillMaxWidth()
             )
 
         }
@@ -332,11 +345,8 @@ private fun ShareButton(shareMessage: String, shareHeader: String, modifier: Mod
                 putExtra(Intent.EXTRA_TEXT, shareMessage)
             }
             context.startActivity(Intent.createChooser(intent, shareHeader))
-        },
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = STIBleGreen,
-            contentColor = light_onSTIBleGreen
+        }, modifier = modifier, colors = ButtonDefaults.buttonColors(
+            containerColor = STIBleGreen, contentColor = light_onSTIBleGreen
         )
     ) {
         Text(text = stringResource(id = R.string.share))

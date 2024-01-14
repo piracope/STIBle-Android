@@ -4,7 +4,7 @@ import g58089.mobg5.stible.data.dto.GuessResponse
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Repository that provides insert and retrieval of [GuessResponse] for today's session.
+ * Repository that provides insert and retrieval of [GuessResponse]s for today's session.
  */
 interface CurrentSessionRepository {
     /**

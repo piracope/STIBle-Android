@@ -19,8 +19,7 @@ data class Route(
      *
      * For example, the route WIENER - GRAND-PLACE has routeNumber 95.
      */
-    @SerialName("route_short_name")
-    val routeNumber: Int,
+    @SerialName("route_short_name") val routeNumber: Int,
 
     /**
      * The background color of this Route's logo.
@@ -28,8 +27,7 @@ data class Route(
      * Contains the hexadecimal part, without the 0x.
      * For example, a white routeColor would have "FFFFFF" as value.
      */
-    @SerialName("route_color")
-    val routeColor: String,
+    @SerialName("route_color") val routeColor: String,
 
     /**
      * The color of this Route's number.
@@ -37,6 +35,5 @@ data class Route(
      * Contains the hexadecimal part, without the 0x.
      * For example, a white routeNumberColor would have "FFFFFF" as value.
      */
-    @SerialName("route_text_color")
-    val routeNumberColor: String,
+    @SerialName("route_text_color") val routeNumberColor: String,
 )

@@ -22,28 +22,23 @@ import g58089.mobg5.stible.ui.screens.StatsScreen
  */
 @Composable
 fun STIBleNavigationBar(
-    navItems: List<STIBleScreen>,
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    navItems: List<STIBleScreen>, navController: NavHostController, modifier: Modifier = Modifier
 ) {
     val currentNav by navController.currentBackStackEntryAsState()
     val currentRoute = currentNav?.destination
 
     NavigationBar(modifier = modifier) {
         navItems.forEach { screen ->
-            NavigationBarItem(
-                selected = currentRoute?.route == screen.route,
+            NavigationBarItem(selected = currentRoute?.route == screen.route,
                 onClick = { navController.navigate(screen.route) },
                 icon = {
                     Icon(
-                        imageVector = screen.icon,
-                        contentDescription = stringResource(
+                        imageVector = screen.icon, contentDescription = stringResource(
                             id = screen.nameResId
                         )
                     )
                 },
-                label = { Text(text = stringResource(id = screen.nameResId)) }
-            )
+                label = { Text(text = stringResource(id = screen.nameResId)) })
         }
     }
 }
@@ -56,8 +51,7 @@ fun STIBleNavigationBar(
  */
 @Composable
 fun STIBleNavHost(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+    navController: NavHostController, modifier: Modifier = Modifier
 ) {
     NavHost(
         navController = navController,

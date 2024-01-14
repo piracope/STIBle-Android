@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 /**
- * The response of the server to a user's [Guess].
+ * The response of the backend to a user's [Guess].
  *
  * Provides valuable information about the mystery [Stop].
  */
@@ -17,30 +17,22 @@ import kotlinx.serialization.Transient
 @Serializable
 data class GuessResponse(
 
-    @PrimaryKey(autoGenerate = true)
-    @Transient
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) @Transient val id: Int = 0,
 
     /**
      * The name of the [Stop] guessed.
      */
-    @SerialName("stop_name")
-    @ColumnInfo("stop_name")
-    val stopName: String,
+    @SerialName("stop_name") @ColumnInfo("stop_name") val stopName: String,
 
     /**
      * The actual [Stop] object that was guessed.
      */
-    @SerialName("stop")
-    @Embedded("guessed_stop_")
-    val guessedStop: Stop = Stop(),
+    @SerialName("stop") @Embedded("guessed_stop_") val guessedStop: Stop = Stop(),
 
     /**
      * The distance between the guessed [Stop] and the mystery stop, in km.
      */
-    @SerialName("distance")
-    @ColumnInfo("distance")
-    val distance: Double,
+    @SerialName("distance") @ColumnInfo("distance") val distance: Double,
 
     /**
      * The "percentage" of success of this [Guess].
@@ -48,9 +40,7 @@ data class GuessResponse(
      * The biggest distance between two stops is 23 km.
      * If a guess is 2.3km from the mystery stop, it is 90% close.
      */
-    @SerialName("percentage")
-    @ColumnInfo("percentage")
-    val proximityPecentage: Double,
+    @SerialName("percentage") @ColumnInfo("percentage") val proximityPecentage: Double,
 
     /**
      * An Emoji showing the direction of the mystery [Stop] from the guessed stop.
@@ -60,9 +50,7 @@ data class GuessResponse(
      * ...I curse my past self for sending this as an emoji instead of just
      * passing a value and then interpreting that value in the view.
      */
-    @SerialName("direction")
-    @ColumnInfo("direction")
-    val directionEmoji: String,
+    @SerialName("direction") @ColumnInfo("direction") val directionEmoji: String,
 
     /**
      * The mystery [Stop].
@@ -72,7 +60,5 @@ data class GuessResponse(
      *  - the guessed stop is the mystery stop -> the user won
      *  - the user ran out of possible tries -> the user lost
      */
-    @SerialName("secret")
-    @Embedded("mystery_stop_")
-    val mysteryStop: Stop? = null
+    @SerialName("secret") @Embedded("mystery_stop_") val mysteryStop: Stop? = null
 )

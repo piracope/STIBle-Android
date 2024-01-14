@@ -11,18 +11,15 @@ data class Stop(
     /**
      * The Stop's name.
      */
-    @SerialName("stop_name")
-    val name: String = "CONGRES",
+    @SerialName("stop_name") val name: String = "CONGRES",
 
     /**
      * The Stop's latitude.
      */
-    @SerialName("stop_lat")
-    val latitude: Double = 50.850416,
+    @SerialName("stop_lat") val latitude: Double = 50.850416,
 
     /**
      * The Stop's longitude.
      */
-    @SerialName("stop_lon")
-    val longitude: Double = 4.364237
+    @SerialName("stop_lon") val longitude: Double = 4.364237
 )

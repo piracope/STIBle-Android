@@ -14,10 +14,7 @@ import java.io.IOException
  */
 class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInteraction {
     override suspend fun guess(
-        stopName: String,
-        puzzleNumber: Int,
-        tryNumber: Int,
-        lang: Language
+        stopName: String, puzzleNumber: Int, tryNumber: Int, lang: Language
     ): GuessResponse {
         val guess = Guess(
             stopName = stopName,
@@ -39,7 +36,6 @@ class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInter
                 throw STIBleException(ErrorType.BAD_STOP)
             }
 
-
             val responseBody = response.body()
             if (responseBody == null) {
                 // legit no idea how we could end up here
@@ -54,9 +50,7 @@ class OnlineGameInteraction(private val stibleApi: STIBleApiService) : GameInter
     }
 
     override suspend fun translateStop(
-        stopName: String,
-        oldLang: Language,
-        newLang: Language
+        stopName: String, oldLang: Language, newLang: Language
     ): String {
         val translation = StopTranslation(stopName, oldLang.code, newLang.code)
         try {

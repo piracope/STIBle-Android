@@ -31,11 +31,9 @@ private val json = Json {
 /**
  * HTTP request engine.
  */
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
+private val retrofit = Retrofit.Builder().addConverterFactory(ScalarsConverterFactory.create())
     .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-    .baseUrl(BASE_URL)
-    .build()
+    .baseUrl(BASE_URL).build()
 
 /**
  * Manages all requests directed to the remote server.

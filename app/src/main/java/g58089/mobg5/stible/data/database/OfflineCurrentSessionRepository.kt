@@ -5,7 +5,7 @@ import g58089.mobg5.stible.data.dto.GuessResponse
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Retrieves and stores [GuessResponse]s in a local database for the day.
+ * Retrieves and stores [GuessResponse]s in a local Room database for the day.
  */
 class OfflineCurrentSessionRepository(private val sessionDao: CurrentSessionDao) :
     CurrentSessionRepository {

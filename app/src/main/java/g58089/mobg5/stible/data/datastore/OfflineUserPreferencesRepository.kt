@@ -26,18 +26,17 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
         val MAP_MODE_LOCK_PUZZLE_NUMBER = intPreferencesKey("map_mode_lock_puzzle_number")
     }
 
-    override val userData: Flow<UserPreferences> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                Log.e(TAG, "IOException during DataStore read.")
-                emit(emptyPreferences())
-            } else {
-                // rethrow because this is bad
-                throw exception
-            }
-        }.map { preferences ->
-            mapUserPreferences(preferences)
+    override val userData: Flow<UserPreferences> = dataStore.data.catch { exception ->
+        if (exception is IOException) {
+            Log.e(TAG, "IOException during DataStore read.")
+            emit(emptyPreferences())
+        } else {
+            // rethrow because this is bad
+            throw exception
         }
+    }.map { preferences ->
+        mapUserPreferences(preferences)
+    }
 
     override suspend fun setLastSeenPuzzleNumber(puzzleNumber: Int) {
         dataStore.edit { preferences ->
@@ -75,10 +74,7 @@ class OfflineUserPreferencesRepository(private val dataStore: DataStore<Preferen
         val maxGuessCount = preferences[PreferencesKeys.MAX_GUESS_COUNT] ?: 6
         val mapModeLockPuzzleNumber = preferences[PreferencesKeys.MAP_MODE_LOCK_PUZZLE_NUMBER] ?: -2
         return UserPreferences(
-            lastSeenPuzzleNumber,
-            isMapModeEnabled,
-            maxGuessCount,
-            mapModeLockPuzzleNumber
+            lastSeenPuzzleNumber, isMapModeEnabled, maxGuessCount, mapModeLockPuzzleNumber
         )
     }
 }
