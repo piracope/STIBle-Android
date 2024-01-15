@@ -163,7 +163,7 @@ private fun getDirectionBackgroundColor(guess: GuessResponse?): Color {
         return MaterialTheme.colorScheme.surfaceVariant
     }
 
-    if (guess.directionEmoji == "✅") { // doesn't display on my machine but it's
+    if (guess.directionEmoji == "✅") { // doesn't display on my machine but it's a checkmark
         return STIBleGreen
     }
 

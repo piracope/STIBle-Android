@@ -65,7 +65,7 @@ import g58089.mobg5.stible.ui.theme.STIBleGreen
 import g58089.mobg5.stible.ui.theme.STIBleRed
 import g58089.mobg5.stible.ui.theme.light_onSTIBleGreen
 import g58089.mobg5.stible.ui.util.ErrorMessageScreen
-import g58089.mobg5.stible.ui.util.ShowToast
+import g58089.mobg5.stible.ui.util.ShowErrorToast
 import g58089.mobg5.stible.ui.util.unaccent
 
 /**
@@ -150,7 +150,7 @@ fun GameScreen(
     }
 
     if (requestState is RequestState.Error) {
-        ShowToast(error = requestState.error)
+        ShowErrorToast(error = requestState.error)
     }
 }
 
@@ -359,11 +359,11 @@ private fun ShareButton(shareMessage: String, shareHeader: String, modifier: Mod
  * Basically takes the squares shown on the screen and converts them to text.
  */
 private fun buildSquaresForShare(guess: GuessResponse): String {
-    val percentage = guess.proximityPecentage.times(100).toInt()
-    val green = percentage.div(20)
-    val yellow = percentage.rem(20).div(10)
+    val proximityPercentage = guess.proximityPecentage.times(100).toInt()
+    val greenSquareCount = proximityPercentage.div(20)
+    val yellowSquareCount = proximityPercentage.rem(20).div(10)
 
-    return "${"🟩".repeat(green)}${"🟨".repeat(yellow)}${"⬛".repeat(5 - green - yellow)} ${guess.directionEmoji}"
+    return "${"🟩".repeat(greenSquareCount)}${"🟨".repeat(yellowSquareCount)}${"⬛".repeat(5 - greenSquareCount - yellowSquareCount)} ${guess.directionEmoji}"
 
 }
 
@@ -398,7 +398,7 @@ private fun buildShareMessage(
 ): String {
     // i've thought of not letting the user share if the game isn't finished, but who cares honestly.
 
-    val nbTries = if (hasLost) "X" else guessHistory.size
+    val numberOfGuesses = if (hasLost) "X" else guessHistory.size
 
     val squares = StringBuilder()
 
@@ -407,7 +407,7 @@ private fun buildShareMessage(
     }
 
     return """
-#${stringResource(id = R.string.app_name)} #${puzzleNumber} $nbTries/$maxGuessCount (${
+#${stringResource(id = R.string.app_name)} #${puzzleNumber} $numberOfGuesses/$maxGuessCount (${
         bestPercentage.times(
             100
         ).toInt()

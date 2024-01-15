@@ -32,7 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import g58089.mobg5.stible.R
 import g58089.mobg5.stible.data.network.RequestState
 import g58089.mobg5.stible.ui.STIBleViewModelProvider
-import g58089.mobg5.stible.ui.util.ShowToast
+import g58089.mobg5.stible.ui.util.ShowErrorToast
 
 /**
  * Shows a screen to let the user choose his settings.
@@ -52,7 +52,7 @@ fun SettingsScreen(
         canChangeMapMode = viewModel.canChangeMapMode,
         onMapModeChange = viewModel::changeMapMode,
         onClearAll = viewModel::removeAllData,
-        nederlands = viewModel.isInNederlands,
+        isInNederlands = viewModel.isInNederlands,
         switchToNl = viewModel::changeToNederlands,
         modifier.fillMaxSize()
     )
@@ -60,7 +60,7 @@ fun SettingsScreen(
     val requestState = viewModel.requestState
 
     if (requestState is RequestState.Error) {
-        ShowToast(error = requestState.error)
+        ShowErrorToast(error = requestState.error)
     }
 }
 
@@ -70,7 +70,7 @@ private fun SettingsScreenBody(
     canChangeMapMode: Boolean,
     onMapModeChange: (Boolean) -> Unit,
     onClearAll: () -> Unit,
-    nederlands: Boolean,
+    isInNederlands: Boolean,
     switchToNl: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -88,7 +88,7 @@ private fun SettingsScreenBody(
         SwitchSetting(
             title = stringResource(id = R.string.nl_mode_title),
             subtitle = stringResource(id = R.string.nl_subtitle),
-            checked = nederlands,
+            checked = isInNederlands,
             onChange = switchToNl,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -173,7 +173,7 @@ fun SettingsScreenBodyPreview() {
     SettingsScreenBody(isMapModeEnabled = false,
         onMapModeChange = {},
         onClearAll = {},
-        nederlands = false,
+        isInNederlands = false,
         canChangeMapMode = true,
         switchToNl = {})
 }
