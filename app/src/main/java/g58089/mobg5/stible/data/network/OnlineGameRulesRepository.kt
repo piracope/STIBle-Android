@@ -10,10 +10,20 @@ import java.io.IOException
 
 class OnlineGameRulesRepository(private val stibleApi: STIBleApiService) : GameRulesRepository {
     private var rules: GameRules? = null
+    private var lang = Language.FRENCH;
 
     override suspend fun getGameRules(lang: Language): GameRules {
-        return rules ?: try {
-            stibleApi.start(lang.code).also { rules = it }
+        val returnedRules = rules
+
+        if (returnedRules != null && this.lang == lang) {
+            return returnedRules
+        }
+
+        return try {
+            stibleApi.start(lang.code).also {
+                rules = it
+                this.lang = lang
+            }
         } catch (e: IOException) {
             throw STIBleException(ErrorType.NO_INTERNET)
         } catch (e: HttpException) {
