@@ -10,7 +10,7 @@ import java.io.IOException
 
 class OnlineGameRulesRepository(private val stibleApi: STIBleApiService) : GameRulesRepository {
     private var rules: GameRules? = null
-    private var lang = Language.FRENCH;
+    private var lang = Language.FRENCH
 
     override suspend fun getGameRules(lang: Language): GameRules {
         val returnedRules = rules
